@@ -1,0 +1,92 @@
+<div class="landing-page">
+
+    <div class="main-container">
+        <div class="landing-page-nav">
+            <nav class="headroom--pinned">
+                <div class="container d-flex align-items-center justify-content-between">
+                    <a class="navbar-logo" id="nav_logo">
+                        <span class="white">
+                            <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+helper.randomQueryParam" alt="logo"
+                                class="navbar-logo">
+                        </span>
+                        <span class="dark">
+                            <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+helper.randomQueryParam" alt="logo" class="navbar-logo"
+                                *ngIf="!logoClr">
+                            <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+helper.randomQueryParam" alt="logo" class="navbar-logo"
+                                *ngIf="logoClr">
+                        </span>
+                    </a>
+                    <ul class="navbar-nav d-flex flex-row">
+                        <li class="nav-item pl-4">
+                            <a class="btn btn-outline-primary btn-sm pr-4 pl-4 d-flex align-items-center" id="nav_login" routerLink="/app/create-trip">
+                                <img *ngIf="helper.user_details" class="lazyload userimg" (error)="$event.target.src = DEFAULT_USER_PROFILE"
+                                    [src]="helper.user_details.picture ? (IMAGE_URL + helper.user_details.picture) : DEFAULT_USER_PROFILE" alt="user-details">
+                                    <span *ngIf="helper.user_details">
+                                        {{helper.user_details?.first_name }}
+                                    </span>
+                                    <span *ngIf="!helper.user_details">
+                                        {{'button-title.login' | translate }}
+                                    </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div class="content-container">
+
+            <div class="section pb-0">
+                <div class="container">
+                    <div class="row p-4">
+                        <div [innerHTML]="html_content"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+                            <h1>{{'home-page.download_app' | translate}}</h1>
+                            <p>
+                                {{'home-page.download_eber_for_booking' | translate}}
+                            </p>
+                        </div>
+                        <div class="col-12 offset-0 col-lg-6 offset-lg-3 newsletter-input-container">
+                            <div class="text-center mb-3">
+                                <img src="../../../assets/img/home page/google-play.svg" alt="PLAY STORE"
+                                    class="img-store m-0">
+                                <img src="../../../assets/img/home page/5a354ef694c9a9.4930814115134430626094.png"
+                                    alt="APPLE STORE" class="img-store">
+                            </div>
+                            <div class="text-center mb-3">
+                                <a [href]="admin_detail?.android_client_app_url"
+                                    class="btn btn-primary btn-store" id="privacy_play_store" target="_blank">{{'home-page.play_store' |
+                                    translate}}
+                                </a>
+                                <a [href]="admin_detail?.ios_client_app_url"
+                                    class="btn btn-primary btn-store" target="_blank" id="privacy_app_store">{{'home-page.apple_store' |
+                                    translate}}
+                                </a>
+                            </div>
+                            <div class="text-center mb-3 d-flex flex-wrap align-items-center justify-content-center">
+                                <a href="tel:{{admin_detail.admin_phone}}" id="privacy_admin_phone" class="p-2" style="margin-left: 6px;"><i class="demo-icon iconsminds-smartphone-3"></i>
+                                    {{admin_detail.admin_phone}}
+                                </a>/
+                                <a href="mailto:{{admin_detail.contactUsEmail}}" id="privacy_contact_email" class="p-2"><i class="demo-icon iconsminds-email"></i>
+                                    {{admin_detail.contactUsEmail}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container copyright pt-5">
+                    <div class="row">
+                        <div class="col-12"></div>
+                        <div class="col-12 text-center">
+                            <p class="mb-0 rtl-d-none">{{current_year}}{{'home-page.eber_elluminati' | translate}}</p>
+                            <p class="mb-0 rtl-d-block d-none">© {{current_year}}{{'home-page.rtl_rydex_elluminati' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

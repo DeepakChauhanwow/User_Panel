@@ -1,0 +1,1710 @@
+<app-topnav2 (addNewItem)="openLoginModal()" [is_address_changed]="is_address_changed" (is_paypal_supported)="get_paypal_data($event)" (corporate_request_accept_event)="get_vehicle_list()"></app-topnav2>
+
+<div id="Payu" [hidden]="true">
+</div>
+
+<div class="row">
+  <div class="trip-modal-map">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row m-0">
+            <div id="map" style="width: 100%; min-height: 680px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="trip-modal-content">
+    <div class="p-4 h-100 mx-15 card" [hidden]="tripdetail">
+      <form [formGroup]="viewEstimateForm">
+        <div class="form-group mb-3 pickup-address-search-location">
+          <div class="d-flex align-items-center mb-2 justify-content-between">
+            <div>
+              <img src={{helper.DEFAULT_IMAGE.PICKUP_ICON}} width="20px" alt="">
+              <label for="pickup_address" class="mb-0 ml-2">{{'label-title.pickup-address' | translate }}</label>
+            </div>
+          </div>
+          <div class="d-flex adress-dropdown input-wrp position-relative">
+            <input type="text" class="form-control" [ngClass]="(home_work_user_address?.home_Address || home_work_user_address?.work_Address) ? 'pr-drop-pickup' : 'pr-pickup'"
+              [(ngModel)]="pickup_address.address" id="pickup_address" formControlName="pickup_address" #address
+              placeholder="{{'label-title.pickup-placeholder' | translate }}" (focus)="home_work_address_condition.is_home_address = false;home_work_address_condition.is_work_address = false" required>
+            <img src="../../../../assets/default_images/map_pin/gps.svg" alt="location" class="position-absolute c-pointer location-btn" [ngClass]="{'location-with-drop-btn':(home_work_user_address?.home_Address || home_work_user_address?.work_Address)}"
+              (click)="set_map_current_location()">
+            <div class="d-inline-block" dropdown *ngIf="home_work_user_address?.home_Address || home_work_user_address?.work_Address">
+              <button id="drop_icon" dropdownToggle type="button" class="btn dropdown-toggle iconMargin" (blur)="isDropOpened = false"
+                style="padding: 0;margin-top: 10px;" aria-controls="dropdown-basic" (click)="isDropOpen(1)"
+                [ngClass]="{'transformadress':(isDropOpened == true)}">
+                <i class="glyph-icon simple-icon-arrow-down"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right w-100" *dropdownMenu role="menu">
+                <a class="dropdown-item text-wrap d-flex" href="javascript:;" id="on_home_address" (click)="getAdress(1);isDropOpened = false"
+                  *ngIf="home_work_user_address?.home_Address">
+                  <img src="../../../../assets/img/address/home.svg" alt="Home Address"
+                    class="address-img mr-2">{{home_work_user_address?.home_Address}}
+                </a>
+                <a class="dropdown-item text-wrap d-flex" href="javascript:;" id="on_work_address" (click)="getAdress(2);isDropOpened = false"
+                  *ngIf="home_work_user_address?.work_Address">
+                  <img src="../../../../assets/img/address/work.svg" alt="Work Address"
+                    class="address-img mr-2">{{home_work_user_address?.work_Address}}
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="error"
+            *ngIf="viewEstimateForm.get('pickup_address').errors && this.viewEstimateForm.get('pickup_address').touched">
+            <span
+              *ngIf="viewEstimateForm.get('pickup_address').errors.required">{{'validation-title.pickup-address-is-required'
+              | translate }}</span>
+          </div>
+        </div>
+        <div *ngFor="let control of  rolesFieldAsFormArray.controls ;let i = index;" formArrayName='roles'
+          class="form-group mb-3 stop-address-search-location-{{i}}">
+          <div [formGroupName]="i">
+            <div class="d-flex align-items-center mb-1">
+              <img src={{helper.DEFAULT_IMAGE.STOP_ICON}} width="20px" alt="" style="margin-top: -4px;">
+              <label for="autocomplete_address-{{i}}" class="mb-0 ml-2">{{'label-title.stop-address' | translate }}-{{i +
+                1}}</label>
+            </div>
+            <div class="d-flex input-wrp-{{i}}">
+              <input type="text" class="form-control pr-4 pr-rtl-75rem"
+                placeholder="{{'label-title.stop-placeholder' | translate }}-{{i + 1}}" formControlName="role"
+                id="autocomplete_address-{{i}}" (focus)="editStopAddress(control,i)" [value]="stop_addresses[i]?.address" required>
+              <button class="close iconMargin" type="button" (click)="removeStop(i)"><span
+                  aria-hidden="true">&times;</span></button>
+              <div class="error top-100"
+                *ngIf="(viewEstimateForm.get('roles').controls[i].controls.role.errors && viewEstimateForm.get('roles').controls[i].controls.role.touched)">
+                <span>{{'validation-title.stop-address-is-required' | translate}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group mb-3 destination-address-search-location">
+          <div class="d-flex align-items-center mb-1">
+            <img src={{helper.DEFAULT_IMAGE.DESTINATION_ICON}} width="20px" alt="">
+            <label for="dest_address" class="mb-0 ml-2">{{'label-title.destination-address' | translate }}</label>
+          </div>
+          <div class="d-flex adress-dropdown input-wrp1">
+            <input type="text" class="form-control dest_address" id="dest_address" #destinationaddress
+              [ngClass]="{'pr-drop-dest':(home_work_user_address?.home_Address || home_work_user_address?.work_Address)}" [(ngModel)]="destination_address.address"
+              formControlName="dest_address" (focus)="home_work_address_condition.is_home_address = false;home_work_address_condition.is_work_address = false;" placeholder="{{'label-title.destination-placeholder' | translate }}"
+              required>
+            <div class="d-inline-block" dropdown *ngIf="home_work_user_address?.home_Address || home_work_user_address?.work_Address">
+              <button id="dest_drop_icon" dropdownToggle type="button" class="btn dropdown-toggle iconMargin" (blur)="isDistDropOpended = false"
+                style="padding: 0;margin-top: 10px;" aria-controls="dropdown-basic" (click)="isDropOpen(2)"
+                [ngClass]="{'transformadress':(isDistDropOpended == true)}">
+                <i class="glyph-icon simple-icon-arrow-down"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right w-100" *dropdownMenu role="menu">
+                <a class="dropdown-item text-wrap d-flex" href="javascript:;" id="dest_select_home" (click)="getAdress(3);isDistDropOpended = false"
+                  *ngIf="home_work_user_address?.home_Address">
+                  <img src="../../../../assets/img/address/home.svg" alt="Home Address"
+                    class="address-img mr-2">{{home_work_user_address?.home_Address}}
+                </a>
+                <a class="dropdown-item text-wrap d-flex" href="javascript:;" id="dest_select_office" (click)="getAdress(4);isDistDropOpended = false"
+                  *ngIf="home_work_user_address?.work_Address">
+                  <img src="../../../../assets/img/address/work.svg" alt="Work Address"
+                    class="address-img mr-2">{{home_work_user_address?.work_Address}}
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="error"
+            *ngIf="viewEstimateForm.get('dest_address').errors && this.viewEstimateForm.get('dest_address').touched && !destination_later">
+            <span
+              *ngIf="viewEstimateForm.get('dest_address').errors.required">{{'validation-title.destination-address-is-required'
+              | translate }}</span>
+          </div>
+        </div>
+        <div class="d-flex form-group align-items-center mb-4" [ngClass]="!destination_later && (citytypes || pooltypes) && rolesFieldAsFormArray.controls.length == 0 ? 'justify-content-between' :'justify-content-end' ">
+          <button type="button" class="btn btn-outline-primary btn-xs height-fit" id="destination_later" *ngIf="!destination_later && (citytypes || pooltypes) && rolesFieldAsFormArray.controls.length == 0" (click)="add_destination_later()">
+            {{'label-title.destination-later' | translate}}
+          </button>
+          <button type="button" class="btn btn-outline-primary btn-xs height-fit" (click)="addStop(added_stops)" *ngIf="(citytypes?.length > 0 || pooltypes?.length > 0 ) && user_setting_details && user_setting_details.is_allow_multiple_stop == true && rolesFieldAsFormArray.controls.length< user_setting_details.multiple_stop_count && show_stop && !destination_later" id="add">
+              {{'label-title.add_stop' | translate}}
+          </button>
+        </div>
+        <div *ngIf="is_business == true" class="px-4 pb-4">
+          <p class="text-danger text-one text-center" *ngIf="rolesFieldAsFormArray.controls.length == 0">{{'label-title.enter-same-pickup-destination-country' | translate
+            }}</p>
+          <p class="text-danger text-one text-center" *ngIf="rolesFieldAsFormArray.controls.length > 0">{{'label-title.please-enter-all-addresses-of-same-country' | translate }}</p>
+        </div>
+        <div *ngIf="same_location_error || same_stop_error" class="px-4 pb-4">
+          <p class="text-danger text-one text-center" *ngIf="same_location_error">
+              {{'label-title.same-pickup-destination-error' | translate}}
+          </p>
+          <p class="text-danger text-one text-center" *ngIf="same_stop_error">
+            {{'label-title.same-stop-error' | translate}}
+          </p>
+        </div>
+        <div *ngIf="!citytypes" class="px-4 pb-4">
+          <p class="text-danger text-one text-center">{{'label-title.our-business-not-in-your-city' | translate }}</p>
+        </div>
+        <div class="d-flex justify-content-center form-group" *ngIf="is_address_changed && citytypes && !destination_later">
+          <button id="button_select_type" type="button" class="btn btn-primary mb-2" (click)="waypoints()">
+            {{'button-title.select-type' | translate}}
+          </button>
+        </div>
+        <div class="mb-2" *ngIf="!is_address_changed && ((citytypes && citytypes.length>0) || (user_setting_details && user_setting_details.is_allow_ride_share == true && pooltypes && pooltypes.length>0))">
+          <label class="mb-2 text-muted">{{'label-title.service-type' | translate }}</label>
+          <div class="btn-group float-right">
+            <button type="button" class="btn btn-outline-primary btn-xs" id="view_estimate" (click)="openViewEstimateModal(viewEstimateModal);"
+              *ngIf="pickup_address.address && destination_address.address && citytypes && (show_stop || is_ride_share) && !destination_later">
+              {{'button-title.view-estimate' | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div *ngIf="!is_address_changed">
+        <tabset class="card-tabs mb-0 trip-type-tabset" [justified]="true">
+          <tab heading="{{ 'label-title.now' | translate}}" class="card-body h-100" id="now_tab"
+            (selectTab)="show_stops();getFareEstimate(0,EstimateTabType.Normal)" *ngIf="citytypes && citytypes.length>0">
+            <!-- Now -->
+            <div class="pb-4">
+              <carousel [indicatorsByChunk]="true" [itemsPerSlide]="citytypes.length>2 ? 3 : citytypes.length"
+                [singleSlideOffset]="true"
+                [startFromIndex]="0"
+                [interval]="0"
+                [showIndicators]="false">
+                <slide class="animated fadeIn" *ngFor="let item of citytypes; let i=index">
+                  <a href="javascript:;" class="text-small text-center" id="city_type-{{i}}" (click)="getFareEstimate(i,EstimateTabType.Normal)">
+                    <div *ngIf="selected_ride_details && selected_ride_details.selected_id == citytypes[i]._id">
+                      <img [src]="IMAGE_URL + citytypes[i].type_details.type_image_url" [alt]="item.type_details.typename"  class="text-extra-small card-img card-active-img px-1 mb-1">
+                      <p class="text-small text-center color-theme-1 card-active-text">{{item.type_details.typename}}</p>
+                    </div>
+                    <div *ngIf="selected_ride_details && selected_ride_details.selected_id != citytypes[i]._id">
+                      <img [src]="IMAGE_URL + citytypes[i].type_details.type_image_url" [alt]="item.type_details.typename"  class="text-extra-small card-img px-1 mb-1">
+                      <p class="text-small text-center color-theme-1">{{item.type_details.typename}}</p>
+                    </div>
+                  </a>
+                </slide>
+              </carousel>
+            </div>
+          </tab>
+
+          <tab heading="{{ 'label-title.rental' | translate}}" class="card-body h-100" id="rental_tab"
+            (selectTab)="hide_stop(EstimateTabType.Rental);getFareEstimate(0,EstimateTabType.Rental)" *ngIf="car_rental_list && car_rental_list.length > 0 && rental_share">
+            <!-- Rental -->
+            <div class="pb-4">
+              <carousel [itemsPerSlide]="car_rental_list.length>2 ? 3 : car_rental_list.length"
+                [singleSlideOffset]="true"
+                [startFromIndex]="0"
+                [interval]="0"
+                [showIndicators]="false">
+                <slide class="animated fadeIn" *ngFor="let item1 of car_rental_list; let i=index">
+                  <a href="javascript:;" class="text-small text-center" id="car_rental-{{i}}" (click)="getFareEstimate(i,EstimateTabType.Rental)">
+                    <div *ngIf="selected_ride_details && selected_ride_details.selected_id == car_rental_list[i]._id">
+                      <img [src]="IMAGE_URL + car_rental_list[i].type_details.type_image_url" [alt]="item1.type_details.typename"
+                        class="text-extra-small card-img card-active-img mb-1">
+                      <p class="text-small text-center color-theme-1 card-active-text">{{item1.type_details.typename}}</p>
+                    </div>
+                    <div *ngIf="selected_ride_details && selected_ride_details.selected_id != car_rental_list[i]._id">
+                      <img [src]="IMAGE_URL + car_rental_list[i].type_details.type_image_url" [alt]="item1.type_details.typename"
+                        class="text-extra-small card-img mb-1">
+                      <p class="text-small text-center color-theme-1">{{item1.type_details.typename}}</p>
+                    </div>
+                  </a>
+                </slide>
+              </carousel>
+            </div>
+          </tab>
+
+          <tab heading="{{ 'label-title.ride-share' | translate}}" class="card-body h-100" id="ride_share_tab"
+            (selectTab)="hide_stop(EstimateTabType.RideShare);getFareEstimate(0,EstimateTabType.RideShare);" *ngIf="user_setting_details && user_setting_details.is_allow_ride_share == true && pooltypes && pooltypes.length>0 && rental_share && !destination_later" [active]="selected_type == 0">
+            <!-- Ride Share -->
+            <div class="pb-4">
+              <carousel [itemsPerSlide]="pooltypes.length>2 ? 3 : pooltypes.length"
+                [singleSlideOffset]="true"
+                [startFromIndex]="0"
+                [interval]="0"
+                [showIndicators]="false">
+                <slide class="animated fadeIn" *ngFor="let slide of pooltypes; let i=index">
+                  <a href="javascript:;" class="text-small text-center" id="pooltype-{{i}}" (click)="getFareEstimate(i,EstimateTabType.RideShare)">
+                    <div *ngIf="selected_ride_details && selected_ride_details.pool_id == pooltypes[i]._id">
+                      <img [src]="IMAGE_URL + pooltypes[i].type_details.type_image_url" [alt]="slide.type_details.typename"  class="text-extra-small card-img card-active-img px-1 mb-1">
+                      <p class="text-small text-center color-theme-1 card-active-text">{{slide.type_details.typename}}</p>
+                    </div>
+                    <div *ngIf="selected_ride_details && selected_ride_details.pool_id != pooltypes[i]._id">
+                      <img [src]="IMAGE_URL + pooltypes[i].type_details.type_image_url" [alt]="slide.type_details.typename"  class="text-extra-small card-img px-1 mb-1">
+                      <p class="text-small text-center color-theme-1">{{slide.type_details.typename}}</p>
+                    </div>
+                  </a>
+                </slide>
+              </carousel>
+            </div>
+          </tab>
+
+          <!-- Open Ride -->
+          <tab heading="{{ 'label-title.openRide' | translate}}" class="card-body h-100" id="openride_tab"
+            (selectTab)="hide_stop(EstimateTabType.OpenRide);getFareEstimate(0,EstimateTabType.OpenRide);" *ngIf="city_detail?.open_ride_business && rental_share && !destination_later && open_ride_type_list.length > 0" [active]="selected_type == 2">
+            <div class="pb-4">
+              <carousel [itemsPerSlide]="open_ride_type_list.length>2 ? 3 : open_ride_type_list.length"
+                [singleSlideOffset]="true"
+                [startFromIndex]="0"
+                [interval]="0"
+                [showIndicators]="false">
+                <slide class="animated fadeIn" *ngFor="let slide of open_ride_type_list; let i=index">
+                  <a href="javascript:;" class="text-small text-center" id="open_ride-{{i}}" (click)="getFareEstimate(i,EstimateTabType.OpenRide)">
+                    <div *ngIf="selected_ride_details && selected_ride_details.selected_id == open_ride_type_list[i]._id">
+                      <img [src]="IMAGE_URL + open_ride_type_list[i].type_details.type_image_url" [alt]="slide.type_details.typename"  class="text-extra-small card-img card-active-img px-1 mb-1">
+                      <p class="text-small text-center color-theme-1 card-active-text">{{slide.type_details.typename}}</p>
+                    </div>
+                    <div *ngIf="selected_ride_details && selected_ride_details.selected_id != open_ride_type_list[i]._id">
+                      <img [src]="IMAGE_URL + open_ride_type_list[i].type_details.type_image_url" [alt]="slide.type_details.typename"  class="text-extra-small card-img px-1 mb-1">
+                      <p class="text-small text-center color-theme-1">{{slide.type_details.typename}}</p>
+                    </div>
+                  </a>
+                </slide>
+              </carousel>
+            </div>
+          </tab>
+        </tabset>
+
+        <div [hidden]="helper.user_details" class="text-center mb-4">
+          <button (click)="openLoginModal()" id="trip_login" type="button" class="btn btn-outline-primary">
+            {{'button-title.login' | translate | uppercase }}</button>
+        </div>
+
+      </div>
+      <div *ngIf="!is_address_changed && helper.user_details">
+
+        <div class="px-4">
+          <div class="form-group row">
+            <div class="col-sm-3 d-flex align-items-center text-muted">{{'label-title.payments' | translate }}</div>
+            <div class="col-sm-9 d-flex justify-content-start justify-content-sm-end"
+              *ngIf="helper.user_details && helper.user_details.corporate_id && typelist && typelist.is_corporate_request == true && !is_bidding && tabNum != EstimateTabType.OpenRide">
+              <div class="custom-control custom-checkbox ">
+                <input type="checkbox" id="customCheckThis1" class="custom-control-input"
+                  (click)="corporate_checked($event)">
+                <label for="customCheckThis1" class="custom-control-label">{{'label-title.is-corporate-tip'
+                  |translate}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-between mb-1 pb-1 mt-4">
+            <div class="custom-control custom-radio " *ngIf="city_detail.is_payment_mode_cash == 1 || tabNum == EstimateTabType.OpenRide">
+              <input type="radio" id="customRadio1" value="cash" name="customRadio" class="custom-control-input"
+                [checked]="tabNum == EstimateTabType.OpenRide ? citytypes && payment_mode == 1 : citytypes && city_detail.is_payment_mode_cash && payment_mode == 1" (click)="showContent('cash')">
+              <label for="customRadio1" class="custom-control-label">{{'label-title.cash' | translate}}</label>
+            </div>
+            <div class="custom-control custom-switch" *ngIf="tabNum != EstimateTabType.OpenRide">
+              <input type="checkbox" id="customSwitch1" class="custom-control-input" (click)="walletStatus()"
+                [checked]="cardData.is_use_wallet == 1 && cardData.wallet > 0" [disabled]="cardData.wallet==0">
+              <label for="customSwitch1" class="custom-control-label">{{'label-title.wallet' | translate}} :
+                {{cardData.wallet_currency_code}} {{cardData.wallet?.toFixed(helper.to_fixed_number)}}</label>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-between mb-1 pb-1"
+            *ngIf="city_detail.is_payment_mode_card == 1 && tabNum != EstimateTabType.OpenRide">
+            <div class=" custom-control custom-radio">
+              <input type="radio" id="customRadio2" value="card" name="customRadio" class="custom-control-input"
+                (click)="showContent('card')" [checked]="citytypes && city_detail.is_payment_mode_card && payment_mode == 0">
+              <label for="customRadio2" class="custom-control-label">{{'label-title.card' | translate}}</label>
+            </div>
+            <button *ngIf="this.cardShow  && (is_add_card ==true) && payment_mode == 0" id="trip_add_card" type="button"
+              class="btn btn-outline-primary btn-xs mb-2 float-right"
+              (click)="openaddCardModal()">{{'button-title.add-card' |
+              translate }}</button>
+          </div>
+          <div *ngIf="payment_mode==0 && cardData.card && cardData.card.length==0 && (is_add_card ==true) && this.cardShow">
+            <p class="text-danger">{{'label-title.please_add_card_first' | translate}}</p>
+          </div>
+          <div class="pl-4 mb-4 d-flex flex-column"
+            *ngIf="citytypes && city_detail.is_payment_mode_card == 1 && this.cardShow  && (is_add_card ==true) && payment_mode == 0">
+            <div class="d-flex flex-row justify-content-between mb-1 pb-1"
+              *ngFor="let card of cardData.card; let i = index;">
+              <div class="custom-control custom-radio">
+                <input type="radio" id="card-{{i}}" value="card-{{i}}" name="cardList" class="custom-control-input"
+                  [checked]="card.is_default" (click)="selectDefault(card)">
+                <label for="card-{{i}}" class="custom-control-label">XXXX-XXXX-XXXX-{{card.last_four}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="row align-items-center mb-3" *ngIf="citytypes && citytypes.length>0 && show_stop && !destination_later && tabNum != EstimateTabType.OpenRide" [ngClass]="(is_bidding && typelist.is_user_can_set_bid_price) ? 'justify-content-between' : 'justify-content-end' ">
+            <div class="col-8" *ngIf="typelist && typelist.is_allow_trip_bidding && typelist.is_user_can_set_bid_price && is_bidding">
+              <div class="input-group">
+                <input type="number" [(ngModel)]="bidding_amount" placeholder="{{'label-title.enter-bidding-amount' | translate}}" name="amount"
+                  class="form-control text-small" id="bidding_amount" (keypress)="helper.decimalNum_validation($event)" (keyup)="on_key_up()" (wheel)="(false)" (keydown)="helper.keyUpDown($event)" onDrop="return false" onPaste="return false">
+              </div>
+            </div>
+            <div class="col-4 text-right" *ngIf="typelist && typelist.is_allow_trip_bidding && corporate_id == null">
+              <div class="custom-control custom-checkbox ">
+                <input type="checkbox" id="bidding" class="custom-control-input" (click)="biddingChecked()" #biddingCheckbox [checked]="is_bidding">
+                <label for="bidding" class="custom-control-label">{{'label-title.bidding' | translate}}</label>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="selected_ride_details?.estimated_fare">
+            <p class="text-danger pb-3"
+              *ngIf="typelist && typelist.is_allow_trip_bidding && typelist.is_user_can_set_bid_price && is_bidding && is_bid_error">
+              {{'label-title.minimum-bidding-price-should-be' | translate}}
+              {{typelist.currency}}{{((selected_ride_details.estimated_fare) - (selected_ride_details.estimated_fare) * (typelist.user_min_bidding_limit /
+              100)).toFixed(helper.to_fixed_number)}}
+            </p>
+          </ng-container>
+          <div class="row mb-1" *ngIf="!is_open_ride && (city_detail.isPromoApplyForCash == 1 && payment_mode == 1) || (city_detail.isPromoApplyForCard == 1 && payment_mode == 0)">
+            <div class="col-12 text-right" >
+              <a class="text-primary c-pointer" id="trip_view_offer" (click)="viewOffers(offers)">{{'label-title.view-offers' | translate}}</a>
+            </div>
+          </div>
+          <form #Form="ngForm" *ngIf="!is_open_ride && (city_detail.isPromoApplyForCash == 1 && payment_mode == 1) || (city_detail.isPromoApplyForCard == 1 && payment_mode == 0)">
+            <div class="form-group">
+              <div class=" input-group mb-3">
+                <input type="text" [(ngModel)]="promocode" id="promo_code"
+                  placeholder="{{'label-title.enter-promo-code-here' | translate}}" name="promocode"
+                  class="form-control text-small" [disabled]="promoData" [ngClass]="{'btn-disabled' : promoData}">
+                <div class="input-group-append">
+                  <button type="submit" *ngIf="!promoData" (click)="promo_code()" id="promo_apply"
+                    [ngClass]="{'btn-disabled':(!promocode)}" class="btn btn-outline-secondary rounded-0"
+                    [disabled]="!promocode">{{'button-title.apply' | translate}}
+                  </button>
+                  <button type="submit" (click)="remove_promo()" *ngIf="promoData" id="remove_promo"
+                    class="btn btn-outline-secondary rounded-0">
+                    {{'label-title.remove' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mb-2">
+          <p *ngIf="is_field_mandatory_arr.length > 0" class="text-danger text-center">*{{'validation-title.add-mandatory-documents' | translate}}</p>
+          <p *ngIf="document_expired_error" class="text-danger text-center">*{{'validation-title.add-expired-documents' | translate}}</p>
+          <p *ngIf="cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !is_paypal_supported && payment_mode == 0 && (!is_rental || show_stop)" class="text-danger text-center">*{{'validation-title.paypal-not-supported' | translate}}</p>
+        </div>
+        <div class="d-flex justify-content-center align-items-center overflowBtn"
+          *ngIf="helper.user_details && show_stop && citytypes && citytypes.length > 0" style="display: flex;">
+          <!-- Ride Now Button For Paypal Payment Gateway -->
+          <button id="ride_now" type="button" class="btn btn-primary mr-2 mb-3 text-nowrap"
+            [disabled]="((is_paypal_supported || payment_mode == 1) && (destination_later || bidding_amount) && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error)) ? false:true"
+            (click)="nonscheduleRide()"
+            [ngClass]="(is_paypal_supported || payment_mode == 1) && (destination_later || bidding_amount) && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error) ? '' :'btn-disabled'"
+            *ngIf="cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal">
+            {{'button-title.ride-now' | translate}}
+          </button>
+          <!-- Ride Now Button When NO Paypal Payment Gateway -->
+          <button id="ride_now_2" type="button" class="btn btn-primary mr-2 mb-3 text-nowrap"
+            [disabled]="((destination_later || bidding_amount) && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error)) ? false:true"
+            (click)="nonscheduleRide()" [ngClass]="((destination_later || bidding_amount) && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error)) ? '':'btn-disabled'"
+            *ngIf="cardData.payment_gateway_type != PAYMENT_GATEWAY.paypal">
+            {{'button-title.ride-now' | translate}}
+          </button>
+          <div class="btn-group mb-3" *ngIf="city_detail.schedule_business">
+            <button class="btn btn-primary text-nowrap btnOrder mb-0 c-pointer" id="schedule_trip" style="order: 0 !important;" [(ngModel)]="checkModel.left" ngDefaultControl
+                  btnCheckbox tabindex="0" role="button" [disabled]="is_field_mandatory_arr.length>0 || document_expired_error || (cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !is_paypal_supported && payment_mode == 0) || is_bidding"
+                  (click)="scheduleRide()" [ngClass]="{'btn-schedule-left': (scheduleDate && scheduleTime),'btn-disabled':(is_field_mandatory_arr.length>0 || document_expired_error) || (cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !is_paypal_supported) || is_bidding}">
+                  {{'button-title.schedule-ride' | translate}}
+                  <div *ngIf="scheduleDate && scheduleTime">
+                    {{scheduleDate | date:helper.DATE_FORMAT.DD_MM_YYYY}} {{'button-title.at' | translate}} {{scheduleTime}}
+                  </div>
+            </button>
+            <button class="btn btn-primary mb-0 d-flex align-items-center c-pointer" id="schedule_change" (click)="date_time_picker()" *ngIf="scheduleDate && scheduleTime" [(ngModel)]="checkModel.right" ngDefaultControl
+                  btnCheckbox tabindex="0" role="button" [ngClass]="{'btn-schedule-right': (scheduleDate && scheduleTime)}">
+                <i class="demo-icon iconsminds-calendar-1 h5 mb-0"></i>
+            </button>
+          </div>
+        </div>
+        <div class="footer-button text-center mb-5" *ngIf="helper.user_details && !show_stop && is_rental && citytypes && citytypes.length > 0">
+          <button id="select_package" type="button" class="btn btn-primary mr-2 mb-2" 
+            (click)="openCarRentalModal(template3)" [disabled]="is_field_mandatory_arr.length>0 || document_expired_error">
+            {{'button-title.select-package' | translate}}
+          </button>
+        </div>
+        <div class="d-flex justify-content-center" *ngIf="open_ride_type_list && open_ride_type_list.length > 0">
+          <div class="btn-group mb-3 mt-2" *ngIf="helper.user_details && !show_stop && tabNum == EstimateTabType.OpenRide">
+            <button class="btn btn-primary text-nowrap btnOrder mb-0 c-pointer" id="schedule_trip_2" style="order: 0 !important;" [(ngModel)]="checkModel.left" ngDefaultControl
+                  btnCheckbox tabindex="0" role="button" [disabled]="(is_field_mandatory_arr.length>0 || document_expired_error) || (cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !is_paypal_supported && payment_mode == 0) || is_bidding"
+                  (click)="scheduleRide()" [ngClass]="{'btn-schedule-left': (scheduleDate && scheduleTime),'btn-disabled':(is_field_mandatory_arr.length>0 || document_expired_error) || (cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !is_paypal_supported) || is_bidding}">
+                  {{'button-title.open-ride' | translate}}
+                  <div *ngIf="scheduleDate && scheduleTime">
+                    {{scheduleDate | date:helper.DATE_FORMAT.DD_MM_YYYY}}
+                  </div>
+            </button>
+            <button class="btn btn-primary mb-0 d-flex align-items-center c-pointer" id="schedule_change_2" (click)="date_time_picker()" *ngIf="scheduleDate && scheduleTime" [(ngModel)]="checkModel.right" ngDefaultControl
+                  btnCheckbox tabindex="0" role="button" [ngClass]="{'btn-schedule-right': (scheduleDate && scheduleTime)}">
+                <i class="demo-icon iconsminds-calendar-1 h5 mb-0"></i>
+            </button>
+          </div>
+        </div>
+        <div class="footer-button text-center mb-5" *ngIf="helper.user_details && !show_stop && is_ride_share ">
+          <button id="ride_now_nonschedule" type="button" class="btn btn-primary mr-2 mb-2"
+            [disabled]="((is_paypal_supported || payment_mode == 1) && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error)) ? false:true"
+            (click)="nonscheduleRide()" [ngClass]="is_paypal_supported && !is_ride_now ? '' :'btn-disabled'"
+            *ngIf="cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal">
+            {{'button-title.ride-now' | translate}}
+          </button>
+          <button id="ride_now_nonschedule_2" type="button" class="btn btn-primary mr-2 mb-2"
+            [disabled]="is_ride_now || (is_field_mandatory_arr.length > 0 || document_expired_error)" (click)="nonscheduleRide()"
+            [ngClass]="{'btn-disabled':(is_ride_now)}" *ngIf="cardData.payment_gateway_type != PAYMENT_GATEWAY.paypal">
+            {{'button-title.ride-now' | translate}}
+          </button>
+        </div>
+      </div>
+
+    </div>
+    <div *ngIf="tripdetail" class="h-100 mx-15 card">
+      <div class="p-4 overflow-y custom-div-height">
+        <div class="border-bottom mb-3 pb-2">
+          <h4 class="modal-title pull-left">{{'label-title.ride-id' | translate }}:{{tripdetail.unique_id}}
+          </h4>
+        </div>
+        <div class="row" *ngIf="is_provider">
+          <div class="col-12 d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+            <a href="javascript:;" style="cursor: unset;">
+              <img (error)="$event.target.src = DEFAULT_IMAGE"
+                class=" img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall"
+                [src]="profile_image ? profile_image : DEFAULT_IMAGE" [alt]="">
+            </a>
+            <div class="pl-3 flex-fill">
+              <p class="font-weight-medium mb-0">
+                {{provider.first_name}} {{provider.last_name}}
+              </p>
+              <p class="text-muted mb-0 text-small">{{provider.phone}}</p>
+            </div>
+            <div class="d-flex align-items-center pr-3" *ngIf="provider.rate">
+              <i class="simple-icon-star mr-1"></i> {{provider.rate.toFixed(2)}}
+            </div>
+            <a href="javascript:" class="d-flex" id="chat_btn" (click)="chatModal(chat)">
+              <img src="../../../../assets/img/address/chat.svg" alt="chat" class="chat-img">
+            </a>
+            <span id="is_message"></span>
+          </div>
+        </div>
+        <div class="row mb-3" *ngIf="tripdetail.is_provider_accepted == 1 && provider">
+          <div class="col-5 px-2">
+            <div class="justify-content-center card card-box">
+              <div
+                class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                <div class="min-width-zero">
+                  <a href="javascript:" id="provider_car_model">
+                    <p class="list-item-heading mb-1 truncate">{{provider.car_model}}</p>
+                  </a>
+                  <p class="mb-2 text-muted text-small">{{'label-title.vehicle-name' | translate }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-5 px-2">
+            <div class="justify-content-center card card-box">
+              <div
+                class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                <div class="min-width-zero">
+                  <a href="javascript:" id="provide_car_number">
+                    <p class="list-item-heading mb-1 truncate">{{provider.car_number}}</p>
+                  </a>
+                  <p class="mb-2 text-muted text-small">{{'label-title.licence-plate-no' | translate }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+          <div class="flex-fill">
+            <p class="font-weight-medium mb-0">{{'label-title.pickup-location' | translate
+              }}</p>
+            <div class="d-flex align-items-center pt-3">
+              <div class="pin-svg my-img">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                  width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                  preserveAspectRatio="xMidYMid meet">
+                  <metadata>
+                  Created by potrace 1.16, written by Peter Selinger 2001-2019
+                  </metadata>
+                  <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                   stroke="none">
+                  <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                  -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                  138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                  -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                  -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                  190 114 291 63z"/>
+                  <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                  76 -135 104 -210 65z"/>
+                  </g>
+                </svg>
+              </div>
+              <p class="text-muted mb-0 text-small">{{tripdetail.source_address}}</p>
+            </div>
+          </div>
+
+        </div>
+        <div class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+          <div class="flex-fill">
+            <p class="font-weight-medium mb-0">{{'label-title.destination-address' | translate }}</p>
+            <div class="stop-addresses pt-3 pl-6px" *ngIf="tripAddress">
+              <div *ngFor="let data of tripAddress" class="border-img-left">
+                <div class="pin-svg position-absolute" style="width : 24px">
+                  <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                    width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                    preserveAspectRatio="xMidYMid meet">
+                    <metadata>
+                    Created by potrace 1.16, written by Peter Selinger 2001-2019
+                    </metadata>
+                    <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                     stroke="none">
+                    <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                    -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                    138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                    -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                    -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                    190 114 291 63z"/>
+                    <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                    76 -135 104 -210 65z"/>
+                    </g>
+                  </svg>
+                </div>
+                <p class=" text-muted mb-0 text-small">{{data.address}}</p>
+              </div>
+            </div>
+            <div class="d-flex" *ngIf="tripAddress && tripAddress.length>0">
+              <div class="pin-svg my-img" style="margin-top: -3px;">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                  viewBox="0 0 65.000000 65.000000" preserveAspectRatio="xMidYMid meet">
+                  <metadata>
+                    Created by potrace 1.16, written by Peter Selinger 2001-2019
+                  </metadata>
+                  <g transform="translate(0.000000,65.000000) scale(0.100000,-0.100000)" stroke="none">
+                    <path d="M16 634 c-14 -13 -16 -55 -16 -308 0 -271 1 -294 18 -309 16 -15 53
+                  -17 309 -17 268 0 291 1 306 18 15 16 17 53 17 309 0 268 -1 291 -18 306 -16
+                  15 -53 17 -310 17 -251 0 -293 -2 -306 -16z m494 -309 l0 -185 -185 0 -185 0
+                  0 185 0 185 185 0 185 0 0 -185z" />
+                    <path d="M204 437 c-2 -7 -3 -62 -2 -123 l3 -109 120 0 120 0 0 120 0 120
+                  -118 3 c-91 2 -119 0 -123 -11z" />
+                  </g>
+                </svg>
+              </div>
+              <p class="text-muted mb-0 text-small" style="width: 90%;">{{tripdetail.destination_address}}</p>
+              <button class="btn btn-outline-primary pull-right edit-icon" id="edit_destination" *ngIf="tripdetail.is_trip_end != 1 && tripdetail.trip_type == 0 " style="position: unset;" (click)="open_destination_address(tripdetail.destination_address)" >
+                <i class="simple-icon-pencil"></i>
+              </button>
+            </div>
+            <div class="d-flex align-items-center" *ngIf="tripAddress && tripAddress.length==0">
+              <div class="pin-svg my-img">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                  width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                  preserveAspectRatio="xMidYMid meet">
+                  <metadata>
+                  Created by potrace 1.16, written by Peter Selinger 2001-2019
+                  </metadata>
+                  <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                   stroke="none">
+                  <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                  -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                  138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                  -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                  -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                  190 114 291 63z"/>
+                  <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                  76 -135 104 -210 65z"/>
+                  </g>
+                </svg>
+              </div>
+              <p class="text-muted mb-0 text-small" style="width: 90%;" *ngIf="tripdetail.destination_address">{{tripdetail.destination_address}}</p>
+              <p class=" text-muted mb-0 text-small" style="width: 90%;" *ngIf="tripdetail.destination_address == ''" >{{'label-title.add-destination-later' | translate}}</p>
+              <button class="btn btn-outline-primary pull-right edit-icon" style="position: unset;" id="edit_destination_later"
+                *ngIf="tripdetail.is_trip_end != 1 && (tripdetail.trip_type == 0 || tripdetail.trip_type == 5 || tripdetail.trip_type == 14) && !tripdetail.openride && !tripdetail.is_fixed_fare && !tripdetail.is_ride_share"
+                (click)="open_destination_address(tripdetail.destination_address)"> 
+                <i class="simple-icon-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mb-2">
+          <div class="col-5 px-2 mb-2" *ngIf="tripdetail.fixed_price > 0 || tripdetail.bid_price > 0">
+            <div class="justify-content-center card card-box">
+              <div
+                class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                <div class="min-width-zero" id="trip_fixed_price">
+                  <a href="javascript:">
+                    <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.bid_price == 0 || tripdetail.is_provider_accepted == 1">{{tripdetail.currency}}{{tripdetail.fixed_price}}</p>
+                    <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.bid_price > 0 && tripdetail.is_provider_accepted == 0">{{tripdetail.currency}}{{tripdetail.bid_price}}</p>
+                  </a>
+                  <p class="mb-2 text-muted text-small" *ngIf="tripdetail.bid_price == 0 || tripdetail.is_provider_accepted == 1">{{'label-title.price' | translate }}</p>
+                  <p class="mb-2 text-muted text-small" *ngIf="tripdetail.bid_price > 0 && tripdetail.is_provider_accepted == 0">{{'label-title.bidding-price' | translate }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-5 px-2 mb-2">
+            <div class="justify-content-center card card-box">
+              <div
+                class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                <div class="min-width-zero">
+                  <a href="javascript:" id="trip_type_name">
+                    <p class="list-item-heading mb-1 truncate">{{trip_type_name}}</p>
+                  </a>
+                  <p class="mb-2 text-muted text-small">{{'label-title.service-type' | translate }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-5 px-2 mb-2">
+            <div class="justify-content-center card card-box">
+              <div
+                class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                <div class="min-width-zero">
+                  <a href="javascript:" id="openride_payment_type" *ngIf="tripdetail.openride">
+                    <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.user_details[0]?.payment_mode==0">
+                      {{'label-title.card' | translate }}
+                    </p>
+                    <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.user_details[0]?.payment_mode==1">
+                      {{'label-title.cash' | translate }}
+                    </p>
+                  </a>
+                  <a href="javascript:" id="trip_payment_type" *ngIf="!tripdetail.openride">
+                    <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.payment_mode==0">{{'label-title.card' |
+                      translate }}</p>
+                    <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.payment_mode==1">{{'label-title.cash' |
+                      translate }}</p>
+                  </a>
+                  <p class="mb-2 text-muted text-small">{{'label-title.payment-mode' | translate }}</p>
+                </div>
+                <button class="btn btn-outline-primary pull-right edit-icon" id="edit_payment_mode" *ngIf="tripdetail.is_trip_end != 1 && trip_city_detail.is_payment_mode_card == 1 && !tripdetail.openride" (click)="changePaymentModeModel()" >
+                      <i class="simple-icon-pencil"></i>
+                    </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="">
+          <ol class="order-step">
+            <li class="border-transparent pb-3" id="created">
+              <span class="font-weight-bold">{{'label-title.created' | translate}} </span>
+              <p class="">{{tripdetail.user_create_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A }}
+              </p>
+            </li>
+            <li class="border-transparent pb-3" id="accepted" *ngIf="!tripdetail.openride && tripdetail.is_provider_accepted == 1">
+              <span class="font-weight-bold">{{'label-title.accepted' | translate}}</span>
+              <p class=""> {{tripdetail.accepted_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A }}
+              </p>
+
+            </li>
+            <li class="border-transparent pb-3" id="arrived"
+              *ngIf="tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.ARRIVED">
+              <span class="font-weight-bold">{{'label-title.arrived' | translate}}</span>
+              <p class=""> {{tripdetail.provider_arrived_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A }} </p>
+              <span class="" *ngIf="!tripdetail.openride && total_wait_time">{{'label-title.total_waiting_time' | translate}} :
+                {{(total_wait_time)}} {{'label-title.min' | translate}}
+                <br>
+              </span>
+              <span class="" *ngIf="!tripdetail.openride && waiting_time_start_after_minute">
+              {{'label-title.wating_time_start_after' | translate}} : {{waiting_time_start_after_minute.toFixed(2)}} {{'label-title.min' | translate}}
+              <br>
+              </span>
+              <span class="c-pointer text-danger" *ngIf="tripdetail.is_otp_verification && !is_show_confirmation_code " (click)="onClickConfirmationCode()">
+                {{'label-title.confirmation-code' | translate}}
+              </span>
+              <span class="c-pointer text-danger" *ngIf="tripdetail.is_otp_verification && is_show_confirmation_code " (click)="onClickConfirmationCode()">
+                {{tripdetail.confirmation_code}}
+              </span>
+            </li>
+            <li class="border-transparent pb-3" id="started" *ngIf="tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.STARTED">
+              <span class="font-weight-bold">{{'label-title.started' | translate}}</span>
+              <p class=""> {{tripdetail.provider_trip_start_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}} </p>
+              <span>{{'label-title.total_time' | translate}} :
+                {{tripdetail.total_time}} {{'label-title.min' | translate}}
+              </span>
+              <br>
+              <span class="">{{'label-title.total_distance' | translate}} : 
+                <span >{{tripdetail.total_distance.toFixed(helper.to_fixed_number)}}</span>
+                <span *ngIf="tripdetail.unit == 1">{{'label-title.km' | translate}}</span>
+                <span *ngIf="tripdetail.unit == 0">{{'label-title.miles' | translate}}</span>
+              </span>
+            </li>
+            <ng-container
+              *ngFor="let data of tripdetail.actual_destination_addresses;let first = first ; let last = last ; let i = index">
+              <li class="border-transparent pb-3" id="started-from" *ngIf="!first">
+                <span class="font-weight-bold">{{'label-title.started' | translate}} {{'label-title.from' | translate}}
+                  {{i | ordinal}}</span>
+                <p class=""> {{data.start_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}} </p>
+              </li>
+              <li class="border-transparent pb-3" id="arrive-at"
+                *ngIf="data.arrived_time && (!last || tripdetail.is_provider_status != helper.PROVIDER_STATUS.COMPLETED)">
+                <span class="font-weight-bold">{{'label-title.arrived' | translate}} {{'label-title.at' | translate}} {{
+                  i + 1 | ordinal}}</span>
+                <p class=""> {{data.arrived_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}} </p>
+              </li>
+            </ng-container>
+
+            <li class="border-transparent pb-3" id="completed"
+              *ngIf="tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.COMPLETED">
+              <span class="font-weight-bold">{{'label-title.complete' | translate}}</span>
+              <p class=""> {{tripdetail.provider_trip_end_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}}</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+      <div class="custom_footer">
+        <div class="text-center" *ngIf="!tripdetail.openride && tripdetail.is_trip_end != 1 && isPromoUsed != 1">
+          <div class="row mb-1" *ngIf="(city_detail.isPromoApplyForCash == 1 && payment_mode == 1) || (city_detail.isPromoApplyForCard == 1 && payment_mode == 0)">
+            <div class="col-12 text-right">
+              <a class="text-primary c-pointer" id="view_offers_btn" (click)="viewOffers(offers)">{{'label-title.view-offers' | translate}}</a>
+            </div>
+          </div>
+          <form #Form="ngForm" *ngIf="(city_detail.isPromoApplyForCash == 1 && payment_mode == 1) || (city_detail.isPromoApplyForCard == 1 && payment_mode == 0)">
+            <div class="form-group">
+              <div class=" input-group mb-3">
+                <input type="text" [(ngModel)]="promocode" id="promocode_for_cash"
+                  placeholder="{{'label-title.enter-promo-code-here' | translate}}" name="promocode"
+                  class="form-control text-small" [disabled]="promoData" [ngClass]="{'btn-disabled' : promoData}">
+                <div class="input-group-append" *ngIf="tripdetail.is_trip_end != 1 && isPromoUsed != 1" >
+                  <button type="submit" *ngIf="!promoData" id="promo_apply_for_cash" (click)="promo_code(promocode)"
+                    [ngClass]="{'btn-disabled':(!promocode)}" class="btn btn-outline-secondary rounded-0"
+                    [disabled]="!promocode">{{'button-title.apply' | translate}}
+                  </button>
+                  <button type="submit" (click)="remove_promo()" id="remove_promo_for_cash" *ngIf="promoData" class="btn btn-outline-secondary rounded-0">
+                    {{'label-title.remove' | translate}}
+                  </button>
+                </div>
+                <div class="input-group-append" *ngIf="tripdetail.is_trip_end != 1 && isPromoUsed == 1">
+                  <button type="submit" (click)="remove_promo()" id="remove_used_promo" *ngIf="promoData" class="btn btn-outline-secondary rounded-0">
+                    {{'label-title.remove' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="text-center" *ngIf="is_cancle_trip || tripdetail.is_provider_status <= helper.PROVIDER_STATUS.STARTED">
+          <button id="button-split" type="button" class="btn btn-outline-primary mr-2" (click)="splitPaymentModal(splitPayment)" *ngIf="corporate_id == null && tripdetail.trip_type !=7 && tripdetail.is_provider_accepted == 1 && user_setting_details && user_setting_details.is_split_payment == true && !tripdetail.openride">
+            {{'label-title.split_payment' | translate}}
+          </button>
+          <button id="split_cancel_trip" type="button" class="btn btn-primary"
+            (click)="cancletrip()" *ngIf="is_cancle_trip">{{'button-title.cancel-trip' | translate}}</button>
+        </div>
+        <div class="text-center" *ngIf="tripdetail.openride ? tripdetail.is_provider_accepted == 1 && tripdetail.user_details[0].user_ride_completed == 1 : tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.COMPLETED">
+          <button id="split_show_invoice" type="button" class="btn btn-outline-primary"
+            (click)="showinvoice()">{{'button-title.show-invoice' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="custom-model-main " *ngIf="createTripmodal" [ngClass]="{'model-open':createTripmodal}">
+  <div class="custom-model-inner" style="width: 320px;">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-4">
+        <div class="form-side">
+          <div class="text-center">
+            <h2 class="mb-3">{{'heading-title.fixed-rate' | translate}} 
+              <button type="button" class="close pull-right" id="close_confirmation" aria-label="Close" (click)="createTripmodal = false;">
+                <span aria-hidden="true" class="clr-primary">&times;</span>
+              </button>
+            </h2>
+            <p>{{'label-title.do-you-want-to-go..' | translate}}</p>
+            <div class="d-flex align-center justify-content-center mt-4">
+              <button type="button" class="btn btn-secondary mr-2" id="trip_no" (click)="rideNow(false)">{{'modal.no' |
+                translate }}</button>
+              <button type="submit" class="btn btn-primary float-right" id="trip_yes" (click)="rideNow(true)">{{'modal.yes' |
+                translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+
+<div class="custom-model-main " *ngIf="is_changePaymentMode" [ngClass]="{'model-open':is_changePaymentMode}">
+  <div class="custom-model-inner " style="width: 340px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <button type="button" class="close pull-right" aria-label="Close" id="change_payment_close" (click)="is_changePaymentMode=false">
+          <span aria-hidden="true" class="clr-primary">&times;</span>
+        </button>
+        <h3 class="mb-4 text-center">{{ 'label-title.change-payment-mode' | translate }}</h3>
+         <div class="d-flex flex-row justify-content-between mb-1 pb-1 mt-4">
+            <div class="custom-control custom-radio" *ngIf="trip_city_detail.is_payment_mode_cash == 1">
+              <input type="radio" id="customRadio1" value="cash" name="customRadio" class="custom-control-input"
+                [checked]="citytypes && tripdetail.payment_mode == 1" (click)="showContent('cash')">
+              <label for="customRadio1" class="custom-control-label">{{'label-title.cash' | translate}}</label>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-between mb-1 pb-1"
+            *ngIf="((trip_city_detail?.is_payment_mode_card == 1) && (is_add_card ==true))">
+            <div class=" custom-control custom-radio">
+              <input type="radio" id="customRadio2" value="card" name="customRadio" class="custom-control-input"
+                (click)="showContent('card')" [checked]="citytypes && tripdetail.payment_mode == 0">
+              <label for="customRadio2" class="custom-control-label">{{'label-title.card' | translate}}</label>
+            </div>
+            <button *ngIf="this.cardShow  && (is_add_card ==true) && tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.paypal && tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.razorpay" type="button" id="add_card_btn"
+              class="btn btn-outline-primary btn-xs mb-2 float-right"
+              (click)="openaddCardModal()">{{'button-title.add-card' |
+              translate }}</button>
+          </div>
+          <p *ngIf="tripdetail?.payment_gateway_type == PAYMENT_GATEWAY.paypal && payment_mode == 0" class="text-danger pb-1">{{'validation-title.paypal-not-supported' | translate}}</p>
+
+          <div class="pl-4 mb-4 d-flex flex-column" 
+            *ngIf="trip_city_detail.is_payment_mode_card == 1 && this.cardShow  && (is_add_card ==true) && tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.paypal">
+            <div class="d-flex flex-row justify-content-between mb-1 pb-1"
+              *ngFor="let card of cardData.card; let i = index;">
+              <div class="custom-control custom-radio" >
+                <input type="radio" id="card-{{i}}" value="card-{{i}}" name="cardList" class="custom-control-input"
+                  [checked]="card.is_default" (click)="selectDefault(card)">
+                <label for="card-{{i}}" class="custom-control-label">XXXX-XXXX-XXXX-{{card.last_four}}</label>
+              </div>
+            </div>
+          </div>
+
+
+
+        <div class="d-flex justify-content-center align-item-center">
+          <button type="button" class="btn btn-primary mx-2" id="payment_submit" (click)="changePaymentMode()"
+            [disabled]="tripdetail?.payment_gateway_type == PAYMENT_GATEWAY.paypal && payment_mode == 0"
+            [ngClass]="{'btn-disabled' : tripdetail?.payment_gateway_type == PAYMENT_GATEWAY.paypal && payment_mode == 0 }">
+            {{'button-title.submit' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+
+<div class="custom-model-main " *ngIf="onCancelTripmodal" [ngClass]="{'model-open':onCancelTripmodal}" style="z-index: 9999999;">
+  <div class="custom-model-inner" style="width: 320px;">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-4">
+        <div class="form-side">
+          <div class="text-center">
+            <p>{{'label-title.trip-cancelled' | translate}}</p>
+            <div class="d-flex align-center justify-content-center mt-4">
+              <button type="button" class="btn btn-outline-primary mr-2" id="close_cancel"
+                (click)="closeonCancelTripmodal()">{{'button-title.ok' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+
+<div class="custom-model-main " *ngIf="cardPaymentWaitingModal" [ngClass]="{'model-open':cardPaymentWaitingModal}">
+  <div class="custom-model-inner" style="width: 400px;">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-4">
+        <div class="form-side">
+          <div class="text-center">
+            <p class="font-weight-bold pl-5"> <span class="loading payment-processing"></span>{{'label-title.payment-processing' | translate}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+
+<div class="custom-model-main " *ngIf="cardPaymentFailModal" [ngClass]="{'model-open':cardPaymentFailModal}">
+  <div class="custom-model-inner" style="width: 400px;">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-4">
+        <div class="form-side">
+          <div class="text-center">
+            <p class="font-weight-bold text-one pb-4">{{'label-title.payment-failed' | translate}}</p>
+            <p class="pb-4 clr-primary">{{'label-title.payment-failed-reason' | translate}}</p>
+            <div class="pb-4" *ngIf="tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.paypal">
+              <button type="button" class="btn btn-primary w-50 text-one pull-right" aria-label="Pay Again"
+                (click)="payAgain(first_time_failed)" id="pay_again">
+                <span aria-hidden="true">{{'button-title.pay-again' | translate}}</span>
+              </button>
+            </div>
+            <div class="pb-4" *ngIf="tripdetail?.payment_gateway_type == PAYMENT_GATEWAY.paypal">
+              <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+            </div>
+            <div class="" *ngIf="tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.payu && tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.paytabs && tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.paypal && tripdetail?.payment_gateway_type != PAYMENT_GATEWAY.razorpay">
+              <button type="button" class="btn p-0 text-one pull-right" aria-label="add new card" id="add_new_card"
+                (click)="openaddCardModal()">
+                <span aria-hidden="true">{{'button-title.add-new-card' | translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+
+<!-- schedule trip modal start -->
+<ng-template #createSchedulemodal>
+
+  <div class="p-3 p-xs-4">
+    <button type="button" class="close pull-right" aria-label="Close" id="schedule_picker_close" (click)="ScheduleDatePickerModal.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="">
+      <div class="mb-4">
+        <div class="h-100">
+          <div class="">
+            <h5 class="mb-4">{{ 'label-title.select-date' | translate }}</h5>
+            <div class="form-group">
+              <bs-datepicker-inline class="datepicker-inline" [minDate]="todayDate" [maxDate]="maxScheduleDate" [bsValue]="todayDate"
+                (bsValueChange)="change($event)" [bsConfig]="{ dateInputFormat: 'MM/DD/YYYY', showWeekNumbers:false }">
+              </bs-datepicker-inline>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center align-item-center">
+      <button id="date_select" type="button" class="btn btn-primary"  (click)="clickInput()">
+        {{ 'button-title.select' | translate }}
+      </button>
+
+    </div>
+  </div>
+  
+</ng-template>
+
+<input #timeInput [ngxTimepicker]="picker" [format]="24" id="time_picker_input" [value]="default_schedule_time" 
+      [min]="default_schedule_time" style="display:none">
+<ngx-material-timepicker #picker (timeSet)="timeset($event)"> </ngx-material-timepicker>
+<!-- schedule trip modal end -->
+
+<app-auth-modal #authModal></app-auth-modal>
+<app-register-address-model #registerAddress (saveAddress)="change_destination_address($event)" ></app-register-address-model>
+<app-addcard-modal (cardDataHandler)="fetchCardList()" #addCardModal></app-addcard-modal>
+
+<!-- view estimate modal start -->
+<ng-template #viewEstimateModal>
+
+  <div class="p-4" id='viewEstimateModal'>
+
+    <div class="row my-row py-4" *ngIf="selected_ride_details" >
+      <div class="col-6 d-flex flex-column align-items-center row-gap-1">
+        <img [src]="IMAGE_URL + selected_ride_details.selected_url" [alt]="selected_ride_details.selected_car" style="width: 140px;height: 90px;border-radius: 14%;">
+        <p class="color-theme-1 text-one">{{selected_ride_details.selected_car}}</p>
+      </div>
+      <div class="col-6">
+        <div class="d-flex justify-content-center mb-2" *ngIf="selected_ride_details.trip_type == TRIP_TYPE.TRIP_TYPE_AIRPORT">
+          <p class="text-one text-center">{{'label-title.airport-trip' | translate}}</p>
+        </div>
+        <div class="d-flex justify-content-center mb-2" *ngIf="selected_ride_details.trip_type == TRIP_TYPE.TRIP_TYPE_ZONE">
+          <p class="text-one text-center">{{'label-title.zone-trip' | translate}}</p>
+        </div>
+        <div class="d-flex justify-content-center mb-2" *ngIf="selected_ride_details.trip_type == TRIP_TYPE.TRIP_TYPE_CITY">
+          <p class="text-one text-center">{{'label-title.city-trip' | translate}}</p>
+        </div>
+        <div class="d-flex mb-1" *ngIf="selected_ride_details.base_price">
+          <p class=" text-small mr-2 w-50 text-right">{{'label-title.base-fare' | translate}}:</p>
+          <p class="w-50 color-theme-1">{{typelist.currency}}{{selected_ride_details.base_price}}
+            {{'label-title.for' | translate}} {{'label-title.first' |translate}}
+            <span *ngIf="selected_ride_details.base_price_distance>1">{{selected_ride_details.base_price_distance}}</span>
+            <span *ngIf="city_detail?.unit == 1">
+              {{'label-title.km' | translate}}
+            </span>
+            <span *ngIf="city_detail?.unit == 0">
+              {{'label-title.mile' | translate}}
+            </span>
+          </p>
+        </div>
+        <div class="d-flex align-items-center mb-1" *ngIf="selected_ride_details.price_per_unit_distance">
+          <p class=" text-small mr-2 w-50 text-right">{{'label-title.distance-fare' | translate}}:</p>
+          <p class="text-center color-theme-1">{{typelist.currency}}{{selected_ride_details.price_per_unit_distance}}/
+            <span *ngIf="city_detail?.unit == 1">
+              {{'label-title.km' | translate}}
+            </span>
+            <span *ngIf="city_detail?.unit == 0">
+              {{'label-title.mile' | translate}}
+            </span>
+          </p>
+        </div>
+        <div class="d-flex align-items-center mb-1" *ngIf="selected_ride_details.price_for_total_time">
+          <p class=" text-small mr-2 w-50 text-right">{{'label-title.time-fare' | translate}}:</p>
+          <p class="text-center color-theme-1">{{typelist.currency}}{{selected_ride_details.price_for_total_time}}/{{'label-title.min' |
+            translate}}</p>
+        </div>
+        <div class="d-flex align-items-center mb-1" *ngIf="selected_ride_details.max_space">
+          <p class=" text-small mr-2 w-50 text-right">{{'label-title.max-size' | translate}}:</p>
+          <p class="text-center color-theme-1">{{selected_ride_details.max_space}} {{'label-title.person' | translate}}</p>
+        </div>
+        <div class="d-flex mb-1" *ngIf="selected_ride_details.cancellation_fee || selected_ride_details.cancellation_fee==0">
+          <p class=" text-small mr-2 w-50 text-right">
+            {{'label-title.cancellation-fee' |
+            translate}}:</p>
+          <p class="text-center color-theme-1">{{typelist.currency}}{{selected_ride_details.cancellation_fee}}</p>
+        </div>
+        <div class="d-flex align-items-center mb-1" *ngIf="selected_ride_details.tax">
+          <p class=" text-small mr-2 w-50 text-right">{{'label-title.tax' | translate}}:</p>
+          <p class="text-center color-theme-1">{{selected_ride_details.tax}}%</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row py-4 row-gap-1">
+      <div class="col-12 px-5 d-flex align-items-center pickup_add">
+        <div class="pin-svg" style="width : 24px">
+          <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+            width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+            preserveAspectRatio="xMidYMid meet">
+            <metadata>
+            Created by potrace 1.16, written by Peter Selinger 2001-2019
+            </metadata>
+            <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+             stroke="none">
+            <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+            -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+            138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+            -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+            -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+            190 114 291 63z"/>
+            <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+            76 -135 104 -210 65z"/>
+            </g>
+          </svg>
+        </div>
+        <p class="my_para color-theme-1">{{pickup_address.address}}</p>
+      </div>
+      <div class="col-12 px-5 d-flex align-items-center">
+        <div class="pin-svg my-img">
+          <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+            viewBox="0 0 65.000000 65.000000" preserveAspectRatio="xMidYMid meet">
+            <metadata>
+              Created by potrace 1.16, written by Peter Selinger 2001-2019
+            </metadata>
+            <g transform="translate(0.000000,65.000000) scale(0.100000,-0.100000)" stroke="none">
+              <path d="M16 634 c-14 -13 -16 -55 -16 -308 0 -271 1 -294 18 -309 16 -15 53
+            -17 309 -17 268 0 291 1 306 18 15 16 17 53 17 309 0 268 -1 291 -18 306 -16
+            15 -53 17 -310 17 -251 0 -293 -2 -306 -16z m494 -309 l0 -185 -185 0 -185 0
+            0 185 0 185 185 0 185 0 0 -185z" />
+              <path d="M204 437 c-2 -7 -3 -62 -2 -123 l3 -109 120 0 120 0 0 120 0 120
+            -118 3 c-91 2 -119 0 -123 -11z" />
+            </g>
+          </svg>
+        </div>
+        <p class="my_para color-theme-1">{{destination_address.address}}</p>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row justify-content-around py-4">
+      <div class="">
+        <p class="pb-2">{{'label-title.distance' | translate}}</p>
+        <p class="color-theme-1"><span class="text-large">{{(total_distance * (city_detail?.unit == 1 ? 0.001 : 0.000621371)).toFixed(helper.to_fixed_number)}}</span>
+          <span *ngIf="city_detail?.unit == 1">
+            {{'label-title.km' | translate}}
+          </span>
+          <span *ngIf="city_detail?.unit == 0">
+            {{'label-title.mile' | translate}}
+          </span>
+        </p>
+      </div>
+      <div class="">
+        <p class="pb-2">{{'label-title.time' | translate}}</p>
+        <p class="color-theme-1">
+          <span [innerHTML]="total_time_string">
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center pb-4">
+      <p class="text-center">{{'label-title.this-is-just-an-estimated-time' | translate}}</p>
+      <p class="text-center">{{'label-title.vary-slightly' | translate}}</p>
+    </div>
+
+    <div class="row justify-content-around">
+      <div class="" *ngIf="surge_multiplier != 1">
+        <p class="pb-2 text-center">{{'label-title.surge-pricing' | translate}}</p>
+        <p class="color-theme-1 text-large">{{surge_multiplier}}X</p>
+      </div>
+      <div class="" *ngIf="selected_ride_details.base_price">
+        <p class="pb-2 text-center">{{'label-title.min-fare' | translate}}</p>
+        <p class="color-theme-1 text-large">{{typelist.currency}}{{selected_ride_details.estimated_fare.toFixed(helper.to_fixed_number)}}</p>
+      </div>
+      <div class="" *ngIf="!selected_ride_details.base_price">
+        <p class="pb-2 text-center">{{'label-title.fixed-rate' | translate}}:</p>
+        <p class="color-theme-1 text-large">{{typelist.currency}}{{selected_ride_details.estimated_fare.toFixed(helper.to_fixed_number)}}</p>
+      </div>
+    </div>
+
+    <div class="row pt-5 pb-2 justify-content-center">
+      <button type="button" id="trip_estimate_close" class="btn btn-primary w-50 text-one text-center pull-right" aria-label="Close"
+        (click)="modalRef.hide()">
+        <span aria-hidden="true">{{'modal.close' | translate}}</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+<!-- view estimate modal start -->
+
+<!-- rental package modal start -->
+<ng-template #template3>
+  <div class="p-4">
+    <div class="row px-3 justify-content-end">
+      <button type="button" class="close text-large" id="select_package_close" aria-label="Close" (click)="modalRef1.hide()"
+        (click)="is_click = false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="row justify-content-center my-2">
+      <p class="font-weight-bold text-one">{{'label-title.select-package' | translate}}</p>
+    </div>
+
+    <div *ngFor="let user of rental_list; let i=index;" class="row px-3 justify-content-between">
+      <div>
+        <div class="custom-control custom-radio mb-2">
+          <input type="radio" id="typename{{i}}" name="typename" value="typename{{i}}" class="custom-control-input"
+            (click)="is_click=true;get_package_details(i)">
+          <label for="typename{{i}}" class="custom-control-label font-weight-bold text-one">{{user.typename}}</label>
+        </div>
+        <div class="col-12 d-flex align-items-center mb-2">
+          <p class="mr-1">{{user.base_price_time}}{{'label-title.min' | translate}}</p>&
+          <p class="ml-1">{{user.base_price_distance}}
+            <span *ngIf="city_detail?.unit == 1">
+              {{'label-title.km' | translate}}
+            </span>
+            <span *ngIf="city_detail?.unit == 0">
+              {{'label-title.mile' | translate}}
+            </span>
+          </p>
+        </div>
+        <div class="col-12 mb-3">
+          <p class="mb-1">{{'label-title.extra-distance-charge' | translate}}
+            {{typelist.currency}}{{user.price_for_total_time}}/
+            <span *ngIf="city_detail?.unit == 1">
+              {{'label-title.km' | translate}}
+            </span>
+            <span *ngIf="city_detail?.unit == 0">
+              {{'label-title.mile' | translate}}
+            </span>
+          </p>
+          <p class="">{{'label-title.extra-time-charge' | translate}}
+            {{typelist.currency}}{{user.price_per_unit_distance}}/{{'label-title.min' | translate}}</p>
+        </div>
+      </div>
+      <div>
+        <p class="text-one font-weight-bold">{{typelist.currency}}{{user.base_price}}</p>
+      </div>
+    </div>
+    <div *ngIf="helper.user_details && is_ride_now">
+      <p class="text-danger pb-3">*{{'validation-title.car-rental-error' | translate}}</p>
+    </div>
+    <p *ngIf="cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !is_paypal_supported && payment_mode == 0" class="text-danger pb-3">*{{'validation-title.paypal-not-supported' | translate}}</p>
+    <div class="row px-3 justify-content-center" *ngIf="helper.user_details">
+      <button type="button" class="btn btn-primary w-50 text-one pull-right" id="rent_now_btn"
+        (click)="rideNow(false);modalRef1.hide();is_click = false" aria-label="rent-now" [disabled]="(is_click && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error)) ? false:true" 
+        [ngClass]="(is_click && !is_ride_now) ? '':'btn-disabled'" *ngIf="cardData.payment_gateway_type != PAYMENT_GATEWAY.paypal">
+        <span aria-hidden="true">{{'label-title.rent-now' | translate}}</span>
+      </button> 
+      <button type="button" class="btn btn-primary w-50 text-one pull-right" id="rent_now_btn_2"
+        (click)="rideNow(false);modalRef1.hide();is_click = false" aria-label="rent-now" [disabled]="(is_click && (is_paypal_supported || payment_mode == 1) && !is_ride_now && (is_field_mandatory_arr.length == 0 && !document_expired_error)) ? false:true" 
+        [ngClass]="(is_click && is_paypal_supported && !is_ride_now) ? '':'btn-disabled'" *ngIf="cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal">
+        <span aria-hidden="true">{{'label-title.rent-now' | translate}}</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+<!-- rental package modal end -->
+
+<!-- cancel trip modal start -->
+<div class="custom-model-main " *ngIf="cancelTripmodal" [ngClass]="{'model-open':cancelTripmodal}">
+  <div class="custom-model-inner " style="width: 340px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <button type="button" class="close pull-right" aria-label="Close" id="cancel_trip_close" (click)="cancelTripmodal=false">
+          <span aria-hidden="true" class="clr-primary">&times;</span>
+        </button>
+        <h3 class="mb-4 text-center">{{ 'label-title.cancel-trip' | translate }}</h3>
+        <ng-container *ngIf="trip_cancellation_fee > 0">
+          <p class="text-center">{{ 'label-title.caution' | translate }}</p>
+          <p class="text-center">{{ 'label-title.charges_for_cancellation_of_trip' | translate }}</p>
+          <h3 class="text-center mt-2 mb-3">{{tripdetail.currency}}{{trip_cancellation_fee}}</h3>
+        </ng-container>
+        <form action="">
+          <div *ngFor="let cancellation_reason of cancellation_reasons_list; let i = index">
+            <div class="custom-control custom-radio"   *ngIf="cancellation_reason != ''">
+              <input type="radio" name="rdo" class="custom-control-input" (change)="onSelectReason($event)"
+                [id]="'list'+i" [value]="cancellation_reason" />
+              <label [for]="'list'+i" class="custom-control-label" *ngIf="cancellation_reason != ''">
+                {{cancellation_reason}}
+              </label>
+            </div>
+          </div>
+          <div class="custom-control custom-radio mb-3">
+            <input type="radio" name="rdo" id="other-reason" (change)="onSelectReason($event)"
+              class="custom-control-input" value="{{'label-title.other' | translate}}" />
+            <label for="other-reason" class="mr-auto custom-control-label">
+              {{'label-title.other' | translate}}
+            </label>
+            <br>
+            <input type="text" *ngIf="cancellation_type === ('label-title.other' | translate)"
+              [(ngModel)]="cancellation_reason" [ngModelOptions]="{standalone: true}" id="cancellation_reason"
+              placeholder="{{'label-title.type-reason' | translate}}" (keypress)="helper.space_validation($event)"
+              class="form-control col-10" />
+          </div>
+          <div class="d-flex justify-content-center align-item-center">
+            <button type="button" class="btn btn-primary  mx-2" (click)="user_cancle_trip()" id="user_cancel_trip"
+              [disabled]="!cancellation_reason" [ngClass]="{'btn-disabled':(!cancellation_reason)}">
+              {{'button-title.i-am-sure' | translate}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+<!-- cancel trip modal end -->
+
+<!-- paystack pin modal start -->
+<div class="custom-model-main " *ngIf="paystackPinmodal" [ngClass]="{'model-open':paystackPinmodal}">
+  <div class="custom-model-inner ">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-5">
+        <div class="form-side">
+          <button type="button" class="close pull-right" id="paystack_pin_close" aria-label="Close" (click)="paystackPinmodal = false">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div class="heading-content">
+            <p>{{paystack_status}}</p>
+            <h4 class="mb-4" *ngIf="paystack_status == 'send_pin' ">{{'label-title.enter-pin' | translate}}</h4>
+            <h4 class="mb-4" *ngIf="paystack_status == 'send_otp' ">{{'label-title.enter-otp' | translate}}</h4>
+            <h4 class="mb-4" *ngIf="paystack_status == 'send_phone' ">{{'label-title.enter-number' | translate}}</h4>
+          </div>
+          <div class="content">
+            <form class="" [formGroup]="pinForm" (ngSubmit)="sendpin()" id="wallet paystack-popup-form">
+              <div class="form-field form-field--inputEmail">
+                <input id="wallet-pin-input" *ngIf="paystack_status == 'send_pin' " minlength="4" maxlength="6"
+                  autocomplete="off" placeholder="{{'label-title.enter-pin' | translate}}" formControlName="pin"
+                  type="text" name="pin" class="form-control" (keypress)="helper.number_validation($event)">
+                <input id="wallet-otp-input" *ngIf="paystack_status == 'send_otp' " minlength="4" maxlength="6"
+                  autocomplete="off" placeholder="{{'label-title.enter-otp' | translate}}" formControlName="otp"
+                  type="text" name="otp" class="form-control" (keypress)="helper.number_validation($event)">
+                <input id="wallet-phone-input" *ngIf="paystack_status == 'send_phone' " minlength="10" maxlength="12"
+                  autocomplete="off" placeholder="{{'label-title.enter-number' | translate}}"
+                  formControlName="phone_number" type="text" name="phone_number" class="form-control"
+                  (keypress)="helper.number_validation($event)">
+
+              </div>
+              <div class="form-field form-field--inputSignup text-center mt-4">
+                <button id="wallet-verify-btn" type="submit" class="close-btn" id="addcardclose"
+                  class="btn btn-primary btn-lg btn-shadow">{{'button-title.verify' | translate}}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+<!-- paystack pin modal end -->
+
+<!-- surge price modal start -->
+<div class="custom-model-main " *ngIf="surgePricemodal" [ngClass]="{'model-open':surgePricemodal}">
+  <div class="custom-model-inner " style="width: 320px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <button type="button" class="close pull-right" id="surge_multiplier_close" aria-label="Close" (click)="closesurgemultiplier()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="mb-4 text-center">
+          <h3 class="mb-0">{{ 'label-title.surge-pricing' | translate }} <br>{{surge_multiplier}}X</h3>
+        </div>
+        <p class="text-center">{{ 'label-title.surge-price-message' | translate }}</p>
+        <div class="d-flex justify-content-center align-items-center mt-4 flex-wrap" style="column-gap: 10px;">
+          <button class="btn btn-primary" type="button" id="confirm_surge_multiplier" (click)="surgemultiplier()">
+            {{'button-title.confirm' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+<!-- surge price modal end -->
+
+<!-- chat modal start -->
+<ng-template #chat>
+  <div class="p-4">
+    <div class="row modal-header p-3 align-items-center">
+      <div class="flex-grow-1">
+        <h2 class="text-center mb-0">{{'label-title.chat_with' | translate }}{{provider.first_name}} {{provider.last_name}}</h2>
+      </div>
+      <button type="button" class="close text-large py-0" id="close_chat_model" aria-label="Close" (click)="closeChat()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="chatbox p-3" [scrollTop]="scrolltop" id="chatbox">
+      <div *ngIf="chats.length">
+        <div class="row mb-2" *ngFor="let m of chats;let i=index" [ngClass]="{'justify-content-end': m.type===10}">
+          <div class="col-5 p-3 rounded" [ngClass]="{'bg-primary': m.type===10 , 'bg-secondary': m.type===11}">
+            <p class="py-1">{{m.message | titlecase}}</p>
+            <div class="d-flex align-items-center justify-content-between">
+              <p class="date-font mr-1">{{m.time | date:helper.DATE_FORMAT.DD_MMM_YYYY_HH_MM_A}}</p>
+              <p class="date-font" *ngIf="m.is_read && m.type===10" >{{'label-title.read' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row p-3">
+      <div class="col-12 p-0 d-flex">
+        <input type="text" id="chat_input" [(ngModel)]="message" id="chat_message" (keyup.enter)="onSendMessage()" class="form-control rounded-100" placeholder="{{'label-title.enter-your-message' | translate }}">
+        <button class="btn btn-primary ml-3" type="button" id="send_message" (click)="onSendMessage()" [disabled]="!message" [ngClass]="{'btn-disabled':(!message)}">{{'button-title.send' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- chat modal end -->
+
+<!-- split payment modal start -->
+<ng-template #splitPayment>
+  <div class="p-4">
+    <div class="row modal-header p-3 align-items-center">
+      <div class="flex-grow-1">
+        <p class="text-one text-center font-weight-bold">{{'label-title.split_payment' | translate }}</p>
+      </div>
+      <button type="button" class="close text-large py-0" aria-label="Close" id="split_payment_close" (click)="splitModal.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body chatbox">
+      <div class="row mb-3">
+        <div class="col-12 p-0 d-flex mb-2">
+          <i class="simple-icon-magnifier search-split-icon font-size-18"></i>
+          <input type="text" class="form-control rounded-100 pl-2rem" [(ngModel)]="splitSearchData" placeholder="{{'label-title.enter-email-or-phone' | translate }}">
+          <button class="btn btn-primary ml-3" type="button" id="search_split_user" (click)="searchSplitUser()" [disabled]="(trip_split_users.length>=max_split_user) || (!splitSearchData)" 
+            [ngClass]="{'btn-disabled':(trip_split_users.length>=max_split_user)}">
+            {{'button-title.search' | translate}}
+          </button>
+        </div>
+        <div class="col-12 p-0">
+          <p>{{'label-title.search_note' | translate }}</p>
+        </div>
+      </div>
+      <div class="row mb-2 align-items-center" *ngIf="search_users_detail">
+        <div class="col-10 d-flex align-items-center p-0">
+          <img [src]="search_users_detail.picture ? IMAGE_URL + search_users_detail.picture : DEFAULT_IMAGE" alt="image" style="height: 50px;width: 50px;">
+          <div class="ml-3">
+            <p class="font-weight-semibold">{{search_users_detail.first_name}} {{search_users_detail.last_name}}</p>
+            <p class="font-weight-semibold">{{search_users_detail.country_phone_code}} {{search_users_detail.phone}}</p>
+            <p class="text-danger" *ngIf="search_users_detail.wallet < 0">* {{'error-code.627' | translate}}</p>
+          </div>
+        </div>
+        <div class="col-2 text-center p-0">
+          <button [disabled]="search_users_detail.wallet < 0" type="button" id="send_split_request" class="btn iconHover p-0" (click)="sendRequest(i)">
+            <span aria-hidden="true" class="simple-icon-plus h3"></span>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="trip_split_users && trip_split_users.length>0">
+        <div class="row mb-2 align-items-center" *ngFor="let data of trip_split_users;let i = index">
+          <div class="col-10 d-flex align-items-center p-0">
+            <img [src]="data.picture ? IMAGE_URL + data.picture : DEFAULT_IMAGE" alt="image" style="height: 50px;width: 50px;">
+            <div class="ml-3" *ngIf="tripdetail.split_payment_users">
+              <p class="font-weight-semibold">{{data.first_name}} {{data.last_name}}</p>
+              <p class="font-weight-semibold">{{data.country_phone_code}} {{data.phone}}</p>
+            </div>
+          </div>
+          <div class="col-2 text-center p-0 d-none" id="remove-{{i}}" [ngClass]="{'d-block':(data.status == 0)}">
+            <button type="button" class="btn iconHover p-0" id="send_split_request_2" (click)="removeRequest(i)">
+              <span aria-hidden="true" class="simple-icon-close font-size-18 h3"></span>
+            </button>
+            <p class="color-theme-1">{{'label-title.waiting' | translate }}</p>
+          </div>
+          <div class="col-2 text-center p-0" *ngIf="data.status == 1">
+            <button type="button" class="btn iconHover p-0" id="send_split_request_3" (click)="removeRequest(i)">
+              <span aria-hidden="true" class="simple-icon-close font-size-18 h3"></span>
+            </button>
+            <p class="text-success">{{'label-title.accepted' | translate }}</p>
+          </div>
+          <div class="col-2 text-center p-0" id="resend-{{i}}" id="send_split_request_4" *ngIf="data.status == 2">
+            <button type="button" class="btn iconHover p-0" (click)="removeRequest(i)">
+              <span aria-hidden="true" class="simple-icon-close font-size-18 h3"></span>
+            </button>
+            <button class="btn p-0 w-100 text-danger" id="resend_split_request" (click)="resendRequest(i)">{{'button-title.resend' | translate }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- split payment modal end -->
+
+<!-- schedule ride reminder start -->
+<ng-template #scheduleRideTime>
+  <div class="p-4">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">{{'label-title.reminder' | translate }}</h4>
+  </div>
+  <div class="modal-body p-0">
+      <div class="p-4">
+          <p>
+            {{'label-title.cannot_schedule_before' | translate }} {{date.getHours()}}:{{date.getMinutes()}}
+          </p>
+      </div>
+  </div>
+  <div class="modal-footer">
+      <button type="button" (click)="confirm()" id="confirm_schedule_time" class="btn btn-primary float-right">{{'button-title.confirm' | translate}}</button>
+  </div>
+  </div>
+</ng-template>
+<!-- schedule ride reminder modal end -->
+
+<!-- cancel trip confirmation modal start -->
+<ng-template #confirmationTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" *ngIf="tripdetail">{{'label-title.trip-id' | translate }} :
+      {{tripdetail.unique_id}}</h4>
+    <button type="button" class="close pull-right" id="cancel_confirm_close" aria-label="Close" (click)="confirmationModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-0">
+    <div class="p-4">
+      <p>
+        {{'label-title.are-you-sure-you-want-to-cancel-this-trip' | translate}}
+      </p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="confirmCancelTrip()" id="cancel_confirm" class="btn btn-primary float-right">{{'button-title.confirm' |
+      translate}}</button>
+  </div>
+</ng-template>
+<!-- cancel trip confirmation modal end -->
+
+<!-- bidding modal start -->
+<ng-template #biddingTemplate>
+  <div class="modal-header justify-content-center">
+    <h3 class="modal-title pull-left">{{'label-title.bidding' | translate}} ({{'label-title.trip-id' | translate}} : {{tripdetail?.unique_id}})</h3>
+  </div>
+  <div class="modal-body">
+    <div class="" *ngIf="tripdetail && tripdetail.bids">
+      <div class="mb-3" *ngFor="let provider of tripdetail.bids">
+        <div class="d-flex w-100">
+          <img [src]="provider.picture ? IMAGE_URL + provider.picture : DEFAULT_IMAGE" [alt]="provider.first_name" style="height: 50px;width: 50px;">
+          <div class="w-100">
+            <div class="d-flex align-items-center justify-content-between pb-1 ml-3 flex-wrap">
+              <div class="">
+                <p class="font-weight-bold">{{provider.first_name}} {{provider.last_name}}<i class="simple-icon-star ml-1" *ngIf="provider.is_favourite_provider"></i></p>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="simple-icon-star mr-1 font-weight-bold" style="height: fit-content;"></i> 
+                <div class="font-weight-bold">{{provider.rate.toFixed(helper.to_fixed_number)}}</div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between pb-1 ml-3 flex-wrap">
+              <div class="">
+                <p class="font-weight-semibold">{{'label-title.bidding-price' | translate}} : {{provider.currency}} {{provider.ask_bid_price}}</p>
+              </div>
+              <div class="">
+                <p class="text-danger">{{ provider.remaining_seconds }}s</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-center ml-3" style="white-space: nowrap;">
+              <button class="btn btn-secondary btn-xs mr-1" id="user_reject_bid" (click)="userAcceptRejectBid('reject',provider.provider_id)">{{'button-title.reject' | translate}}</button>
+              <button class="btn btn-primary btn-xs" id="user_accept_bid" (click)="userAcceptRejectBid('accept',provider.provider_id)">{{'button-title.accept' | translate}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p *ngIf="tripdetail.bids.length == 0" class="text-center text-one">{{'label-title.waiting-for-driver' | translate}}......</p>
+    </div>
+  </div>
+</ng-template>
+<!-- bidding modal end -->
+
+<!-- Payment Processing Model Start -->
+<div class="custom-model-main " *ngIf="paymentWaitingModal" [ngClass]="{'model-open':paymentWaitingModal}">
+  <div class="custom-model-inner" style="width: 400px;">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-4">
+        <div class="form-side">
+          <div class="text-center">
+            <p class="font-weight-bold pl-5 mb-0"> <span class="loading payment-processing"></span>{{'label-title.payment-processing' | translate}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+<!-- Payment Processing Model End -->
+
+<!-- Offers Modal Start -->
+<ng-template #offers>
+  <div class="modal-header justify-content-center">
+    <h3 class="modal-title pull-left">{{'label-title.offers' | translate}}</h3>
+    <button type="button" class="close pull-right" id="offer_modal_close" aria-label="Close" (click)="closeOffersModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body offers-modal">
+    <div class="p-2 my-2 border" *ngFor="let promo of promo_list">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="w-70">
+          <p class="text-one">{{promo.promocode}}</p>
+          <p class="text-muted mt-2">{{promo.description}}</p>
+        </div>
+        <div class="w-30 d-flex justify-content-end align-items-center">
+          <div>
+            <p class="text-center">{{promo.code_value}} <span *ngIf="promo.code_type == 1">{{helper.user_details.wallet_currency_code}}</span><span  *ngIf="promo.code_type == 2">%</span></p>
+            <button class="btn btn-primary btn-sm" *ngIf="!promoData || promo_id != promo._id" (click)="promocode = promo.promocode; promo_code()" style="width: fit-content;">{{'button-title.apply' | translate}}</button>
+            <button class="btn btn-primary btn-sm" *ngIf="promoData && promo_id == promo._id" (click)="remove_promo()" style="width: fit-content;">{{'label-title.remove' | translate}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="promo_list?.length == 0">
+      <p class="text-center">{{ 'label-title.no-record-found' | translate }}</p>
+    </div>
+  </div>
+</ng-template>
+<!-- Offers Modal End -->
+
+<!-- Open Ride List modal start -->
+<ng-template #openRideModalTemplate>
+  <div class="px-4 pt-4">
+    <button type="button" class="close text-large pull-right" aria-label="Close" id="open_ride_modal_close" (click)="openRideModal.hide();is_radio_click=false">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="row justify-content-center my-2">
+      <p class="font-weight-bold text-one w-100 text-center">{{'heading-title.select-ride' | translate}}</p>
+      <p class="text-primary">{{scheduleDate | date:helper.DATE_FORMAT.DD_MM_YYYY}}</p>
+    </div>
+
+    <div class="px-3 my-3">
+      <div class="pb-3" *ngFor="let trip of open_ride_list;let i = index;">
+        <div class="row px-3 flex-nowrap justify-content-between pb-2">
+          <div class="col-9" style="padding-left: 0;">
+            <div class="custom-control custom-radio mb-2">
+              <input type="radio" id="ride-name-{{i}}" name="ride-name" value="ride-name-{{i}}" class="custom-control-input" (click)="getOpenRideDetails(trip);is_radio_click=true">
+              <label for="ride-name-{{i}}" class="custom-control-label font-weight-bold text-one" *ngIf="trip.unique_id">
+                {{'heading-title.id' | translate}}:{{trip.unique_id}}
+              </label>
+            </div>
+            <div class="col-12" *ngIf="trip.provider_details?.length > 0">
+              <p class="font-weight-bold">{{trip.provider_details[0].first_name}} {{trip.provider_details[0].last_name}}</p>
+            </div>
+            <div class="col-12 d-flex align-items-center">
+              <p class="mr-1">
+                <span>
+                  {{trip.total_distance.toFixed(helper.to_fixed_number)}}
+                </span>
+                <span *ngIf="trip.unit == 1">
+                  {{'label-title.km' | translate}}
+                </span>
+                <span *ngIf="trip.unit != 1">
+                  {{'label-title.mile' | translate}}
+                </span>
+              </p>&
+              <p class="ml-1" [innerHTML]="trip.total_time_string"></p>
+            </div>
+            <div class="col-12 mb-3">
+              <p class="mb-0" *ngIf="trip.vehicles_detail">
+                {{trip.vehicles_detail.name}} | {{trip.vehicles_detail.color}} | {{trip.vehicles_detail.model}} | {{trip.vehicles_detail.plate_no}}
+              </p>
+            </div>
+          </div>
+          <div class="col-3 text-right" style="padding-right: 0;">
+            <p class="text-one font-weight-bold">{{trip.currency}}{{trip.total.toFixed(helper.to_fixed_number)}}</p>
+            <p class="">{{trip.server_start_time_for_schedule | date:helper.DATE_FORMAT.H_MM_A}}</p>
+            <p class="text-success font-weight-bold">{{(trip.booked_seats)}}/{{trip.vehicle_capacity}} {{'label-title.seats' | translate}}</p>
+          </div>
+        </div>
+        <div class="row justify-content-between pb-3">
+          <div class="col-12">
+            <div class="col-12 d-flex align-items-center">
+              <div class="pin-svg open-ride-address-image">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                  width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                  preserveAspectRatio="xMidYMid meet">
+                  <metadata>
+                  Created by potrace 1.16, written by Peter Selinger 2001-2019
+                  </metadata>
+                  <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                   stroke="none">
+                  <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                  -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                  138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                  -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                  -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                  190 114 291 63z"/>
+                  <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                  76 -135 104 -210 65z"/>
+                  </g>
+                </svg>
+              </div>
+              <p class="open-ride-address color-theme-1">{{trip.source_address}}</p>
+            </div>
+            <div class="col-12" style="margin: 14px 0;">
+              <div class="vertical-line"></div>
+            </div>
+            <div class="col-12 d-flex align-items-center">
+              <div class="pin-svg open-ride-address-image">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                  viewBox="0 0 65.000000 65.000000" preserveAspectRatio="xMidYMid meet">
+                  <metadata>
+                    Created by potrace 1.16, written by Peter Selinger 2001-2019
+                  </metadata>
+                  <g transform="translate(0.000000,65.000000) scale(0.100000,-0.100000)" stroke="none">
+                    <path d="M16 634 c-14 -13 -16 -55 -16 -308 0 -271 1 -294 18 -309 16 -15 53
+                  -17 309 -17 268 0 291 1 306 18 15 16 17 53 17 309 0 268 -1 291 -18 306 -16
+                  15 -53 17 -310 17 -251 0 -293 -2 -306 -16z m494 -309 l0 -185 -185 0 -185 0
+                  0 185 0 185 185 0 185 0 0 -185z" />
+                    <path d="M204 437 c-2 -7 -3 -62 -2 -123 l3 -109 120 0 120 0 0 120 0 120
+                  -118 3 c-91 2 -119 0 -123 -11z" />
+                  </g>
+                </svg>
+              </div>
+              <p class="open-ride-address color-theme-1">{{trip.destination_address}}</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+      </div>
+      <div class="text-center" *ngIf="open_ride_list.length == 0">
+        {{'label-title.no-record-found' | translate }}
+      </div>
+    </div>
+
+    <div class="row pt-3 pb-4 px-3 justify-content-center sticky-modal-footer" *ngIf="helper.user_details">
+      <button type="button" class="btn btn-primary w-50 text-one pull-right text-center" id="book_open_ride" (click)="bookOpenRide();is_radio_click=false" [disabled]="!is_radio_click || open_ride_list.length == 0">
+        {{'button-title.book-ride' | translate}}
+      </button>
+    </div>
+  </div>
+</ng-template>
+<!-- Open Ride List modal end -->
+
+<!-- Promo Warning Modal start -->
+<ng-template #paymentChangePromoWarning>
+  <div class="modal-header border-0">
+    <h4 class="modal-title pull-left">{{'label-title.attention' | translate}}!</h4>
+    <button type="button" class="close pull-right" aria-label="Close" id="change_promo_warning_close" (click)="closePromoWarningModal(true)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4 py-0">
+    <p>{{'label-title.your-promo-may-be-void-after-payment-mode-change' | translate}}</p>
+  </div>
+  <div class="modal-footer border-0 justify-content-center">
+    <button type="button" (click)="remove_promo();changePaymentMode(true);" id="change_promo_continue" class="btn btn-primary float-right">
+      {{'label-title.continue' | translate}}
+    </button>
+  </div>
+</ng-template>
+<!-- Promo Warning Modal end -->
+
+<app-history-modal #historyModal></app-history-modal>
+
+<div id="razorpay" [hidden]="true"></div>

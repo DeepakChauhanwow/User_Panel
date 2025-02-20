@@ -1,0 +1,19 @@
+.nav.nav-tabs.nav-item.nav-link.active::before {
+    display: none !important;
+}
+
+.my-img {
+    height: 16px;
+    width: 16px;
+    margin-right: 0.7rem;
+}
+
+.stop-addresses .border-img-left {
+    border-left: 0.2em solid lightgray;
+    padding: 0 0 1rem 1rem;
+    position: relative;
+}
+
+.mr-07 {
+    margin-right: 0.7rem !important;
+}

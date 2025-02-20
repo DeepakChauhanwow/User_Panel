@@ -1,0 +1,7 @@
+<nav class="breadcrumb-container d-sm-inline-block" aria-label="breadcrumb">
+    <ol class="breadcrumb pt-0">
+        <li class="breadcrumb-item" *ngFor="let sub of pathArr; let i=index" [hidden]="i >= (pathArr.length-1)">
+            <a [routerLink]="[getUrl(sub)]" id="breadcrumb_item">{{getLabel(getUrl(sub)) | translate}}</a>
+        </li>
+    </ol>
+</nav>

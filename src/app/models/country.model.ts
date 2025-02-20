@@ -1,0 +1,37 @@
+export class CountryModel {
+    _id: string = "";
+    auto_transfer_day_for_deliveryman: number = 0;
+    auto_transfer_day_for_store: number = 0;
+    country_code: string = '';
+    country_code_2: string = "";
+    country_flag: string = "";
+    countryname: string = "";
+    countryphonecode: string = "";
+    country_timezone: Array<string> = [];
+    created_at: Date = null;
+    currency_code: string = "";
+    currency_name: string = ""
+    currency_rate: number = 0;
+    currency_sign: string = "";
+    is_ads_visible: boolean = false;
+    is_auto_transfer_for_deliveryman: boolean = false;
+    is_auto_transfer_for_store: boolean = false;
+    is_business: boolean = false;
+    is_distance_unit_mile: boolean = false;
+    is_referral_provider: boolean = false;
+    is_referral_store: boolean = false
+    is_referral_user: boolean = false
+    phone_number_min_length: number = 0;
+    phone_number_length: number = 0;
+    no_of_provider_use_referral: number = 0;
+    no_of_store_use_referral: number = 0;
+    no_of_user_use_referral: number = 0;
+    referral_bonus_to_provider: number = 0;
+    referral_bonus_to_provider_friend: number = 0;
+    referral_bonus_to_store: number = 0;
+    referral_bonus_to_store_friend: number = 0;
+    referral_bonus_to_user: number = 0;
+    referral_bonus_to_user_friend: number = 0;
+    unique_id: number = 0;
+    updated_at: Date = null;
+}

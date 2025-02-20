@@ -1,0 +1,24 @@
+@media (max-width:1408px) {
+  .endTime {
+    width: 5.5rem;
+  }
+}
+
+@media (max-width:414px) {
+  .detail-content .w-20 {
+    min-width: 34%;
+    white-space: normal;
+  }
+}
+
+tbody>tr>td {
+  cursor: pointer;
+}
+
+thead>tr>th {
+  white-space: nowrap;
+}
+
+.sorting-col a {
+  cursor: pointer;
+}

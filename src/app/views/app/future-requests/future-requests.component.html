@@ -1,0 +1,130 @@
+<app-topnav2></app-topnav2>
+
+<ng-container>
+  <div class="row">
+    <div class="col-12">
+      <div class="separator-tabs tab-container">
+        <ul role="tablist" class="nav nav-tabs">
+          <li class="nav-item" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.NORMAL}">
+            <a href="javascript:void(0);" id="normal_trip_tab" role="tab" class="nav-link" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.NORMAL}" (click)="onHistoryTabChange(helper.HISTORY_TYPE.NORMAL)">
+              <span>{{'label-title.normal' | translate}}</span>
+            </a>
+          </li>
+          <li class="nav-item" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.OPEN_RIDE}">
+            <a href="javascript:void(0);" role="tab" id="openride_trip_tab" class="nav-link" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.OPEN_RIDE}" (click)="onHistoryTabChange(helper.HISTORY_TYPE.OPEN_RIDE)">
+              <span>{{'label-title.open-ride' | translate}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table aria-describedby="table" id="trip_table" class="table table-hover mb-0 tableScroll" aria-describedby="request-table">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">
+                      {{'label-title.trip-id' | translate}}
+                  </th>
+                  <th scope="col">
+                      {{'label-title.service' | translate}}
+                  </th>
+                  <th scope="col">
+                      {{'label-title.estimate-price' | translate}}
+                  </th>
+                  <th scope="col">
+                    {{'label-title.schedule_start_time' | translate}}
+                  </th>
+                  <th scope="col">
+                      {{'label-title.payment' | translate}}
+                  </th>
+                  <th scope="col">
+                    {{'label-title.create-time' | translate}}
+                  </th>
+                </tr>
+              </thead>
+              <tbody *ngIf="rows && rows.length>0">
+                <tr
+                  *ngFor="let row of rows"
+                  (click)="showModal(row)">
+                  <td class="text-nowrap">{{row.unique_id}}</td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.service_type && row.service_type.service_type_name">{{row.service_type.service_type_name}}</span>
+                    <span *ngIf="!row.service_type.service_type_name">--</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.NORMAL">
+                      <span>{{row.currency}} {{row.fixed_price?.toFixed(helper.to_fixed_number)}}</span>
+                      <span class="c-pointer" *ngIf="!row.fixed_price && row.fixed_price != 0">--</span>
+                    </span>
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.OPEN_RIDE">
+                      <span>{{row.currency}} {{row.user_details?.total.toFixed(helper.to_fixed_number)}}</span>
+                      <span class="c-pointer" *ngIf="!row.user_details?.total && row.total != 0">--</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.server_start_time_for_schedule">{{row.server_start_time_for_schedule | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A }}</span>
+                    <span *ngIf="!row.server_start_time_for_schedule">--</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.NORMAL">
+                      <span class=" badge badge-pill badge-secondary w-fit-content" *ngIf="row.payment_mode == 0">
+                        {{'label-title.by-card' | translate}}</span>
+                      <span class="badge badge-pill badge-primary w-fit-content" *ngIf="row.payment_mode == 1">
+                        {{'label-title.by-cash' |translate}}</span>
+                      <span class="c-pointer"
+                        *ngIf="row.payment_mode != 0 && row.payment_mode != 1">--</span>
+                    </span>
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.OPEN_RIDE">
+                      <span class=" badge badge-pill badge-secondary w-fit-content" *ngIf="row.user_details?.payment_mode == 0">
+                        {{'label-title.by-card' | translate}}</span>
+                      <span class="badge badge-pill badge-primary w-fit-content" *ngIf="row.user_details?.payment_mode == 1">
+                        {{'label-title.by-cash' |translate}}</span>
+                      <span class="c-pointer"
+                        *ngIf="row.user_details?.payment_mode != 0 && row.user_details?.payment_mode != 1">--</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.user_create_time">{{row.user_create_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}}</span>
+                    <span *ngIf="!row.user_create_time">--</span>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="(rows && rows.length==0) || !rows">
+                <tr>
+                  <th id="no-record" colspan="10" class="text-center">
+                    <span>{{ 'label-title.no-record-found' | translate }}</span>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="rows && rows.length>0">
+    <div class="col-12">
+      <div class="border-top pt-4">
+        <div class="w-100 d-flex justify-content-center">
+          <pagination [totalItems]="rowCount" [itemsPerPage]="itemsPerPage" [maxSize]="9"
+              (pageChanged)="table.onFooterPage($event)" [customNextTemplate]="nextTemplate"
+              [customPreviousTemplate]="prevTemplate">
+          </pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #nextTemplate let-disabled="disabled" let-currentPage="currentPage">
+  <i class='simple-icon-arrow-right'></i>
+</ng-template>
+<ng-template #prevTemplate let-disabled="disabled" let-currentPage="currentPage">
+  <i class='simple-icon-arrow-left'></i>
+</ng-template>
+
+<app-future-request-details-modal #runninghistoryModal (historyDataHandler)="history_data()"></app-future-request-details-modal>

@@ -1,0 +1,5 @@
+<div class="container-fluid loader_container" *ngIf="_apiService.get_api_is_loading || _apiService.post_api_is_loading || _helper.helper_is_loading || _helper.language_is_loading" [ngClass]="{'language_not_loaded_background':_helper.language_is_loading}">
+    <div class="dashboard-wrapper">
+        <div class="loading"></div>
+    </div>
+</div>

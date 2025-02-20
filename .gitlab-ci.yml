@@ -1,0 +1,79 @@
+stages:
+  - sonarqube-check
+  - build
+  - deploy
+
+sonarqube-check: 
+  stage: sonarqube-check 
+  tags: 
+    - old-runner 
+  image:  
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""] 
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache: 
+    key: "${CI_JOB_NAME}" 
+    paths: 
+      - .sonar/cache  
+  script: 
+    - sudo /root/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner 
+  allow_failure: false
+  after_script:
+    - sudo rm -rf /home/gitlab-runner/builds/GiJ3Zv1x/0/eber-product/web/user-panel/.scannerwork
+  
+
+build:
+  stage: build
+  tags:
+    - "old-runner"
+  script:
+    - |
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        NPM_RUN=$MASTER_NPM_RUN
+      elif [ "$CI_COMMIT_REF_NAME" = "development" ]; then
+        NPM_RUN=$DEV_NPM_RUN
+      fi 
+    - npm i
+    - npm run $NPM_RUN   
+  only:
+    - main 
+    - development  
+  artifacts:
+    paths:
+      - dist/  
+
+deploy:  
+  stage: deploy
+  tags:  
+    - "old-runner" 
+  script:  
+    # - sudo apt update -qy   
+    # - sudo apt install -y rsync
+    - mkdir -p ~/.ssh
+
+    - |
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        SSH_PRIVATE_KEY="$MASTER_SSH_PRIVATE_KEY"
+        USER_NAME=$MASTER_USER_NAME
+        IP_ADDRESS=$MASTER_IP_ADDRESS
+        CICD_DIRECTORY=$MASTER_CICD_DIRECTORY
+      elif [ "$CI_COMMIT_REF_NAME" = "development" ]; then
+        SSH_PRIVATE_KEY="$DEV_SSH_PRIVATE_KEY"
+        USER_NAME=$DEV_USER_NAME
+        IP_ADDRESS=$DEV_IP_ADDRESS
+        CICD_DIRECTORY=$DEV_CICD_DIRECTORY
+      fi
+      
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+    - sudo chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)  
+    - ssh-add ~/.ssh/id_rsa
+    - rsync -e "ssh -o StrictHostKeyChecking=no" -r ./ $USER_NAME@$IP_ADDRESS:$CICD_DIRECTORY 
+    - ssh -o StrictHostKeyChecking=no -t $USER_NAME@$IP_ADDRESS "cd $CICD_DIRECTORY && sudo pm2 restart server.js"
+  dependencies:
+    - build
+  only:
+    - main 
+    - development 

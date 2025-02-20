@@ -1,0 +1,97 @@
+<ng-template #template>
+    <modal-container role="dialog" tabindex="-1" class="modal fade show" style="display: block;" aria-modal="true">
+        <div role="document" class="modal-dialog modal-right">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">{{'heading-title.export-history' | translate}}</h4>
+                    <button type="button" class="close pull-right" aria-label="Close" id="export_history_close" (click)="onClose()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <ng-container>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <div class="table-responsive">
+                                  <table aria-describedby="table" class="table table-hover mb-0 tableScroll">
+                                    <thead class="thead-light">
+                                      <tr>                                        
+                                        <th scope="col">
+                                            {{'label-title.create-time' | translate}}
+                                        </th>
+
+                                        <th scope="col">
+                                            {{'label-title.action' | translate}}
+                                        </th>
+                      
+                                      </tr>
+                                    </thead>
+                                    <tbody *ngIf="listData.length>0">
+                                      <tr *ngFor="let row of listData">
+                                        <td class="text-nowrap">
+                                          <span *ngIf="row.created_at">{{row.created_at | date:_helper.DATE_FORMAT.DD_MM_YY_HH_MM_A}}</span>
+                                          <span *ngIf="!row.created_at">--</span>
+                                        </td>
+
+                                        <td *ngIf="row.status == 0">
+                                          <span class="badge badge-pill badge-warning w-fit-content" >{{'button-title.processing' | translate}}</span>
+                                        </td>
+
+                                        <td *ngIf="row.status == 1">
+                                          <button type="button" id="download_excel" class="btn btn-primary btn-xs text-nowrap mr-1"
+                                              (click)="_helper.downloadFile(row.url)">
+                                              {{'button-title.download' | translate}}
+                                          </button>
+  
+                                          <button type="button" id="remove_excel" class="btn btn-danger btn-xs text-nowrap"
+                                              (click)="onDelete(row.unique_id)">
+                                              {{'button-title.delete' | translate}}
+                                          </button>
+                                        </td>
+
+                                      </tr>
+                                    </tbody>
+                                    <tbody *ngIf="listData.length==0">
+                                      <tr>
+                                        <th colspan="10" id="head" class="text-center">
+                                          <span>{{ 'label-title.no-record-found' | translate }}</span>
+                                        </th>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </ng-container>
+
+                </div>
+                <div class="modal-footer" *ngIf="tab == 1">
+
+                </div>
+            </div>
+        </div>
+    </modal-container>
+</ng-template>
+
+<ng-template #confirmationTemplate>
+  <div class="modal-header">
+      <h4 class="modal-title pull-left">{{'label-title.delete-history' | translate }} ({{id}}) </h4>
+      <button type="button" class="close pull-right" id="close_delete_confirm" aria-label="Close" (click)="cancel()">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body p-0">
+      <div class="p-4">
+          <p>
+              {{'label-title.are-you-sure-you-want-to-delete-this' | translate}} {{'menu.history' | translate}}
+          </p>
+      </div>
+  </div>
+  <div class="modal-footer">
+      <button type="button" (click)="confirm()" id="confirm_delete" class="btn btn-primary float-right">{{'button-title.confirm' | translate}}</button>
+  </div>
+</ng-template>

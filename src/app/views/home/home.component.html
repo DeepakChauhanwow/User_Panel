@@ -1,0 +1,1167 @@
+<app-auth-modal #authModal></app-auth-modal>
+
+<div [ngClass]="{'landing-page': true,'show-mobile-menu': showMobileMenu}" class="eber-iframe-container">
+    <div class="mobile-menu" (click)="$event.stopPropagation()">
+        <a (click)="scrollTo('scroll_1')" href="javascript:;" class="" id="logo_home_mobile">
+            <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+helper.randomQueryParam" alt="logo" class="logo-image" *ngIf="!logoClr">
+            <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+helper.randomQueryParam" alt="logo" class="logo-image" *ngIf="logoClr">
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item" *ngIf="citytypes" id="ride_with_mobile"><a (click)="scrollTo('scroll_2')"
+                    href="javascript:;">{{'home-page.ride-with-us' | translate}}</a>
+            </li>
+            <li class="nav-item" *ngIf="DRIVER_WEB" id="driver_with_mobile"><a href="{{DRIVER_WEB}}" target="_blank">{{'home-page.drive-with-us' | translate}}</a>
+            </li>
+            <li class="nav-item"><a (click)="scrollTo('scroll_3')" id="app_mobile" href="javascript:;">{{'home-page.app' |
+                    translate}}</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-container">
+        <ngx-headroom class="landing-page-nav">
+            <div class="wrapper" *ngIf="bannerList?.length > 0">
+                <owl-carousel-o [options]="customOptions">
+              
+                  <ng-container *ngFor="let banner of bannerList">
+                    <ng-template class="slide" carouselSlide [id]="banner._id">
+                        {{banner.banner_title}}
+                        
+                        <a [href]="banner.redirect_url" [ngClass]="banner.action_link == 'a' ? 'active-text' : 'btn btn-primary btn-xs'" target="_blank"> {{banner.action_text}}</a>
+                    </ng-template>
+                  </ng-container>
+              
+                </owl-carousel-o>  
+              </div>
+              
+            <nav>
+                <div class="container d-flex align-items-center justify-content-between">
+                    <a class="navbar-logo">
+                        <span class="white">
+                            <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+helper.randomQueryParam" alt="logo"
+                                class="navbar-logo">
+                        </span>
+                        <span class="dark">
+                            <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+helper.randomQueryParam" alt="logo" class="navbar-logo"
+                                *ngIf="!logoClr">
+                            <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+helper.randomQueryParam" alt="logo" class="navbar-logo"
+                                *ngIf="logoClr">
+                        </span>
+                    </a>
+                    <div class="d-flex align-items-center">
+                        <ul class="navbar-nav d-none d-lg-flex flex-row">
+                            <li class="nav-item" *ngIf="citytypes"><a (click)="scrollTo('scroll_2')"
+                                    href="javascript:;" id="ride_with_us">{{'home-page.ride-with-us' |
+                                    translate}}</a></li>
+                            <li class="nav-item" *ngIf="DRIVER_WEB" id="driver_with_us"><a href="{{DRIVER_WEB}}" target="_blank">{{'home-page.drive-with-us' |
+                                    translate}}</a>
+                            </li>
+                            <li class="nav-item"><a (click)="scrollTo('scroll_3')" id="app_eber" href="javascript:;">{{'home-page.app'
+                                    |
+                                    translate}}</a></li>
+                        </ul>
+                        <ul class="navbar-nav d-flex flex-row">
+                            <li class="nav-item pr-0">
+                                <div dropdown>
+                                    <a *ngIf="true" type="button" id="language" dropdownToggle=""
+                                        class="btn btn-outline-primary userName d-flex align-items-center fz-1rem"
+                                        aria-haspopup="true">
+                                        <span class="userName truncate">{{this.langService.languageShorthand |
+                                            uppercase}} </span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right mt-3 position-absolute" *dropdownMenu
+                                        role="menu">
+                                        <a class="dropdown-item c-pointer" id="language-{{i}}" *ngFor="let item of languages ; let i = index"
+                                            (click)="onLanguageChange(item)">{{item.label | titlecase}}</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nav-item pr-0">
+                                <a class="btn btn-outline-primary btn-sm pr-4 pl-4 d-flex align-items-center c-pointer"
+                                    (click)="openModal()" *ngIf="!helper.user_details" id="user_login">
+                                    {{'button-title.login' | translate }}
+                                </a>
+                                <div dropdown>
+                                    <button *ngIf="helper.user_details" type="button"  id="profile_dropdown" dropdownToggle=""
+                                        class="btn btn-primary userName d-flex align-items-center" aria-haspopup="true">
+                                        <img class="lazyload userimg" (error)="$event.target.src = DEFAULT_USER_PROFILE"
+                                            [src]="helper.user_details.picture ? (IMAGE_URL + helper.user_details.picture) : DEFAULT_USER_PROFILE"
+                                            [alt]="helper.user_details.first_name">
+                                        <span
+                                            class="userName truncate d-none d-xs-block">{{helper.user_details.first_name}}</span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right mt-3 position-absolute" *dropdownMenu
+                                        role="menu">
+                                        <a class="dropdown-item c-pointer"
+                                            routerLink="/app/profile" id="account">{{'label-title.account' | translate}}</a>
+                                        <a class="dropdown-item c-pointer"
+                                            routerLink="/app/create-trip" id="to_book_trip">{{'label-title.book-trip' | translate}}</a>
+                                        <a class="dropdown-item c-pointer"
+                                            routerLink="/app/history" id="to_history">{{'label-title.history' | translate}} </a>
+                                        <a class="dropdown-item c-pointer" id="to_future_request"
+                                            routerLink="/app/future-requests">{{'menu.future-request' |
+                                            translate}}
+                                        </a>
+
+                            <li class="divider dropdown-divider"></li>
+                            <a class="dropdown-item c-pointer" id="user_sign_up" (click)="signOut()">{{'label-title.sign-out' |
+                                translate}}</a>
+                    </div>
+                </div>
+                </li>
+                </ul>
+                <span class="mobile-menu-button pl-4" id="mobile_menu"
+                    (click)="showMobileMenu=!showMobileMenu; $event.stopPropagation()">
+                    <i class="simple-icon-menu"></i>
+                </span>
+    </div>
+</div>
+</nav>
+</ngx-headroom>
+
+
+<div class="content-container" id="scroll_1">
+
+    <div class="section home"
+        [ngStyle]="{background: 'url('+ IMAGE_URL+'user_panel_images/bg_image.jpg?'+ randomQueryParam + ') no-repeat 0 0 / cover'}"
+        style="background-repeat: no-repeat; background-size: cover;height: 100vh;">
+
+        <div class="container">
+            <div class="row home-row">
+                <div class="col-12 d-block d-md-none">
+                </div>
+
+                <div class="col-12 col-xl-4 col-lg-5 col-md-7">
+                    <div class="home-text">
+                        <div class="display-1 mb-0">{{'home-page.book_taxi_at' | translate}}</div>
+                        <div class="col-12 p-0 footer-content my-2">
+                            <a (click)="scrollTo('scroll_1')" href="javascript:;" id="scroll_logo">
+                                <img class="eber-logo whiteLogo" alt="footer logo"
+                                    [src]="IMAGE_URL + 'web_images/user_logo.png?'+helper.randomQueryParam">
+                            </a>
+                        </div>
+
+                        <p class="white mb-0">
+                            {{'home-page.need_comfortable_ride' | translate}}<br />
+                            <br />
+                            {{'home-page.book_with_eber' | translate}} <br />
+                            <br />
+                        </p>
+                        <div class="d-flex flex-column w-fit-content home-btn">
+                            <a class="btn btn-light btn-xl mr-2 mb-2 c-pointer" id="home_user_login" *ngIf="!helper.user_details"
+                                (click)="RegisterModal()">
+                                {{'home-page.login_now' | translate}}<i class="simple-icon-arrow-right"></i>
+                            </a>
+                            <a class="btn btn-light btn-xl mr-2 mb-2 c-pointer" id="home_ride_now" routerLink="/app/create-trip"
+                                *ngIf="helper.user_details">
+                                {{'home-page.ride_now' | translate}}<i class="simple-icon-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+    </div>
+
+    <div class="section mb-0 pb-0" *ngIf="!helper.user_details">
+        <div class="container" id="get_fare_estimate">
+            <div>
+                <div class="row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <img alt="feature.title" [src]="IMAGE_URL+'user_panel_images/map.jpg?'+randomQueryParam"
+                            style="object-position: unset;height: 400px;"
+                            class="feature-image-left feature-image-charts fare-estimate-img" />
+                    </div>
+                    <div
+                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center justify-content-center text-center">
+                        <div class="feature-text-container mt-4">
+                            <h2>{{'home-page.to_get_fare_estimate' | translate}}</h2>
+                            <a class="btn btn-primary btn-xl mr-2 mb-2 c-pointer" id="home_get_fare_estimate" routerLink="/app/create-trip">
+                                {{'home-page.Get_Fare_Estimate' | translate | uppercase}}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="container" id="features">
+            <div class="row">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+                    <h1>{{'home-page.looking_for_worldclass_taxi' | translate}}</h1>
+                    <p>
+                        {{'home-page.get_started_with_eber_taxi' | translate}}
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <div class="row feature-row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+                        <div class="feature-text-container">
+                            <h2>{{'home-page.rentals' | translate}}</h2>
+                            <p>{{'home-page.about_rentals' | translate}}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 offset-lg-1 offset-md-0 position-relative">
+                        <img alt="{{'home-page.rentals' | translate}}" [src]="IMAGE_URL+'user_panel_images/rentals.png?'+randomQueryParam"
+                            class="feature-image-right feature-image-charts position-relative" />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row feature-row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-6 order-2 order-md-1">
+                        <img alt="{{'home-page.taxi_hailing' | translate}}"
+                            [src]="IMAGE_URL+'user_panel_images/taxi_hailing.jpeg?'+randomQueryParam"
+                            class="feature-image-left feature-image-charts" />
+                    </div>
+                    <div
+                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center order-1 order-md-2">
+                        <div class="feature-text-container">
+                            <h2>{{'home-page.taxi_hailing' | translate}}</h2>
+                            <p class="mb-4">{{'home-page.about_taxi_hailing1' | translate}}</p>
+                            <p>{{'home-page.about_taxi_hailing2' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row feature-row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+                        <div class="feature-text-container">
+                            <h2>{{'home-page.ride_share' | translate}}</h2>
+                            <p class="mb-4">{{'home-page.about_ride_share1' | translate}}</p>
+                            <p>{{'home-page.about_ride_share2' | translate}}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 offset-lg-1 offset-md-0 position-relative">
+                        <img alt="{{'home-page.ride_share' | translate}}"
+                            [src]="IMAGE_URL+'user_panel_images/ride_share.jpg?'+randomQueryParam"
+                            class="feature-image-right feature-image-charts position-relative" />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row feature-row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-6 order-2 order-md-1">
+                        <img alt="{{'home-page.split_payment' | translate}}"
+                            [src]="IMAGE_URL+'user_panel_images/split_payment.jpg?'+randomQueryParam"
+                            class="feature-image-left feature-image-charts" />
+                    </div>
+                    <div
+                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center order-1 order-md-2">
+                        <div class="feature-text-container">
+                            <h2>{{'home-page.split_payment' | translate}}</h2>
+                            <p class="mb-4">{{'home-page.about_split_payment1' | translate}}</p>
+                            <p>{{'home-page.about_split_payment2' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row feature-row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+                        <div class="feature-text-container">
+                            <h2>{{'home-page.driver_going_to_home' | translate}}</h2>
+                            <p class="mb-4">{{'home-page.about_driver_going_to_home1' | translate}}</p>
+                            <p>{{'home-page.about_driver_going_to_home2' | translate}}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6 offset-lg-1 offset-md-0 position-relative">
+                        <img alt="{{'home-page.driver_going_to_home' | translate}}"
+                            [src]="IMAGE_URL+'user_panel_images/driver_going_home.jpg?'+randomQueryParam"
+                            class="feature-image-right feature-image-charts position-relative" />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row feature-row overflow-hidden">
+                    <div class="col-12 col-md-6 col-lg-6 order-2 order-md-1">
+                        <img alt="MULTIPLE STOP" [src]="IMAGE_URL+'user_panel_images/multiple_stop.png?'+randomQueryParam"
+                            class="feature-image-left feature-image-charts" />
+                    </div>
+                    <div
+                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center order-1 order-md-2">
+                        <div class="feature-text-container">
+                            <h2>{{'home-page.multiple_stop' | translate}}</h2>
+                            <p class="mb-4">{{'home-page.about_multiple_stop1' | translate}}</p>
+                            <p>{{'home-page.about_multiple_stop2' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section background">
+        <div class="container" id="layouts">
+            <div class="row">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+
+                    <h1>{{'home-page.ride_comfortably_with_eber' | translate}}</h1>
+
+                    <p>
+                        {{'home-page.do_you_need_taxi_at_your_doorsteps' | translate}}
+                        <br>
+                        {{'home-page.choose_eber_fixed_prices' | translate}}
+                        <br>
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="row pt-5">
+                <div class="col-6 col-xs-4 col-sm-4 col-md-3 col-lg-2 mb-5 ">
+                    <img class="img-fluid border-radius depth-2 mb-3 semi-rounded" style="padding: 15px;"
+                        [src]="IMAGE_URL+'user_panel_images/extensive_range_of_cabs.png?'+randomQueryParam" alt="image">
+                    <h4 class="text-center">{{'home-page.extensive_range_of_cabs' | translate}}</h4>
+                </div>
+                <div class="col-6 col-xs-4 col-sm-4 col-md-3 col-lg-2 mb-5 ">
+                    <img class="img-fluid border-radius depth-2 mb-3 semi-rounded" style="padding: 15px;"
+                        [src]="IMAGE_URL+'user_panel_images/secure_and_swift_ride.png?'+randomQueryParam" alt="image">
+                    <h4 class="text-center">{{'home-page.secure_and_swift_ride' | translate}}</h4>
+                </div>
+                <div class="col-6 col-xs-4 col-sm-4 col-md-3 col-lg-2 mb-5 ">
+                    <img class="img-fluid border-radius depth-2 mb-3 semi-rounded" style="padding: 15px;"
+                        [src]="IMAGE_URL+'user_panel_images/licensed_drivers.png?'+randomQueryParam" alt="image">
+                    <h4 class="text-center">{{'home-page.licensed_drivers' | translate}}</h4>
+                </div>
+                <div class="col-6 col-xs-4 col-sm-4 col-md-3 col-lg-2 mb-5 ">
+                    <img class="img-fluid border-radius depth-2 mb-3 semi-rounded" style="padding: 15px;"
+                        [src]="IMAGE_URL+'user_panel_images/cashless_rides.png?'+randomQueryParam" alt="image">
+                    <h4 class="text-center">{{'home-page.cashless_rides' | translate}}</h4>
+                </div>
+                <div class="col-6 col-xs-4 col-sm-4 col-md-3 col-lg-2 mb-5 ">
+                    <img class="img-fluid border-radius depth-2 mb-3 semi-rounded" style="padding: 15px;"
+                        [src]="IMAGE_URL+'user_panel_images/airport_transfer.png?'+randomQueryParam" alt="image">
+                    <h4 class="text-center">{{'home-page.airport_transfer' | translate}}</h4>
+                </div>
+                <div class="col-6 col-xs-4 col-sm-4 col-md-3 col-lg-2 mb-5 ">
+                    <img class="img-fluid border-radius depth-2 mb-3 semi-rounded" style="padding: 15px;"
+                        [src]="IMAGE_URL+'user_panel_images/flexible_booking.png?'+randomQueryParam" alt="image">
+                    <h4 class="text-center">{{'home-page.flexible_bookings' | translate}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" *ngIf="citytypes">
+        <div class="container" id="scroll_2">
+            <div class="row">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center mb-4">
+                    <h1>{{'home-page.taxi' | translate | titlecase}}</h1>
+                    <p class="section-text">
+                        {{'home-page.options_for_where_you_going' | translate}}
+                    </p>
+                </div>
+            </div>
+            <div class="row screenshots">
+                <div class="col-12 text-center mb-4">
+                    <tabset class="nav nav-tabs justify-content-center" [justified]="true">
+                        <tab heading="{{ 'home-page.normal' | translate}}" class="card-body h-100" id="normal">
+                            <!-- Now -->
+                            <div class="row pt-2">
+                                <div class="col-12 col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-left "
+                                    *ngFor="let item1 of citytypes; let i=index">
+                                    <div class="">
+                                        <app-profile-user-portfolio>
+                                            <a>
+                                                <div class="card mb-4 " style="text-align: -webkit-left;">
+                                                    <img (error)="$event.target.src = TAXI_ICON" alt="Profile"
+                                                        [src]="citytypes[i].type_details.type_image_url ? (IMAGE_URL + citytypes[i].type_details.type_image_url) : TAXI_ICON"
+                                                        alt="vehicle" class="card-img-top object-fit-cover"
+                                                        style="height: 180px;">
+                                                    <div class="card-body p-3">
+                                                        <h4 class="text-center">{{item1.type_details.typename}}
+                                                        </h4>
+                                                        <p class="text-muted text-small mb-2">
+                                                            {{'home-page.about' | translate}}</p>
+                                                        <p class="text-muted text-small mb-2">
+                                                            {{'home-page.location' | translate}}</p>
+                                                        <p class="mb-3">{{item1.cityname}},
+                                                            {{item1.countryname}}</p>
+                                                        <div class="ps-content">
+                                                            <table aria-describedby="table" class="table table-sm table-borderless taxi-table" aria-describedby="taxi-table-normal">
+                                                                <th hidden></th>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="td-left"> <span
+                                                                                class="font-weight-medium">{{'home-page.base_price'
+                                                                                | translate}}</span> </td>
+                                                                        <td class="text-right">
+                                                                            <span
+                                                                                class="text-muted">{{typelist.currencysign}}{{math.round(item1.base_price)}}/
+                                                                                <span
+                                                                                    *ngIf="item1.base_price_distance>1">{{item1.base_price_distance}}</span>
+                                                                                    <span *ngIf="typelist.city_detail?.unit == 1">
+                                                                                        {{'label-title.km' | translate}}
+                                                                                    </span>
+                                                                                    <span *ngIf="typelist.city_detail?.unit == 0">
+                                                                                        {{'label-title.mile' | translate}}
+                                                                                    </span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="td-left">
+                                                                            <span
+                                                                                class="font-weight-medium">{{'home-page.distance_price'
+                                                                                | translate}}</span>
+                                                                        </td>
+                                                                        <td class="text-right">
+                                                                            <span
+                                                                                class="text-muted">{{typelist.currencysign}}{{item1.price_per_unit_distance}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="td-left">
+                                                                            <span
+                                                                                class="font-weight-medium">{{'home-page.time_price'
+                                                                                | translate}}</span>
+                                                                        </td>
+                                                                        <td class="text-right">
+                                                                            <span
+                                                                                class="text-muted">{{typelist.currencysign}}{{item1.price_for_total_time}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </app-profile-user-portfolio>
+                                    </div>
+                                </div>
+                            </div>
+                        </tab>
+
+                        <tab heading="{{ 'home-page.ride-share' | translate}}" class="card-body h-100"
+                            *ngIf="pooltypes && pooltypes.length > 0" id="rideshare">
+                            <!-- Ride Share -->
+                            <div class="row pt-2">
+                                <div class="col-12 col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-left "
+                                    *ngFor="let item2 of pooltypes; let i=index">
+                                    <div class="">
+                                        <app-profile-user-portfolio>
+                                            <a>
+                                                <div class="card mb-4 " style="text-align: -webkit-left;">
+                                                    <img (error)="$event.target.src = TAXI_ICON" alt="Profile"
+                                                        [src]="pooltypes[i].type_details.type_image_url ? (IMAGE_URL + pooltypes[i].type_details.type_image_url) : TAXI_ICON"
+                                                        alt="vehicle" class="card-img-top object-fit-cover"
+                                                        style="height: 180px;">
+                                                    <div class="card-body p-3">
+                                                        <h4 class="text-center">{{item2.type_details.typename}}
+                                                        </h4>
+                                                        <p class="text-muted text-small mb-2">
+                                                            {{'home-page.about' | translate}}</p>
+                                                        <p class="text-muted text-small mb-2">
+                                                            {{'home-page.location' | translate}}</p>
+                                                        <p class="mb-3">{{item2.cityname}},
+                                                            {{item2.countryname}}</p>
+                                                        <div class="ps-content">
+                                                            <table aria-describedby="table" class="table table-sm table-borderless" aria-describedby="taxi-table-ride-share">
+                                                                <th hidden></th>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="td-left"> <span
+                                                                                class="font-weight-medium">{{'home-page.base_price'
+                                                                                | translate}}</span> </td>
+                                                                        <td class="text-right">
+                                                                            <span
+                                                                                class="text-muted">{{typelist.currencysign}}{{math.round(item2.base_price)}}/
+                                                                                <span
+                                                                                    *ngIf="item2.base_price_distance>1">{{item2.base_price_distance}}</span>
+                                                                                    <span *ngIf="typelist.city_detail?.unit == 1">
+                                                                                        {{'label-title.km' | translate}}
+                                                                                    </span>
+                                                                                    <span *ngIf="typelist.city_detail?.unit == 0">
+                                                                                        {{'label-title.mile' | translate}}
+                                                                                    </span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="td-left">
+                                                                            <span
+                                                                                class="font-weight-medium">{{'home-page.distance_price'
+                                                                                | translate}}</span>
+                                                                        </td>
+                                                                        <td class="text-right">
+                                                                            <span
+                                                                                class="text-muted">{{typelist.currencysign}}{{item2.price_per_unit_distance}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="td-left">
+                                                                            <span
+                                                                                class="font-weight-medium">{{'home-page.time_price'
+                                                                                | translate}}</span>
+                                                                        </td>
+                                                                        <td class="text-right">
+                                                                            <span
+                                                                                class="text-muted">{{typelist.currencysign}}{{item2.price_for_total_time}}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </app-profile-user-portfolio>
+                                    </div>
+                                </div>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section pb-0">
+        <div class="container" id="scroll_3">
+            <div class="row">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+                    <h1>{{'home-page.download_app' | translate}}</h1>
+                    <p>
+                        {{'home-page.download_eber_for_booking' | translate}}
+                    </p>
+                </div>
+                <div class="col-12 offset-0 col-lg-6 offset-lg-3 newsletter-input-container">
+                    <div class="text-center mb-3">
+                        <img src="../../../assets/img/home page/google-play.svg" alt="PLAY STORE" class="img-store m-0">
+                        <img src="../../../assets/img/home page/5a354ef694c9a9.4930814115134430626094.png"
+                            alt="APPLE STORE" class="img-store">
+                    </div>
+                    <div class="text-center mb-3 d-flex justify-content-center">
+                        <a [href]="setting_detail?.android_client_app_url" id="app_play_store"
+                            class="btn btn-primary btn-store" target="_blank">{{'home-page.play_store' |
+                            translate}}
+                        </a>
+                        <a [href]="setting_detail?.ios_client_app_url" id="app_app_store"
+                            class="btn btn-primary btn-store" target="_blank">{{'home-page.apple_store' |
+                            translate}}
+                        </a>
+                    </div>
+                    <div class="text-center mb-3 d-flex flex-wrap align-items-center justify-content-center">
+                        <a href="tel:{{admin_detail.admin_phone}}"  id="admin_phne" class="p-2" style="margin-left: 6px;"><i
+                                class="demo-icon iconsminds-smartphone-3"></i>
+                            {{admin_detail.admin_phone}}
+                        </a>/
+                        <a href="mailto:{{admin_detail.contactUsEmail}}" id="admin_contact" class="p-2"><i
+                                class="demo-icon iconsminds-email"></i>
+                            {{admin_detail.contactUsEmail}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container copyright pt-5">
+            <div class="row">
+                <div class="col-12"></div>
+                <div class="col-12 text-center">
+                    <p class="mb-0 rtl-d-none">{{current_year}}{{'home-page.eber_elluminati' | translate}}</p>
+                    <p class="mb-0 rtl-d-block d-none">© {{current_year}}{{'home-page.rtl_rydex_elluminati' | translate}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+<div class="scroll-to-top" *ngIf="showBtn$ | async">
+    <button (click)="scrollTo('scroll_1')" id="scroll_top" class="btn btn-outline-primary scrollup-icon-btn">
+        <i class="fa-solid fa-angle-up"></i>
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+</div>
+<div class="guest-button" *ngIf="setting_detail?.is_guest_token && guestToken?.length > 0">
+    <a href="javascript:;" class="float-iframe-btn d-flex align-items-center justify-content-center"
+        [class.active]="isShowPopup" (click)="togglePopup()" is="guest_trip_btn">
+        <i class="fa my-float-iframe-btn fa-paper-plane" *ngIf="!isShowPopup" aria-hidden="true"></i>
+        <i class="fa-sharp fa-solid fa-xmark" style="font-size: 20px;" *ngIf="isShowPopup"></i>
+    </a>
+</div>
+
+<div class="guest-ride-popup" [hidden]="!isShowPopup" id="guest_ride">
+    <div class="head py-2 px-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="app-name">
+                <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+helper.randomQueryParam" alt="">
+            </div>
+            <div class="booking d-flex align-items-center">
+                <div class="book px-3" [ngClass]="selected_tab === TABS.TAB1 ? 'tab-active' : ''">
+                    <a href="javascript:;" id="guest_book_trip" (click)="tabChange(TABS.TAB1)">{{'heading-title.book' | translate}}</a>
+                </div>
+                <div class="track px-3" [ngClass]="selected_tab === TABS.TAB2 ? 'tab-active' : ''">
+                    <a href="javascript:;" id="guest_track_trip" (click)="tabChange(TABS.TAB2)">{{'heading-title.track' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="details-content" [hidden]="selected_tab === TABS.TAB2" style="margin-top: -2px;">
+        <div class="card">
+            <div class="card-body pb-3 mb-2">
+                <form class="user-form" [formGroup]="guestTripForm">
+                    <div class="user-details pb-2">
+                        <p>{{'heading-title.user-details' | translate}}</p>
+                        <div class="form-group">
+                            <label for="phone" class="col-form-label">{{'label-title.first-name' | translate}}</label>
+                            <div class="">
+                                <input class="form-control" formControlName="first_name" id="guest_first_name"
+                                    placeholder="{{'label-title.first-name' | translate}}">
+                                <div *ngIf="guestTripForm.get('first_name').errors && guestTripForm.get('first_name').touched"
+                                    class="error">
+                                    <span *ngIf="guestTripForm.get('first_name').errors.required">
+                                        {{'validation-title.first-name-is-required' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-form-label">{{'label-title.last-name' | translate}}</label>
+                            <div class=""><input formControlName="last_name" class="form-control" id="guest_last_name"
+                                    placeholder="{{'label-title.last-name' | translate}}">
+                                <div *ngIf="guestTripForm.get('last_name').errors && guestTripForm.get('last_name').touched"
+                                    class="error">
+                                    <span *ngIf="guestTripForm.get('last_name').errors.required">
+                                        {{'validation-title.last-name-is-required' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-form-label">{{'label-title.country' | translate}}</label>
+                            <ng-select appearance="outline" #agreeSelect
+                                placeholder="{{'label-title.select-country' | translate}}"
+                                formControlName="country_phone_code" labelForId="country" [clearable]="false"
+                                [searchable]="true" (change)="onCountryChange($event)" id="guest_select_country">
+                                <ng-option *ngFor="let country of country_list"
+                                    [value]="country.code">{{country.name}}</ng-option>
+                            </ng-select>
+                            <div *ngIf="guestTripForm.get('country_phone_code').errors && guestTripForm.get('country_phone_code').touched"
+                                class="error">
+                                <span *ngIf="guestTripForm.get('country_phone_code').errors.required">
+                                    {{'validation-title.country-is-required' | translate}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-form-label">{{'label-title.phone' | translate}}</label>
+                            <div class=""><input formControlName="phone" id="guest_phone" class="form-control"
+                                    placeholder="{{'label-title.phone' | translate}}" (keypress)="helper.phone_number_validation($event)">
+                                <div *ngIf="guestTripForm.get('phone').errors && guestTripForm.get('phone').touched"
+                                    class="error">
+                                    <span *ngIf="guestTripForm.get('phone').errors.required">
+                                        {{'validation-title.phone-is-required' | translate}}
+                                    </span>
+                                    <span *ngIf="guestTripForm.get('phone').errors.minlength">{{'label-title.min_phoneno_length' | translate}} {{setting_detail?.minimum_phone_number_length}}</span>
+                                    <span *ngIf="guestTripForm.get('phone').errors.maxlength">{{'label-title.max_phoneno_length' | translate}} {{setting_detail?.maximum_phone_number_length}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="address-details pb-2">
+                        <p>{{'heading-title.adress-details' | translate}}</p>
+                        <div class="form-group pickup-address-search-location">
+                            <label for="phone" class="col-form-label">{{'mapcomponent.pickup-address' |
+                                translate}}</label>
+                            <div class="input-wrp"><input formControlName="pickup_address" id="address"
+                                    class="form-control" placeholder="{{'mapcomponent.pickup-address' | translate}}">
+                                <div *ngIf="guestTripForm.get('pickup_address').errors && guestTripForm.get('pickup_address').touched"
+                                    class="error">
+                                    <span *ngIf="guestTripForm.get('pickup_address').errors.required">
+                                        {{'validation-title.pickup-address-is-required' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group destination-address-search-location">
+                            <label for="phone" class="col-form-label"> {{'mapcomponent.destination-address' |
+                                translate}}</label>
+                            <div class="input-wrp1"><input formControlName="destination_address" id="destinationAddress"
+                                    class="form-control"
+                                    placeholder="{{'mapcomponent.destination-address' | translate}}">
+                                <div *ngIf="guestTripForm.get('destination_address').errors && guestTripForm.get('destination_address').touched"
+                                    class="error">
+                                    <span *ngIf="guestTripForm.get('destination_address').errors.required">
+                                        {{'validation-title.destination-address-is-required' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <p *ngIf="same_location_error" class="text-center text-danger">{{'label-title.same-pickup-destination-error' | translate}}</p>
+                        <p *ngIf="isOutofCountry" class="text-danger text-one text-center">{{'label-title.enter-same-pickup-destination-country' | translate
+                        }}</p>
+                        <p class="text-danger text-one text-center" *ngIf="!is_business">{{'label-title.our-business-not-in-your-city' | translate }}</p>
+                    </div>
+                    <div class="options" *ngIf="!isShowButtons">
+                        <p>{{'heading-title.your-options' | translate}}</p>
+                        <div class="form-group">
+                            <label for="" class="col-form-label">{{'label-title.service-type' | translate}}</label>
+                            <ng-select appearance="outline" #agreeSelect id="guest_service_type"
+                                placeholder="{{'label-title.select-service-type' | translate}}"
+                                formControlName="service_type_id" labelForId="yesno" [searchable]="true"
+                                [clearable]="false" (change)="onChangeService()">
+                                <ng-option *ngFor="let serviceType of fareEstimateData"
+                                    [value]="serviceType._id">{{serviceType.name}}</ng-option>
+                            </ng-select>
+                            <div *ngIf="guestTripForm.get('service_type_id').errors && guestTripForm.get('service_type_id').touched"
+                                class="error">
+                                <span *ngIf="guestTripForm.get('service_type_id').errors.required">
+                                    {{'validation-title.destination-address-is-required' | translate}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button"
+                                class="btn btn-primary w-100 text-left d-flex justify-content-between align-items-center"
+                                style="border-radius: 6px;" (click)="openModal2(template)" id="guest_fare_estimate"
+                                [disabled]="!guestTripForm.value.pickup_address || !guestTripForm.value.destination_address || !guestTripForm.value.service_type_id"><span
+                                    class="mr-auto"> {{'home-page.get_fare_estimate' | translate}} </span><i
+                                    class="fa fa-long-arrow-right "></i></button>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button"
+                                class="btn btn-primary w-100 text-left d-flex justify-content-between align-items-center" id="guest_ride_now"
+                                style="border-radius: 6px;" (click)="onBook(false)" [disabled]="!isProvider"><span
+                                    class="mr-auto"> {{'button-title.ride-now'
+                                    | translate | uppercase}} </span><i class="fa fa-long-arrow-right "></i></button>
+                        </div>
+                        <div class="">
+                            <button class="btn btn-primary text-nowrap w-100 d-flex justify-content-between align-items-center btnOrder mb-3 c-pointer" type="button"
+                                style="order: 0 !important;border-radius: 6px;" [(ngModel)]="checkModel.left" [ngModelOptions]="{standalone: true}" ngDefaultControl btnCheckbox tabindex="0" role="button" (click)="scheduleRide()" id="guest_schedule_ride">
+                                <span class="text-left"> {{'button-title.schedule-ride' | translate | uppercase}}
+                                <div *ngIf="scheduleDate && scheduleTime">
+                                    {{scheduleDate | date:helper.DATE_FORMAT.DD_MM_YYYY}} {{'button-title.at' |
+                                    translate}} {{scheduleTime}}
+                                </div>
+                                </span>
+                                <i class="fa fa-long-arrow-right "></i>
+                            </button>
+                            <button class="btn btn-primary mb-0 w-100 d-flex justify-content-between align-items-center c-pointer" type="button"
+                                (click)="date_time_picker()" *ngIf="scheduleDate && scheduleTime" style="border-radius: 6px;" id="guest_change_schedule"
+                                [(ngModel)]="checkModel.right" ngDefaultControl btnCheckbox [ngModelOptions]="{standalone: true}" tabindex="0" role="button"
+                                >
+                                <span> {{'button-title.change-schedule' | translate | uppercase}} </span>
+                                <i class="fa fa-long-arrow-right "></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="track-content" [hidden]="selected_tab === TABS.TAB1">
+        <div class="tracking-map position-relative">
+            <div class="map-component">
+                <div id="map"></div>
+                <div class="trackid-search position-absolute">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group"> 
+                                <div class=""><input type="number" required class="form-control" id="guest_track_id" [(ngModel)]="trackId"
+                                        placeholder="{{'label-title.enter-trip-id' | translate}}">
+                                </div>
+                                <div *ngIf="trackId=='' && submited == true" class="error">
+                                    {{'label-title.trip-id' | translate}} {{'label-title.is-required' | translate}}
+                                </div>
+                            </div>
+                            <div class="search-btn">
+                                <button type="button" class="btn btn-primary d-flex justify-content-between w-100 align-items-center"
+                                    style="border-radius: 6px;" (click)="onTrack()" id="guest_trip_search"> <span> {{'button-title.search' | translate | uppercase}} </span> <i
+                                        class="fa fa-long-arrow-right "></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="location-pins position-absolute" *ngIf="!guestUserId">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <p class="mb-2"> <span><img [src]="DEFAULT_IMAGE.DRIVER_ICON" width="16px" alt=""></span>
+                                {{'label-title.driver-location' | translate}} </p>
+                            <p class="mb-2"> <span><img [src]="DEFAULT_IMAGE.PICKUP_ICON" width="16px" alt=""></span>
+                                {{'label-title.pickup-location' | translate}} </p>
+                            <p class="mb-0"> <span><img [src]="DEFAULT_IMAGE.DESTINATION_ICON" width="16px"
+                                        alt=""></span> {{'label-title.destination-location' | translate}} </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trip-address position-absolute" *ngIf="guestUserId">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="pickup">
+                                <p class="mb-2"> <img [src]="DEFAULT_IMAGE.PICKUP_ICON" width="16px" alt=""> {{guestTripData?.source_address}}  </p>
+                            </div>
+                            <div class="pickup">
+                                <p class="mb-0"> <img [src]="DEFAULT_IMAGE.DESTINATION_ICON" width="16px" alt=""> {{guestTripData?.destination_address}} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trip-details position-absolute" *ngIf="guestUserId">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="details d-flex justify-content-between justify-content-between">
+                                <p>{{'heading-title.trip' | translate}} {{'heading-title.status' | translate}}</p>
+                                <div *ngIf="guestTripData">
+                                    <p *ngIf="guestTripData.is_provider_status == helper.PROVIDER_STATUS.COMPLETED && guestTripData.is_trip_cancelled !== 1">{{'label-title.completed' | translate}}</p>
+                                    <p *ngIf="guestTripData.is_provider_status == helper.PROVIDER_STATUS.STARTED && guestTripData.is_trip_cancelled !== 1">{{'label-title.started' | translate}}</p>
+                                    <p *ngIf="guestTripData.is_provider_status == helper.PROVIDER_STATUS.ARRIVED && guestTripData.is_trip_cancelled !== 1">{{'label-title.arrived' | translate}}</p>
+                                    <p *ngIf="guestTripData.is_provider_status == helper.PROVIDER_STATUS.COMING && guestTripData.is_trip_cancelled !== 1">{{'label-title.coming' | translate}}</p>
+                                    <p *ngIf="(guestTripData.is_provider_status == helper.PROVIDER_STATUS.ACCEPT || guestTripData.is_provider_status == helper.PROVIDER_STATUS.WAITING) && guestTripData.is_provider_accepted == 1 && guestTripData.is_trip_cancelled !== 1">{{'label-title.accepted' | translate}}</p>
+                                    <p *ngIf="(guestTripData.is_provider_status == helper.PROVIDER_STATUS.ACCEPT || guestTripData.is_provider_status == helper.PROVIDER_STATUS.WAITING) && guestTripData.is_provider_accepted != 1 && guestTripData.is_trip_cancelled !== 1">{{'label-title.waiting' | translate}}</p>
+                                    <p *ngIf="guestTripData.is_trip_cancelled == 1 && guestTripData.is_trip_cancelled_by_provider == 1">{{'label-title.cancel-by-provider' | translate}}</p>
+                                    <p *ngIf="guestTripData.is_trip_cancelled == 1 && guestTripData.is_trip_cancelled_by_user == 1">{{'label-title.cancel-by-user' | translate}}</p>
+                                    <p *ngIf="guestTripData.is_trip_cancelled == 1 && guestTripData.is_trip_cancelled_by_user == 0 && guestTripData.is_trip_cancelled_by_provider == 0">{{'label-title.cancel' | translate}}</p>
+                                </div>
+                            </div>
+                            <div class="details d-flex justify-content-between">
+                                <p>{{'label-title.time' | translate}}</p>
+                                <div>
+                                    <p *ngIf="guestTripData?.is_provider_status >= helper.PROVIDER_STATUS.STARTED">{{convertMinsToHrsMins(guestTripData.total_time)}} </p>
+                                    <p *ngIf="!(guestTripData?.is_provider_status >= helper.PROVIDER_STATUS.STARTED)"> -- </p>
+                                </div>
+                            </div>
+                            <div class="details  d-flex justify-content-between">
+                                <p>{{'label-title.distance' | translate}}</p>
+                                <div>
+                                    <p *ngIf="guestTripData?.is_provider_status >= helper.PROVIDER_STATUS.STARTED">{{guestTripData.total_distance}} 
+                                        <span *ngIf="guestTripData?.unit == 1">
+                                            {{'label-title.km' | translate}}
+                                        </span>
+                                        <span *ngIf="guestTripData?.unit == 0">
+                                            {{'label-title.mile' | translate}}
+                                        </span>
+                                    </p>
+                                    <p *ngIf="!(guestTripData?.is_provider_status >= helper.PROVIDER_STATUS.STARTED)"> -- </p>
+                                </div>
+                            </div>
+                            <div class="details invoice mb-3" *ngIf="(guestTripData?.is_provider_status == helper.PROVIDER_STATUS.COMPLETED) || guestTripData?.is_trip_cancelled == 1 ">
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0">{{'label-title.ride-charge' | translate }}</p>
+                                    <p class="mb-0 text-rtl-left">{{guestTripData?.currency}} 
+                                        {{guestTripData?.total_after_surge_fees.toFixed(helper.to_fixed_number)}}</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0">{{'label-title.tax-charges' | translate }}</p>
+                                    <p class="mb-0 text-rtl-left">{{guestTripData?.currency}} 
+                                        {{(this.guestTripData.user_tax_fee + this.guestTripData.tax_fee + this.guestTripData.user_miscellaneous_fee).toFixed(helper.to_fixed_number)}}</p>
+                                </div>
+                                <div class="mb-3 d-flex justify-content-between">
+                                    <p class="mb-0">{{'label-title.other-charges' | translate }}</p>
+                                    <p class="mb-0">{{guestTripData.currency}}
+                                        {{(guestTripData.tip_amount + guestTripData.toll_amount).toFixed(helper.to_fixed_number)}}</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0 font-weight-bold">{{'label-title.total' | translate }} </p>
+                                    <p class="mb-0 font-weight-bold text-rtl-left">{{guestTripData.currency}}
+                                        {{guestTripData.total.toFixed(helper.to_fixed_number)}}</p>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <button type="button" (click)="view_map()" id="guest_view_map" class="btn btn-primary d-flex justify-content-between w-100 align-items-center" style="border-radius: 6px;"><span>{{'button-title.view-trip-map' | translate | uppercase}}</span><i
+                                    class="fa fa-long-arrow-right "></i></button>
+                            </div>
+                            <div class="details" *ngIf="guestTripData?.is_trip_cancelled == 0 && guestTripData?.is_trip_completed == 0 && !(guestTripData?.is_provider_status >= helper.PROVIDER_STATUS.STARTED)">
+                                <button type="button" (click)="cancel_trip()" id="guest_trip_cancel" class="btn btn-outline-primary d-flex justify-content-between w-100 align-items-center mt-3" style="border-radius: 6px;"><span>{{'label-title.cancel-trip' | translate | uppercase}}</span><i
+                                    class="fa fa-long-arrow-right "></i></button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #template>
+
+        <div class="p-4">
+
+            <div class="row my-row py-4" *ngIf="fareEstimate[0]">
+                <div class="col-6 d-flex flex-column align-items-center row-gap-1">
+                    <img [src]="IMAGE_URL + fareEstimate[0].type_image" [alt]="fareEstimate[0].typename"
+                        style="width: 140px;height: 90px;border-radius: 14%;">
+                    <p class="color-theme-1 text-one">{{fareEstimate[0].typename}}</p>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex mb-1" *ngIf="fareEstimate[0].base_price">
+                        <p class=" text-small mb-0 mr-2 w-50 text-right">{{'label-title.base-fare' | translate}}:</p>
+                        <p class="w-50 mb-0 color-theme-1">
+                            {{allProviderData.currencysign}}{{fareEstimate[0].base_price}} {{'label-title.for' |
+                            translate}} {{'label-title.first' |
+                            translate}} <span
+                                *ngIf="fareEstimate[0].base_price_distance>1">{{fareEstimate[0].base_price_distance}}</span>
+                                <span *ngIf="!is_distance_unit_mile">
+                                    {{'label-title.km' | translate}}
+                                </span>
+                                <span *ngIf="is_distance_unit_mile">
+                                    {{'label-title.mile' | translate}}
+                                </span>
+                            </p>
+                    </div>
+                    <div class="d-flex align-items-center mb-1" *ngIf="fareEstimate[0].price_per_unit_distance">
+                        <p class=" text-small mb-0 mr-2 w-50 text-right">{{'label-title.distance-fare' | translate}}:
+                        </p>
+                        <p class="text-center mb-0  color-theme-1">
+                            {{allProviderData.currencysign}}{{fareEstimate[0].price_per_unit_distance}}/
+                            <span *ngIf="!is_distance_unit_mile">
+                                {{'label-title.km' | translate}}
+                            </span>
+                            <span *ngIf="is_distance_unit_mile">
+                                {{'label-title.mile' | translate}}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center mb-1" *ngIf="fareEstimate[0].price_for_total_time">
+                        <p class=" text-small mb-0 mr-2 w-50 text-right">{{'label-title.time-fare' | translate}}:</p>
+                        <p class="text-center mb-0 color-theme-1">
+                            {{allProviderData.currencysign}}{{fareEstimate[0].price_for_total_time}}/{{'label-title.min'
+                            |
+                            translate}}</p>
+                    </div>
+                    <div class="d-flex align-items-center mb-1" *ngIf="fareEstimate[0].max_space">
+                        <p class=" text-small mb-0 mr-2 w-50 text-right">{{'label-title.max-size' | translate}}:</p>
+                        <p class="text-center mb-0 color-theme-1">{{fareEstimate[0].max_space}} {{'label-title.person' |
+                            translate}}</p>
+                    </div>
+                    <div class="d-flex mb-1"
+                        *ngIf="fareEstimate[0].cancellation_fee || fareEstimate[0].cancellation_fee==0">
+                        <p class=" text-small mb-0 mr-2 w-50 text-right">
+                            {{'label-title.cancellation-fee' |
+                            translate}}:</p>
+                        <p class="text-center mb-0 color-theme-1">
+                            {{allProviderData.currencysign}}{{fareEstimate[0].cancellation_fee}}</p>
+                    </div>
+                    <div class="d-flex align-items-center mb-1" *ngIf="fareEstimate[0].tax">
+                        <p class=" text-small mb-0 mr-2 w-50 text-right">{{'label-title.tax' | translate}}:</p>
+                        <p class="text-center mb-0 color-theme-1">{{fareEstimate[0].tax}}%</p>
+                    </div>
+                </div>
+            </div>
+            <hr *ngIf="fareEstimate[0]">
+
+            <div class="row py-4 row-gap-1 ">
+                <div class="col-12 px-5 d-flex mb-3 align-items-center pickup_add">
+                    <div class="pin-svg mr-2" style="width : 24px">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                            viewBox="0 0 68.000000 68.000000" preserveAspectRatio="xMidYMid meet">
+                            <metadata>
+                                Created by potrace 1.16, written by Peter Selinger 2001-2019
+                            </metadata>
+                            <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)" stroke="none">
+                                <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                  -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                  138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                  -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                  -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                  190 114 291 63z" />
+                                <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                  76 -135 104 -210 65z" />
+                            </g>
+                        </svg>
+                    </div>
+                    <p class="my_para color-theme-1 mb-0">{{pickup_address.address}}</p>
+                </div>
+                <div class="col-12 px-5 d-flex align-items-center">
+                    <div class="pin-svg my-img mr-2">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                            viewBox="0 0 65.000000 65.000000" preserveAspectRatio="xMidYMid meet">
+                            <metadata>
+                                Created by potrace 1.16, written by Peter Selinger 2001-2019
+                            </metadata>
+                            <g transform="translate(0.000000,65.000000) scale(0.100000,-0.100000)" stroke="none">
+                                <path d="M16 634 c-14 -13 -16 -55 -16 -308 0 -271 1 -294 18 -309 16 -15 53
+                  -17 309 -17 268 0 291 1 306 18 15 16 17 53 17 309 0 268 -1 291 -18 306 -16
+                  15 -53 17 -310 17 -251 0 -293 -2 -306 -16z m494 -309 l0 -185 -185 0 -185 0
+                  0 185 0 185 185 0 185 0 0 -185z" />
+                                <path d="M204 437 c-2 -7 -3 -62 -2 -123 l3 -109 120 0 120 0 0 120 0 120
+                  -118 3 c-91 2 -119 0 -123 -11z" />
+                            </g>
+                        </svg>
+                    </div>
+                    <p class="my_para color-theme-1 mb-0">{{destination_address.address}}</p>
+                </div>
+            </div>
+            <hr>
+
+            <div class="row justify-content-around py-4">
+                <div class="">
+                    <p class="pb-2">{{'label-title.distance' | translate}}</p>
+                    <p class="color-theme-1"><span class="text-large">{{(tripDistance *
+                            (is_distance_unit_mile?0.000621371:0.001)).toFixed(2)}}</span>
+                        {{is_distance_unit_mile?'mile':'km'}}</p>
+                </div>
+                <div class="">
+                    <p class="pb-2">{{'label-title.time' | translate}}</p>
+                    <p class="color-theme-1"><span
+                            class="text-large">{{(estimateTime/60).toFixed(0)}}</span>{{'label-title.min' |
+                        translate}}</p>
+                </div>
+            </div>
+
+            <div class="row justify-content-center pb-4">
+                <p class="text-center mb-0">{{'label-title.this-is-just-an-estimated-time' | translate}}</p>
+                <p class="text-center">{{'label-title.vary-slightly' | translate}}</p>
+            </div>
+
+            <div class="row justify-content-around">
+                <div class="" *ngIf="base_price">
+                    <p class="pb-2 text-center">{{'label-title.min-fare' | translate}}</p>
+                    <p class="color-theme-1 text-large">{{allProviderData.currencysign}}{{estimateFarePrice}}</p>
+                </div>
+                <div class="" *ngIf="!base_price">
+                    <p class="pb-2 text-center">{{'label-title.fixed-rate' | translate}}:</p>
+                    <p class="color-theme-1 text-large">{{allProviderData.currencysign}}{{estimateFarePrice}}</p>
+                </div>
+            </div>
+
+            <div class="row pt-5 pb-2 justify-content-center">
+                <button type="button" class="btn btn-primary w-50 text-one text-center pull-right" id="guest_fare_estimate_close" aria-label="Close"
+                    (click)="modalRef.hide()">
+                    <span aria-hidden="true">{{'modal.close' | translate}}</span>
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #createSchedulemodal>
+
+    <div class="p-3 p-xs-4">
+        <button type="button" class="close pull-right" aria-label="Close" id="guest_schedule_close" (click)="ScheduleDatePickerModal.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="">
+            <div class="mb-4">
+                <div class="h-100">
+                    <div class="">
+                        <h5 class="mb-4">{{ 'label-title.select-date' | translate }}</h5>
+                        <div class="form-group">
+                            <bs-datepicker-inline class="datepicker-inline" [minDate]="todayDate" [bsValue]="todayDate"
+                                (bsValueChange)="change($event)" [maxDate]="maxScheduleDate"
+                                [bsConfig]="{ dateInputFormat: 'MM/DD/YYYY', showWeekNumbers:false }">
+                            </bs-datepicker-inline>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-item-center">
+            <button id="button-basic" type="button" id="guest_date" class="btn btn-primary" (click)="timeInput.click()">
+                {{ 'button-title.select' | translate }}
+            </button>
+
+        </div>
+    </div>
+
+</ng-template>
+
+<input #timeInput [ngxTimepicker]="picker" [format]="24" id="guest_time_picker" [value]="default_schedule_time" [min]="default_schedule_time"
+    style="display:none">
+<ngx-material-timepicker #picker (timeSet)="timeset($event)"> </ngx-material-timepicker>
+
+<ng-template #scheduleRideTime>
+    <div class="p-4">
+        <div class="modal-header">
+            <h4 class="modal-title pull-left">{{'label-title.reminder' | translate }}</h4>
+        </div>
+        <div class="modal-body p-0">
+            <div class="p-4">
+                <p>
+                    {{'label-title.cannot_schedule_before' | translate }} {{date.getHours()}}:{{date.getMinutes()}}
+                </p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" (click)="confirm()" id="guset_confirm" class="btn btn-primary float-right">{{'button-title.confirm' |
+                translate}}</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #confirmationTemplate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left" *ngIf="guestTripData">{{'label-title.trip-id' | translate }} :
+        {{guestTripData.unique_id}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" id="guest_cancel_close" (click)="confirmationModalClose()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body p-0">
+      <div class="p-4">
+        <p>
+          {{'label-title.are-you-sure-you-want-to-cancel-this-trip' | translate}}
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" (click)="confirmCancelTrip()" id="guset_confirm_cancel" class="btn btn-primary float-right">{{'button-title.confirm' |
+        translate}}</button>
+    </div>
+  </ng-template>
+</div>
+
+<!-- cancel trip modal start -->
+<div class="custom-model-main " *ngIf="cancelTripmodal" [ngClass]="{'model-open':cancelTripmodal}">
+    <div class="custom-model-inner " style="width: 340px;">
+      <div class="custom-model-wrap ">
+        <div class="p-3 p-xs-4">
+          <button type="button" class="close pull-right" aria-label="Close" id="cancel_trip_close" (click)="cancelTripmodal=false">
+            <span aria-hidden="true" class="clr-primary">&times;</span>
+          </button>
+          <h3 class="mb-4 text-center" style="color: unset;">{{ 'label-title.cancel-trip' | translate }}</h3>
+          <ng-container *ngIf="trip_cancellation_fee > 0">
+            <p class="text-center cancellation_font" style="margin-bottom: 0px;">{{ 'label-title.caution' | translate }}</p>
+            <p class="text-center cancellation_font">{{ 'label-title.charges_for_cancellation_of_trip' | translate }}</p>
+            <h3 class="text-center mt-2 mb-3">{{guestTripData.currency}}{{trip_cancellation_fee}}</h3>
+          </ng-container>
+          <form action="">
+            <div *ngFor="let cancellation_reason of cancellation_reasons_list; let i = index">
+              <div class="custom-control custom-radio cancellation_font" *ngIf="cancellation_reason != ''">
+                <input type="radio" name="rdo" class="custom-control-input" style="color: unset;" (change)="onSelectReason($event)"
+                  [id]="'list'+i" [value]="cancellation_reason" />
+                <label [for]="'list'+i" class="custom-control-label" *ngIf="cancellation_reason != ''">
+                  {{cancellation_reason}}
+                </label>
+              </div>
+            </div>
+            <div class="custom-control custom-radio mb-3 cancellation_font">
+              <input type="radio" name="rdo" id="other-reason" (change)="onSelectReason($event)"
+                class="custom-control-input" value="{{'label-title.other' | translate}}" />
+              <label for="other-reason" class="mr-auto custom-control-label" style="color: unset;">
+                {{'label-title.other' | translate}}
+              </label>
+              <br>
+              <input type="text" *ngIf="cancellation_type === ('label-title.other' | translate)"
+                [(ngModel)]="cancellation_reason" [ngModelOptions]="{standalone: true}" id="cancellation_reason"
+                placeholder="{{'label-title.type-reason' | translate}}" (keypress)="helper.space_validation($event)"
+                class="form-control col-10" />
+            </div>
+            <div class="d-flex justify-content-center align-item-center">
+              <button type="button" class="btn btn-primary  mx-2" (click)="confirmCancelTrip()" id="user_cancel_trip"
+                [disabled]="!cancellation_reason" [ngClass]="{'btn-disabled':(!cancellation_reason)}">
+                {{'button-title.i-am-sure' | translate}}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="bg-overlay "></div>
+  </div>
+  <!-- cancel trip modal end -->
+
+
+<app-loader></app-loader>

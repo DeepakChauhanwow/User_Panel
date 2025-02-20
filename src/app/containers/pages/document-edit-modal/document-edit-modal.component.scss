@@ -1,0 +1,75 @@
+.card-tabs .nav-tabs {
+  padding: 0 !important;
+}
+
+.user-profile {
+  min-width: 135px;
+  min-height: 135px;
+  max-height: 135px;
+  max-width: 135px;
+}
+
+.input-group-prepend {
+  margin-right: -2px;
+}
+
+#user-chat.app-row {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+#user-chat .chat-app .chat-text-left {
+  padding-left: 0px;
+}
+
+.chat-input-container {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.chat-app .scroll {
+  height: calc(100vh - 90px - 150px);
+}
+
+.btn-circle.hero-circle-button {
+  position: relative;
+  margin-left: 10px;
+}
+
+#fileInput,
+#file {
+  display: none;
+}
+
+.mlr-20 {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.dInfo-card-img-left {
+  width: 100%;
+  border-top-left-radius: 1.1rem;
+  border-bottom-left-radius: 1.1rem;
+  border-top-right-radius: 1.1rem !important;
+  border-bottom-right-radius: 1.1rem !important;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rounded .dInfo-card-img-left {
+  border-top-left-radius: 1.1rem;
+  border-bottom-left-radius: 1.1rem;
+  border-top-right-radius: 1.1rem !important;
+  border-bottom-right-radius: 1.1rem !important;
+}
+
+.card-bottom-buttons {
+  padding: 0.3rem;
+  left: 8px;
+  bottom: 8px;
+}
+
+.documnet_img {
+  max-height: 150px;
+  min-height: 150px;
+}

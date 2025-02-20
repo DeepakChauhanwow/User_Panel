@@ -1,0 +1,350 @@
+<div class="tracking-map position-relative">
+    <div class="map-component">
+        <div class="map-card">
+            <div id="map"></div>
+        </div>
+        <div class="trip-detail">
+
+            <div class="mx-15 card" *ngIf="guestTripData && is_trip_running">
+                <div class="p-4 overflow-y custom-div-heigh trip__data">
+                    <div class="border-bottom mb-3 pb-2">
+                        <h4 class="modal-title pull-left">{{'label-title.ride-id' |
+                            translate}}:{{guestTripData?.unique_id}}
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <div
+                            class="col-12 d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+                            <a href="javascript:;" id="track_user_img" style="cursor: unset;">
+                                <img (error)="$event.target.src = DEFAULT_IMAGE"
+                                    class=" img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall"
+                                    [src]="profile_image ? profile_image : DEFAULT_IMAGE" [alt]="">
+                            </a>
+                            <div class="pl-3 flex-fill">
+                                <p class="font-weight-medium mb-0">
+                                    {{provider?.first_name}} {{provider?.last_name}}
+                                </p>
+                                <p class="text-muted mb-0 text-small">{{provider?.phone}}</p>
+                            </div>
+                            <div class="d-flex align-items-center pr-3" *ngIf="provider?.rate">
+                                <i class="simple-icon-star mr-1"></i> {{provider?.rate.toFixed(2)}}
+                            </div>
+                            <span id="is_message"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3" *ngIf="guestTripData?.is_provider_accepted == 1 && provider">
+                        <div class="col-6 col-sm-5 px-2">
+                            <div class="justify-content-center card card-box">
+                                <div
+                                    class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                    <div class="min-width-zero">
+                                        <a href="javascript:" id="track_car_model">
+                                            <p class="list-item-heading mb-1 truncate">{{provider.car_model}}</p>
+                                        </a>
+                                        <p class="mb-2 text-muted text-small">{{'label-title.vehicle-name' | translate
+                                            }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-5 px-2">
+                            <div class="justify-content-center card card-box">
+                                <div
+                                    class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                    <div class="min-width-zero">
+                                        <a href="javascript:" id="track_car_number">
+                                            <p class="list-item-heading mb-1 truncate">{{provider.car_number}}</p>
+                                        </a>
+                                        <p class="mb-2 text-muted text-small">{{'label-title.licence-plate-no' |
+                                            translate }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+                        <div class="flex-fill">
+                            <p class="font-weight-medium mb-0">{{'label-title.pickup-location' | translate
+                                }}</p>
+                            <div class="d-flex align-items-center pt-3">
+                                <div class="pin-svg my-img">
+                                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                                        viewBox="0 0 68.000000 68.000000" preserveAspectRatio="xMidYMid meet">
+                                        <metadata>
+                                            Created by potrace 1.16, written by Peter Selinger 2001-2019
+                                        </metadata>
+                                        <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                                            stroke="none">
+                                            <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                            -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                            138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                            -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                            -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                            190 114 291 63z" />
+                                            <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                            76 -135 104 -210 65z" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <p class="text-muted mb-0 text-small ml-3">{{guestTripData?.source_address}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+                        <div class="flex-fill">
+                            <p class="font-weight-medium mb-0">{{'label-title.destination-address' | translate }}</p>
+                            <div class="stop-addresses pt-3 pl-6px" *ngIf="tripAddress">
+                                <div *ngFor="let data of tripAddress" class="border-img-left">
+                                    <div class="pin-svg position-absolute" style="width : 24px">
+                                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                                            viewBox="0 0 68.000000 68.000000" preserveAspectRatio="xMidYMid meet">
+                                            <metadata>
+                                                Created by potrace 1.16, written by Peter Selinger 2001-2019
+                                            </metadata>
+                                            <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                                                stroke="none">
+                                                <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                              -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                              138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                              -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                              -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                              190 114 291 63z" />
+                                                <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                              76 -135 104 -210 65z" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <p class=" text-muted mb-0 text-small ml-3">{{data.address}}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex" *ngIf="tripAddress && tripAddress.length>0">
+                                <div class="pin-svg my-img" style="margin-top: -3px;">
+                                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                                        viewBox="0 0 65.000000 65.000000" preserveAspectRatio="xMidYMid meet">
+                                        <metadata>
+                                            Created by potrace 1.16, written by Peter Selinger 2001-2019
+                                        </metadata>
+                                        <g transform="translate(0.000000,65.000000) scale(0.100000,-0.100000)"
+                                            stroke="none">
+                                            <path d="M16 634 c-14 -13 -16 -55 -16 -308 0 -271 1 -294 18 -309 16 -15 53
+                            -17 309 -17 268 0 291 1 306 18 15 16 17 53 17 309 0 268 -1 291 -18 306 -16
+                            15 -53 17 -310 17 -251 0 -293 -2 -306 -16z m494 -309 l0 -185 -185 0 -185 0
+                            0 185 0 185 185 0 185 0 0 -185z" />
+                                            <path d="M204 437 c-2 -7 -3 -62 -2 -123 l3 -109 120 0 120 0 0 120 0 120
+                            -118 3 c-91 2 -119 0 -123 -11z" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <p class="text-muted mb-0 text-small ml-3" style="width: 90%;">
+                                    {{guestTripData.destination_address}}</p>
+                            </div>
+                            <div class="d-flex align-items-center" *ngIf="tripAddress && tripAddress.length==0">
+                                <div class="pin-svg my-img">
+                                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                                        viewBox="0 0 68.000000 68.000000" preserveAspectRatio="xMidYMid meet">
+                                        <metadata>
+                                            Created by potrace 1.16, written by Peter Selinger 2001-2019
+                                        </metadata>
+                                        <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                                            stroke="none">
+                                            <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                            -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                            138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                            -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                            -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                            190 114 291 63z" />
+                                            <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                            76 -135 104 -210 65z" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <p class="text-muted mb-0 text-small ml-3" style="width: 90%;"
+                                    *ngIf="guestTripData.destination_address">{{guestTripData.destination_address}}</p>
+                                <p class=" text-muted mb-0 text-small ml-3" style="width: 90%;"
+                                    *ngIf="guestTripData.destination_address == ''">
+                                    {{'label-title.add-destination-later' |
+                                    translate}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5 px-2 mb-2"
+                            *ngIf="guestTripData?.fixed_price > 0 || guestTripData?.bid_price > 0">
+                            <div class="justify-content-center card card-box">
+                                <div
+                                    class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                    <div class="min-width-zero">
+                                        <a href="javascript:" id="track_fix_price">
+                                            <p class="list-item-heading mb-1 truncate"
+                                                *ngIf="guestTripData.bid_price == 0 || guestTripData.is_provider_accepted == 1">
+                                                {{guestTripData.currency}}{{guestTripData.fixed_price}}</p>
+                                            <p class="list-item-heading mb-1 truncate"
+                                                *ngIf="guestTripData.bid_price > 0 && guestTripData.is_provider_accepted == 0">
+                                                {{guestTripData.currency}}{{guestTripData.bid_price}}</p>
+                                        </a>
+                                        <p class="mb-2 text-muted text-small"
+                                            *ngIf="guestTripData.bid_price == 0 || guestTripData.is_provider_accepted == 1">
+                                            {{'label-title.price' | translate }}</p>
+                                        <p class="mb-2 text-muted text-small"
+                                            *ngIf="guestTripData.bid_price > 0 && guestTripData.is_provider_accepted == 0">
+                                            {{'label-title.bidding-price' | translate }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 px-2 mb-2">
+                            <div class="justify-content-center card card-box">
+                                <div
+                                    class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                    <div class="min-width-zero">
+                                        <a href="javascript:" id="track_type_name">
+                                            <p class="list-item-heading mb-1 truncate">{{trip_type_name}}</p>
+                                        </a>
+                                        <p class="mb-2 text-muted text-small">{{'label-title.service-type' | translate
+                                            }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 px-2 mb-2">
+                            <div class="justify-content-center card card-box">
+                                <div
+                                    class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                                    <div class="min-width-zero">
+                                        <a href="javascript:" id="track_payment_mode">
+                                            <p class="list-item-heading mb-1 truncate"
+                                                *ngIf="guestTripData?.payment_mode==0">{{'label-title.card' |
+                                                translate }}</p>
+                                            <p class="list-item-heading mb-1 truncate"
+                                                *ngIf="guestTripData?.payment_mode==1">{{'label-title.cash' |
+                                                translate }}</p>
+                                        </a>
+                                        <p class="mb-2 text-muted text-small">{{'label-title.payment-mode' | translate
+                                            }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <ol class="order-step py-2">
+                            <li class="border-transparent pb-3">
+                                <span class="font-weight-bold">{{'label-title.created' | translate}} </span>
+                                <p class="">{{guestTripData?.user_create_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A
+                                    }}
+                                </p>
+                            </li>
+                            <li class="border-transparent pb-3" *ngIf="guestTripData?.is_provider_accepted == 1">
+                                <span class="font-weight-bold">{{'label-title.accepted' | translate}}</span>
+                                <p class=""> {{guestTripData?.accepted_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A }}
+                                </p>
+
+                            </li>
+                            <li class="border-transparent pb-3"
+                                *ngIf="guestTripData?.is_provider_accepted == 1 && guestTripData?.is_provider_status >= helper.PROVIDER_STATUS.ARRIVED">
+                                <span class="font-weight-bold">{{'label-title.arrived' | translate}}</span>
+                                <p class=""> {{guestTripData?.provider_arrived_time |
+                                    date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A }} </p>
+                                <span class="" *ngIf="total_wait_time >= 0">{{'label-title.total_waiting_time' |
+                                    translate}} :
+                                    {{(total_wait_time / 60).toFixed(0)}} {{'label-title.min' | translate}}
+                                </span>
+                                <span class="" *ngIf="total_wait_time < 0">{{'label-title.wating_time_start_after' |
+                                    translate}} : {{-(total_wait_time/60).toFixed(0)}} {{'label-title.min' | translate}}
+                                </span>
+                                <br><span class="c-pointer text-danger"
+                                    *ngIf="guestTripData?.is_otp_verification && !is_show_confirmation_code "
+                                    (click)="onClickConfirmationCode()">
+                                    {{'label-title.confirmation-code' | translate}}
+                                </span>
+                                <span class="c-pointer text-danger"
+                                    *ngIf="guestTripData?.is_otp_verification && is_show_confirmation_code "
+                                    (click)="onClickConfirmationCode()">
+                                    {{guestTripData?.confirmation_code}}
+                                </span>
+                            </li>
+                            <li class="border-transparent pb-3"
+                                *ngIf="guestTripData.is_provider_accepted == 1 && guestTripData.is_provider_status >= helper.PROVIDER_STATUS.STARTED">
+                                <span class="font-weight-bold">{{'label-title.started' | translate}}</span>
+                                <p class=""> {{guestTripData.provider_trip_start_time |
+                                    date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}} </p>
+                                <span class="">{{'label-title.total_time' | translate}} : {{guestTripData.total_time}}
+                                    {{'label-title.min' |
+                                    translate}}</span><br>
+                                <span class="">{{'label-title.total_distance' | translate}} :
+                                    {{guestTripData.total_distance}} <span
+                                        *ngIf="guestTripData.unit == 1">{{'label-title.km'
+                                        | translate}}</span><span *ngIf="guestTripData.unit == 0">{{'label-title.miles'
+                                        |
+                                        translate}}</span></span>
+                            </li>
+                            <ng-container
+                                *ngFor="let data of guestTripData.actual_destination_addresses;let first = first ; let last = last ; let i = index">
+                                <li class="border-transparent pb-3" *ngIf="!first">
+                                    <span class="font-weight-bold">{{'label-title.started' | translate}}
+                                        {{'label-title.from' | translate}}
+                                        {{i | ordinal}}</span>
+                                    <p class=""> {{data.start_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}} </p>
+                                </li>
+                                <li class="border-transparent pb-3"
+                                    *ngIf="data.arrived_time && (!last || guestTripData.is_provider_status != helper.PROVIDER_STATUS.COMPLETED)">
+                                    <span class="font-weight-bold">{{'label-title.arrived' | translate}}
+                                        {{'label-title.at' | translate}} {{
+                                        i + 1 | ordinal}}</span>
+                                    <p class=""> {{data.arrived_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}} </p>
+                                </li>
+                            </ng-container>
+
+                            <li class="border-transparent pb-3"
+                                *ngIf="guestTripData.is_provider_accepted == 1 && guestTripData.is_provider_status >= helper.PROVIDER_STATUS.COMPLETED">
+                                <span class="font-weight-bold">{{'label-title.complete' | translate}}</span>
+                                <p class=""> {{guestTripData.provider_trip_end_time |
+                                    date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}}</p>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="custom_footer" hidden>
+                    <div class="text-center" *ngIf="guestTripData.is_trip_end != 1 && isPromoUsed != 1">
+                        <div class="row mb-1">
+                            <div class="col-12 text-right">
+                                <a class="text-primary c-pointer" id="track_view_offers"
+                                    (click)="viewOffers(offers)">{{'label-title.view-offers' | translate}}</a>
+                            </div>
+                        </div>
+                        <form #Form="ngForm">
+                            <div class="form-group">
+                                <div class=" input-group mb-3">
+                                    <input type="text" [(ngModel)]="promocode" id="track_promocode"
+                                        placeholder="{{'label-title.enter-promo-code-here' | translate}}"
+                                        name="promocode" class="form-control text-small" [disabled]="promoData"
+                                        [ngClass]="{'btn-disabled' : promoData}">
+                                    <div class="input-group-append"
+                                        *ngIf="guestTripData.is_trip_end != 1 && isPromoUsed != 1">
+                                        <button type="submit" *ngIf="!promoData" (click)="promo_code(promocode)"
+                                            [ngClass]="{'btn-disabled':(!promocode)}"
+                                            class="btn btn-outline-secondary rounded-0" id="track_apply_promo"
+                                            [disabled]="!promocode">{{'button-title.apply' | translate}}
+                                        </button>
+                                        <button type="submit" (click)="remove_promo()" *ngIf="promoData"
+                                            class="btn btn-outline-secondary rounded-0" id="track_remove_promo">
+                                            {{'label-title.remove' | translate}}
+                                        </button>
+                                    </div>
+                                    <div class="input-group-append"
+                                        *ngIf="guestTripData.is_trip_end != 1 && isPromoUsed == 1">
+                                        <button type="submit" (click)="remove_promo()" *ngIf="promoData"
+                                            class="btn btn-outline-secondary rounded-0" id="track_remove_promo_2">
+                                            {{'label-title.remove' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

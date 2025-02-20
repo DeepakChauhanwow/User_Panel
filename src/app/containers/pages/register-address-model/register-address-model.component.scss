@@ -1,0 +1,16 @@
+.register-address-map {
+    width: 100%;
+    min-height: 600px;
+}
+
+@media screen and (max-width:768px) {
+    .register-address-map {
+        min-height: 450px;
+    }
+}
+
+@media screen and (max-width:414px) {
+    .register-address-map {
+        min-height: 300px;
+    }
+}

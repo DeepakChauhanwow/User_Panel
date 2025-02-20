@@ -1,0 +1,841 @@
+<div id="Payu" [hidden]="true">
+</div>
+
+<ng-template #template>
+  <modal-container role="dialog" *ngIf="trip_id" tabindex="-1" class="modal fade show" style="display: block;" aria-modal="true">
+    <div role="document" class="modal-dialog modal-right" *ngIf="tripdetail">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left" >{{'label-title.trip-id' | translate }}:{{tripdetail.unique_id}}</h4>
+          <button type="button" class="close pull-right" id="close_history_modal" aria-label="Close" (click)="closemodal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body p-0">
+          <tabset class="card-tabs" [justified]="true">
+            <tab [active]="tab == 1" heading="{{'label-title.details' | translate }}" id="history_details" class="card-body">
+              <div class="row" *ngIf="is_provider && provider">
+                <div class="col-12 d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+                  <a href="javascript:;" id="user_profile">
+                    <img (error)="$event.target.src = DEFAULT_IMAGE"
+                      class=" img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall"
+                      [src]="profile_image ? profile_image : DEFAULT_IMAGE" [alt]="" style="width:40px;">
+                  </a>
+                  <div class="pl-3 flex-fill">
+                    <p class="font-weight-medium mb-0">
+                      {{provider.first_name}} {{provider.last_name}}
+                    </p>
+                    <p class="text-muted mb-0 text-small">{{provider.phone}}</p>
+                  </div>
+                  <div *ngIf="tripdetail.openride ? tripdetail.user_details[0].is_user_invoice_show != 0 : tripdetail.is_user_invoice_show != 0"> 
+                    <a href="javascript:;" id="rate_us_btn" class="btn btn-outline-primary btn-xs"(click)="rate_us(userRate)"*ngIf="rate == 0" > {{'button-title.rate-us' |
+                      translate}} </a>
+                      <span *ngIf="provider.rate && rate != 0"><i class="simple-icon-star mr-1"></i>{{provider.rate.toFixed(helper.to_fixed_number)}}</span>
+                    </div>
+                </div>
+              </div>
+              <div class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+                <div class="flex-fill">
+                  <a href="javascript:;" id="history_pickup">
+                    <p class="font-weight-medium mb-0">{{'label-title.pickup-location' | translate }}</p>
+                    <div class="d-flex align-items-center pt-3">
+                      <div class="pin-svg my-img">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                          width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                          preserveAspectRatio="xMidYMid meet">
+                          <metadata>
+                          Created by potrace 1.16, written by Peter Selinger 2001-2019
+                          </metadata>
+                          <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                           stroke="none">
+                          <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                          -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                          138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                          -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                          -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                          190 114 291 63z"/>
+                          <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                          76 -135 104 -210 65z"/>
+                          </g>
+                        </svg>
+                      </div>
+                      <p class="text-muted mb-0 text-small">{{tripdetail.source_address}}</p>
+                    </div>
+                  </a>
+                </div>
+             
+              </div>
+              <div class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
+                <div class="flex-fill ">
+                  <a href="javascript:;" id="history_stops">
+                    <p class="font-weight-medium mb-0">{{'label-title.destination-address' | translate }}</p>
+                  </a>
+                  <div class="stop-addresses pt-3 pl-6px" *ngIf="tripAddress">
+                    <div *ngFor="let data of tripAddress" class="border-img-left">
+                      <div class="pin-svg position-absolute" style="width : 24px">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                          width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                          preserveAspectRatio="xMidYMid meet"> 
+                          <metadata>
+                          Created by potrace 1.16, written by Peter Selinger 2001-2019
+                          </metadata>
+                          <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                           stroke="none">
+                          <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                          -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                          138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                          -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                          -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                          190 114 291 63z"/>
+                          <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                          76 -135 104 -210 65z"/>
+                          </g>
+                        </svg>
+                      </div>
+                      <p class=" text-muted mb-0 text-small">{{data.address}}</p>
+                    </div>
+                  </div>
+                  <a href="javascript:;" id="history_destionation" class="d-flex" *ngIf="tripAddress && tripAddress.length>0">
+                    <div class="pin-svg my-img" style="margin-top: -3px;">
+                      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
+                        viewBox="0 0 65.000000 65.000000" preserveAspectRatio="xMidYMid meet">
+                        <metadata>
+                          Created by potrace 1.16, written by Peter Selinger 2001-2019
+                        </metadata>
+                        <g transform="translate(0.000000,65.000000) scale(0.100000,-0.100000)" stroke="none">
+                          <path d="M16 634 c-14 -13 -16 -55 -16 -308 0 -271 1 -294 18 -309 16 -15 53
+                        -17 309 -17 268 0 291 1 306 18 15 16 17 53 17 309 0 268 -1 291 -18 306 -16
+                        15 -53 17 -310 17 -251 0 -293 -2 -306 -16z m494 -309 l0 -185 -185 0 -185 0
+                        0 185 0 185 185 0 185 0 0 -185z" />
+                          <path d="M204 437 c-2 -7 -3 -62 -2 -123 l3 -109 120 0 120 0 0 120 0 120
+                        -118 3 c-91 2 -119 0 -123 -11z" />
+                        </g>
+                      </svg>
+                    </div>
+                    <p class="text-muted mb-0 text-small">
+                      <span *ngIf="tripdetail.destination_address">{{tripdetail.destination_address}}</span>
+                      <span *ngIf="!tripdetail.destination_address">
+                        {{'label-title.add-destination-later' | translate}}
+                      </span>
+                    </p>
+                  </a>
+                  <a href="javascript:;" id="history_destination_later" class="d-flex align-items-end" *ngIf="tripAddress && tripAddress.length==0">
+                    <div class="pin-svg my-img">
+                      <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                        width="16px" height="16px" viewBox="0 0 68.000000 68.000000"
+                        preserveAspectRatio="xMidYMid meet">
+                        <metadata>
+                        Created by potrace 1.16, written by Peter Selinger 2001-2019
+                        </metadata>
+                        <g transform="translate(0.000000,68.000000) scale(0.100000,-0.100000)"
+                         stroke="none">
+                        <path d="M203 656 c-72 -34 -137 -97 -173 -169 -26 -52 -30 -71 -30 -141 0
+                        -52 6 -99 17 -130 25 -68 100 -148 175 -185 54 -27 71 -31 147 -31 70 0 96 5
+                        138 24 72 34 137 97 173 169 26 53 30 70 30 147 0 77 -4 94 -30 147 -36 72
+                        -101 135 -173 169 -74 34 -200 34 -274 0z m245 -115 c158 -80 162 -300 9 -398
+                        -36 -23 -53 -27 -117 -27 -64 0 -81 4 -117 27 -119 76 -149 224 -66 335 65 87
+                        190 114 291 63z"/>
+                        <path d="M268 480 c-105 -56 -116 -195 -22 -267 132 -100 315 59 232 202 -45
+                        76 -135 104 -210 65z"/>
+                        </g>
+                      </svg>
+                    </div>
+                    <p class="text-muted mb-0 text-small">
+                      <span *ngIf="tripdetail.destination_address">{{tripdetail.destination_address}}</span>
+                      <span *ngIf="!tripdetail.destination_address">
+                        {{'label-title.add-destination-later' | translate}}
+                      </span>
+                    </p>
+                  </a>
+
+                </div>
+               
+              </div>
+              <div class="row mb-4">
+                <div class="col-5 px-2">
+                  <div class="justify-content-center card card-box">
+                    <div
+                      class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                      <div class="min-width-zero">
+                        <a href="javascript:" id="history_trip_total">
+                          <p class="list-item-heading mb-1 truncate" *ngIf="!tripdetail.openride">{{tripdetail.currency}} {{tripdetail.total.toFixed(helper.to_fixed_number)}}</p>
+                          <p class="list-item-heading mb-1 truncate" *ngIf="tripdetail.openride">{{tripdetail.currency}} {{tripdetail.user_details[0].total.toFixed(helper.to_fixed_number)}}</p>
+                        </a>
+                        <p class="mb-2 text-muted text-small">{{'label-title.price' | translate }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-5 px-2">
+                  <div class="justify-content-center card card-box">
+                    <div
+                      class=" pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                      <div class="min-width-zero">
+                        <a href="javascript:" id="history_sevice_type">
+                          <p class="list-item-heading mb-1 truncate">{{tripservice.service_type_name}}</p>
+                        </a>
+                        <p class="mb-2 text-muted text-small">{{'label-title.service-type' | translate }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="mt-4" id="history_map" style="width: 100%; min-height: 500px;"></div>
+              <div id="legend"></div>
+            </tab>
+            <tab id="htmlContent" [active]="tab == 2" *ngIf="tripdetail.openride ? tripdetail.is_trip_cancelled == 0 && tripdetail.is_trip_cancelled_by_provider == 0 && tripdetail.user_details[0].booking_cancelled == 0 && tripdetail.user_details[0].booking_cancelled_by_user == 0 && tripdetail.user_details[0].booking_cancelled_by_provider == 0 :tripdetail.is_trip_cancelled == 0 && tripdetail.is_trip_cancelled_by_provider == 0 && tripdetail.is_trip_cancelled_by_user == 0"  heading="{{'label-title.invoice' | translate }}" class="card-body" [ngClass]="{'pb-0':(tripdetail.openride ? tripdetail.user_details[0].is_user_invoice_show == 0 :tripdetail.is_user_invoice_show == 0)}">
+              <div id="clone_of_trip"></div>
+              <div class="row d-flex flex-row justify-content-start justify-content-around mb-3">
+                <div class="text-center col-4">
+                  <p class="text-muted mb-1">{{'label-title.distance' | translate }}</p>
+                  <p>{{tripdetail.total_distance.toFixed(helper.to_fixed_number)}} 
+                    <span *ngIf="tripdetail.unit == 1">{{'label-title.km' | translate }}</span>
+                    <span *ngIf="tripdetail.unit == 0">{{'label-title.mile' | translate }}</span>
+                  </p>
+                </div>
+                <div class="text-center col-4">
+                  <p class="text-muted mb-1">{{'label-title.time' | translate }}</p>
+                  <p>{{tripdetail.total_time.toFixed(helper.to_fixed_number)}} {{'label-title.min' | translate }}</p>
+                </div>
+                <div class="text-center col-4">
+                  <p class="text-muted mb-1">{{'label-title.waiting-time' | translate }}</p>
+                  <p>{{tripdetail.total_waiting_time.toFixed(helper.to_fixed_number)}} {{'label-title.min' | translate
+                    }}</p>
+                </div>
+              </div>
+              <div class="row invoice">
+                <div class="col-12">
+                  <div class="invoice-contents">
+                    <table aria-describedby="table" class="w-100 mb-3 border-0  h-auto" style="border-collapse: separate;" aria-describedby="ride-charge-table">
+                      <thead class="border-bottom">
+                        <tr class="px-0 border-bottom">
+                          <th>
+                            <p class="mb-0 font-weight-bold">
+                              {{'label-title.ride-charge' | translate }}
+                              <span *ngIf="case_number == 1">{{'label-title.airport-price-applied' | translate }}</span>
+                              <span *ngIf="case_number == 2">{{'label-title.zone-price-applied' | translate }}</span>
+                              <span *ngIf="case_number == 3">{{'label-title.city-price-applied' | translate }}</span>
+                              <span *ngIf="case_number == 4">{{'label-title.fixed-price-applied' | translate }}</span>
+                              <span *ngIf="case_number == 5">{{'label-title.minimum-fare-applied' | translate }}</span>
+                            </p>
+                          </th>
+                          <th class="text-right pr-ltr-3">
+                            <p class="mb-0 font-weight-bold text-rtl-left">{{tripdetail.currency}}
+                              {{totalcharge.toFixed(helper.to_fixed_number)}}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td colspan="2">
+                            <hr class="mb-2 mt-0">
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody class="">
+                        <tr *ngIf="is_show_total">
+                          <td class="px-0 py-1 d-flex">
+                            <p class="mb-0" *ngIf="tripservice"> {{'label-title.base-price' | translate }} (
+                              {{tripdetail.currency}}{{tripservice.base_price}}/{{tripservice.base_price_distance}}
+                              <span *ngIf="tripdetail.unit == 1">{{'label-title.km' | translate }}</span>
+                              <span *ngIf="tripdetail.unit == 0">{{'label-title.mile' | translate }}</span> )
+                              </p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.base_distance_cost.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="is_show_total">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.distance-price' | translate
+                              }} (
+                              {{tripdetail.currency}}{{tripservice.price_per_unit_distance}}/
+                              <span *ngIf="tripdetail.unit == 1">{{'label-title.km' | translate }}</span>
+                              <span *ngIf="tripdetail.unit == 0">{{'label-title.mile' | translate }}</span> )
+                            </p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.distance_cost.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="is_show_total">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">
+                              {{'label-title.time-price' | translate }} (
+                              {{tripdetail.currency}}{{tripservice.price_for_total_time}}/{{'label-title.min' |
+                              translate }} )</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.time_cost.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="is_show_total && !tripdetail.openride">
+                          <td class="px-0 py-1 d-flex">
+                            <p class="mb-0">{{'label-title.wait-time-price' | translate }} (
+                              {{tripdetail.currency}}{{tripservice.price_for_waiting_time}}/{{'label-title.min'
+                              | translate }} )</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.waiting_time_cost.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.stop_waiting_time_cost != 0 && is_show_total && !tripdetail.openride">
+                          <td class="px-0 py-1 d-flex">
+                            <p class="mb-0">{{'label-title.stops-wait-time-price' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.stop_waiting_time_cost.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="is_show_total && tripdetail.surge_fee > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.surge' | translate }} ( x{{tripdetail.surge_multiplier}} )
+                            </p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.surge_fee.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr>
+                        <tr *ngIf="!is_show_total">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.service-fees' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.total_after_surge_fees.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table aria-describedby="table" class="w-100 mb-3 border-0  h-auto" style="border-collapse: separate;" aria-describedby="tax-charges-table">
+                      <thead class="border-bottom">
+                        <tr class="px-0 border-bottom">
+                          <th>
+                            <p class="mb-0 font-weight-bold">{{'label-title.tax-charges' | translate }}</p>
+                          </th>
+                          <th class="text-right pr-ltr-3">
+                            <p class="mb-0 font-weight-bold text-rtl-left">{{tripdetail.currency}}
+                              {{totalTax.toFixed(helper.to_fixed_number)}}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td colspan="2">
+                            <hr class="mb-2 mt-0">
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody class="">
+                        <tr>
+                          <td class="px-0 py-1 d-flex">
+                            <p class="mb-0  ">{{'label-title.user-tax' | translate }} (
+                              {{tripservice.user_tax?.toFixed(helper.to_fixed_number)}}% )</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.user_tax_fee.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-1 d-flex">
+                            <p class="mb-0  ">{{'label-title.tax' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.tax_fee.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.user-miscellaneous-fee' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.user_miscellaneous_fee.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table aria-describedby="table" class="w-100 mb-3 border-0  h-auto" style="border-collapse: separate;" aria-describedby="other-charges-table">
+                      <thead class="border-bottom">
+                        <tr class="px-0 border-bottom">
+                          <th>
+                            <p class="mb-0 font-weight-bold">{{'label-title.other-charges' | translate }}</p>
+                          </th>
+                          <th class="text-right pr-ltr-3">
+                            <p class="mb-0 font-weight-bold text-rtl-left">{{tripdetail.currency}}
+                              {{totalOtherCharge.toFixed(helper.to_fixed_number)}}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td colspan="2">
+                            <hr class="mb-2 mt-0">
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody class="">
+                        <tr>
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.tip' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.tip_amount.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.toll' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.toll_amount.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table aria-describedby="table" class="w-100 mb-3 border-0  h-auto" style="border-collapse:separate !important;" aria-describedby="total-charge-table">
+                      <thead class="border-bottom">
+                        <th hidden></th>
+                        <tr>
+                          <td colspan="2">
+                            <hr class="mb-2 mt-0">
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="w-100">
+                            <table aria-describedby="table" class="w-100 border-0  h-auto"
+                              style="border-collapse:separate !important;" aria-describedby="price-table">
+                              <tbody>
+                                <th hidden></th>
+                                <tr>
+                                  <td class="px-0 py-1 text-left text-small">
+                                    <p class="mb-0">{{'label-title.ride-charge' | translate }}
+                                      <span *ngIf="case_number == 1">{{'label-title.airport-price-applied' | translate
+                                        }}</span>
+                                      <span *ngIf="case_number == 2">{{'label-title.zone-price-applied' | translate
+                                        }}</span>
+                                      <span *ngIf="case_number == 3">{{'label-title.city-price-applied' | translate
+                                        }}</span>
+                                      <span *ngIf="case_number == 4">{{'label-title.fixed-price-applied' | translate
+                                        }}</span>
+                                      <span *ngIf="case_number == 5">{{'label-title.minimum-fare-applied' | translate
+                                        }}</span> :
+                                    </p>
+                                  </td>
+                                  <td class="px-0 py-1 text-right">
+                                    <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                                      {{totalcharge.toFixed(helper.to_fixed_number)}}</p>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td class="px-0 py-1 text-left text-small">
+                                    <p class="mb-0">{{'label-title.tax-charges' | translate }} :
+                                    </p>
+                                  </td>
+                                  <td class="px-0 py-1 text-right">
+                                    <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                                      {{totalTax.toFixed(helper.to_fixed_number)}}</p>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td class="px-0 py-1 text-left text-small">
+                                    <p class="mb-0">{{'label-title.other-charges' | translate }} :
+                                    </p>
+                                  </td>
+                                  <td class="px-0 py-1 text-right">
+                                    <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                                      {{totalOtherCharge.toFixed(helper.to_fixed_number)}}</p>
+                                  </td>
+                                </tr>
+
+                                <tr *ngIf="tripdetail.promo_payment > 0">
+                                  <td class="px-0 py-1 text-left text-small">
+                                    <p class="mb-0">{{'label-title.promo-bonus' | translate }} <span *ngIf="tripdetail.promo_detail">({{tripdetail.promo_detail.promocode}})</span>
+                                      : </p>
+                                  </td>
+                                  <td class="px-0 py-1 text-right">
+                                    <p class="mb-0 text-rtl-left">{{tripdetail.currency}} {{tripdetail.promo_payment}}
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="px-0 py-1 text-left text-small">
+                                    <p class="mb-0 font-weight-bold">{{'label-title.total' | translate }}
+                                      : </p>
+                                  </td>
+                                  <td class="px-0 py-1 text-right">
+                                    <p class="mb-0 font-weight-bold text-rtl-left">{{tripdetail.currency}}
+                                      {{tripdetail.total.toFixed(helper.to_fixed_number)}}</p>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table aria-describedby="table" class="w-100 mb-3 border-0  h-auto" style="border-collapse: separate;" *ngIf="userpayment>0" aria-describedby="user-payment-table">
+                      <thead class="border-bottom">
+                        <tr class="px-0 border-bottom">
+                          <th>
+                            <p class="mb-0 font-weight-bold">{{'label-title.user-payment' | translate }}</p>
+                          </th>
+                          <th class="text-right pr-ltr-3">
+                            <p class="mb-0 font-weight-bold text-rtl-left" *ngIf="userpayment>0">
+                              {{tripdetail.currency}} {{userpayment.toFixed(helper.to_fixed_number)}}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td colspan="2">
+                            <hr class="mb-2 mt-0">
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody class="" *ngIf="!tripdetail.openride">
+                        <tr *ngIf="tripdetail.cash_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.cash' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.cash_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.card_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.card' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.card_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.wallet_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.wallet' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.wallet_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.remaining_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.remaining_payment' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.remaining_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tbody class="" *ngIf="tripdetail.openride">
+                        <tr *ngIf="tripdetail.user_details[0].cash_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.cash' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.user_details[0].cash_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.user_details[0].card_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.card' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.user_details[0].card_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.user_details[0].wallet_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.wallet' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.user_details[0].wallet_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="tripdetail.user_details[0].remaining_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.remaining_payment' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{tripdetail.user_details[0].remaining_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table aria-describedby="table" class="w-100 mb-3 border-0  h-auto" style="border-collapse: separate;" 
+                      *ngIf="!tripdetail.openride && split_payment_users && split_payment_users.length>0" aria-describedby="split-payment-table">
+                      <thead class="border-bottom">
+                        <tr class="px-0 border-bottom">
+                          <th>
+                            <p class="mb-0 font-weight-bold">{{'label-title.split-user-payment' | translate }}</p>
+                          </th>
+                          <th></th>
+                          <th class="text-right pr-ltr-3">
+                            <p class="mb-0 font-weight-bold text-rtl-left" *ngIf="userpayment>0">
+                              {{tripdetail.currency}} {{total_split_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td colspan="3">
+                            <hr class="mb-2 mt-0">
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody class="" *ngFor="let user of split_payment_users">
+                        <tr *ngIf="user.remaining_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.remaining_payment' | translate }}</p>
+                          </td>
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{user.first_name}} {{user.last_name}} {{user.unique_id ? '(' + user.unique_id + ')' : '' }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{user.remaining_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="user.cash_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.cash' | translate }}</p>
+                          </td>
+                          <td class="px-0">
+                            <p class="mb-0">{{user.first_name}} {{user.last_name}} {{user.unique_id ? '(' + user.unique_id + ')' : '' }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{user.cash_payment.toFixed(helper.to_fixed_number)}}
+                            </p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="user.card_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.card' | translate }}</p>
+                          </td>
+                          <td class="px-0">
+                            <p class="mb-0">{{user.first_name}} {{user.last_name}} {{user.unique_id ? '(' + user.unique_id + ')' : '' }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{user.card_payment.toFixed(helper.to_fixed_number)}}
+                            </p>
+                          </td>
+                        </tr>
+                        <tr *ngIf="user.wallet_payment > 0">
+                          <td class="px-0 py-1">
+                            <p class="mb-0">{{'label-title.wallet' | translate }}</p>
+                          </td>
+                          <td class="px-0">
+                            <p class="mb-0">{{user.first_name}} {{user.last_name}} {{user.unique_id ? '(' + user.unique_id + ')' : '' }}</p>
+                          </td>
+                          <td class="px-0 py-1 text-right">
+                            <p class="mb-0 text-rtl-left">{{tripdetail.currency}}
+                              {{user.wallet_payment.toFixed(helper.to_fixed_number)}}</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </tab>
+            <tab [active]="tab == 3" id="history_status"  heading="{{'label-title.status' | translate }}" class="card-body"   *ngIf="tripdetail">
+             
+              <div class="mb-3 border-bottom" *ngIf="tripdetail.trip_status?.length > 0">
+                <ol class="order-step">
+                  <li class="border-transparent pb-3" *ngFor="let trip_status of tripdetail.trip_status">
+                    <span class="font-weight-bold">{{helper.TRIP_STATUS_TIMELIME_STRING[trip_status.status] | translate}} </span>
+                    <p class="mb-0">{{'label-title.by' | translate}} {{helper.TRIP_STATUS_TYPE_VALUE_STRING[trip_status.user_type] | translate}}&nbsp;<span *ngIf="trip_status.user_type">:&nbsp;</span>{{trip_status.username}}</p>
+                    <p class="">{{trip_status.timestamp | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A}}</p>
+                    <span class="" *ngIf="trip_status.status == helper.TRIP_STATUS_TIMELIME.TRIP_STARTED">{{'label-title.total_time' | translate}} : {{tripdetail.total_time.toFixed(helper.to_fixed_number)}}
+                      {{'label-title.min' | translate}} <br></span>
+                    <span class="" *ngIf="trip_status.status == helper.TRIP_STATUS_TIMELIME.TRIP_STARTED">{{'label-title.total_distance' | translate}} : {{tripdetail?.total_distance.toFixed(helper.to_fixed_number)}} <span
+                        *ngIf="tripdetail.unit == 1">{{'label-title.km' | translate}}</span><span
+                        *ngIf="tripdetail.unit == 0">{{'label-title.miles' | translate}}</span></span>
+                  </li>
+                </ol>
+              </div>
+
+              <div class="mb-3 border-bottom" *ngIf="!tripdetail.trip_status || tripdetail.trip_status?.length == 0">
+                <ol class="order-step">
+                  <li class="border-transparent pb-3">
+                    <span class="font-weight-bold">{{'label-title.created' | translate}} </span>
+                    <p class="">{{tripdetail.user_create_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A }}
+                    </p>
+                  </li>
+                  <li class="border-transparent pb-3" *ngIf="tripdetail.is_provider_accepted == 1">
+                    <span class="font-weight-bold">{{'label-title.accepted' | translate}}</span>
+                    <p class=""> {{tripdetail.accepted_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A }}
+                    </p>
+        
+                  </li>
+                  <li class="border-transparent pb-3"
+                    *ngIf="tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.ARRIVED">
+                    <span class="font-weight-bold">{{'label-title.arrived' | translate}}</span>
+                    <p class=""> {{tripdetail.provider_arrived_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A}} </p>
+                  </li>
+                  <li class="border-transparent pb-3"
+                    *ngIf="tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.STARTED">
+                    <span class="font-weight-bold">{{'label-title.started' | translate}}</span>
+                    <p class=""> {{tripdetail.provider_trip_start_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A }} </p>
+                    <span class="">{{'label-title.total_time' | translate}} : {{tripdetail.total_time}} {{'label-title.min' | translate}}</span><br>
+                    <span class="">{{'label-title.total_distance' | translate}} : {{tripdetail.total_distance}} <span
+                        *ngIf="tripdetail.unit == 1">{{'label-title.km' | translate}}</span><span
+                        *ngIf="tripdetail.unit == 0">{{'label-title.miles' | translate}}</span></span>
+                  </li>
+                  <ng-container *ngFor="let data of tripdetail.actual_destination_addresses;let first = first ; let last = last ; let i = index">
+                    <li class="border-transparent pb-3" *ngIf="!first"
+                    >
+                    <span class="font-weight-bold">{{'label-title.started' | translate}} {{'label-title.from' | translate}} {{i }}</span>
+                    <p class=""> {{data.start_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A}} </p>
+                  </li>
+                  <li class="border-transparent pb-3" *ngIf="data.arrived_time && (!last || tripdetail.is_provider_status != helper.PROVIDER_STATUS.COMPLETED)"
+                    >
+                    <span class="font-weight-bold">{{'label-title.arrived' | translate}} {{'label-title.at' | translate}} {{ i + 1 }}</span>
+                    <p class=""> {{data.arrived_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A  }} </p>
+                  </li>
+                  </ng-container>
+                  
+                  
+        
+                  <li class="border-transparent pb-3"
+                    *ngIf="tripdetail.is_trip_completed == 1 && tripdetail.is_provider_accepted == 1 && tripdetail.is_provider_status >= helper.PROVIDER_STATUS.COMPLETED">
+                    <span class="font-weight-bold">{{'label-title.complete' | translate}}</span>
+                    <p class=""> {{tripdetail.provider_trip_end_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A}}</p>
+                  </li>
+                  <li class="border-transparent pb-3"
+                    *ngIf="tripdetail.is_trip_completed != 1">
+                    <span class="font-weight-bold">{{'label-title.cancelled' | translate}}</span>
+                    <p class=""> {{tripdetail.provider_trip_end_time | date:helper.DATE_FORMAT.DD_MM_YY_HH_MM_A}}</p>
+                  </li>
+                </ol>
+              </div>
+            </tab>
+          </tabset>
+        </div>
+        <div class="modal-footer"  *ngIf="tripdetail.openride ? tripdetail.is_trip_cancelled == 0 && tripdetail.is_trip_cancelled_by_provider == 0 && tripdetail.user_details[0].booking_cancelled == 0 && tripdetail.user_details[0].booking_cancelled_by_user == 0 && tripdetail.user_details[0].booking_cancelled_by_provider == 0 : tripdetail.is_trip_cancelled == 0 && tripdetail.is_trip_cancelled_by_provider == 0 && tripdetail.is_trip_cancelled_by_user == 0">
+          <button id="button-split" type="button" class="btn btn-outline-primary" (click)="submitInvoice(userRate)" id="history_submit_invoice"
+            *ngIf="tripdetail.openride ? tripdetail.user_details[0].is_user_invoice_show == 0 :tripdetail.is_user_invoice_show == 0">{{'button-title.submit-invoice' | translate}}</button>
+          <form (ngSubmit)="downloadPdf()" id="history_download_invoice" *ngIf="tripdetail.openride ? tripdetail.user_details[0].is_user_invoice_show != 0 :tripdetail.is_user_invoice_show != 0">
+            <app-state-button type="submit" [btnClass]="'btn btn-primary btn-lg btn-shadow'" [currentState]="buttonState" [isDisabled]="buttonDisabled" >
+              {{'button-title.download' | translate}} {{'label-title.invoice' | translate}}
+            </app-state-button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="razorpay" [hidden]="true"></div>
+  </modal-container>
+</ng-template>
+
+<ng-template #userRate>
+
+  <div class="modal-header justify-content-center">
+    <h3 class="modal-title pull-left font-weight-bold">{{'heading-title.review' | translate }} </h3>
+    <h3 class="modal-title pull-left font-weight-bold" *ngIf="is_tip && tripdetail.payment_mode == 0">&nbsp;& {{'label-title.rating' | translate }}</h3>
+    <button type="button" class="close pull-right" id="user_rate" aria-label="Close" (click)="closeRateModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-4">
+    <div class="dropdown-content">
+    <form >
+        <div class="form-field">
+            <label for="rating_rate" class="font-weight-semibold text-one">{{'label-title.rating' | translate}}</label>
+            <ng-select [(ngModel)]="rating_rate" name="rating_rate" id="rating_rate"  placeholder="{{'label-title.select-rate' | translate }}" (change)="giveStarts()" [clearable]="false">
+              <ng-option value="1">1 {{'label-title.star-worst' | translate}}</ng-option>
+                <ng-option value="2">2 {{'label-title.stars' | translate}}</ng-option>
+                <ng-option value="3">3 {{'label-title.stars-average' | translate}}</ng-option>
+                <ng-option value="4" >4 {{'label-title.stars' | translate}}</ng-option>
+                <ng-option value="5"  >5 {{'label-title.stars-best' | translate}}</ng-option>
+            </ng-select>
+        </div>
+        <div class="error" *ngIf="(rating_rate_value == '') && !rating_rate">{{'label-title.select-rate' | translate }}</div>
+        <div class="mt-4" *ngIf="tripdetail.openride ? tripdetail.user_details[0].is_user_invoice_show == 0 && is_tip && tripdetail.payment_mode == 0 && (tripdetail.payment_gateway_type == PAYMENT_GATEWAY.stripe || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paytabs || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paypal || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.razorpay || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.payu || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paystack) : tripdetail.is_user_invoice_show == 0 && is_tip && tripdetail.payment_mode == 0 && (tripdetail.payment_gateway_type == PAYMENT_GATEWAY.stripe || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paytabs || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paypal || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.razorpay|| tripdetail.payment_gateway_type == PAYMENT_GATEWAY.payu || tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paystack )">
+          <p class="mb-2 text-one font-weight-semibold">{{'label-title.give-tip-to-your-driver' | translate}}</p>
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-outline-primary mr-2 mb-2" id="tip_5" (click)="getTipAmount(5)">{{tripdetail.currency}}5</button>
+            <button class="btn btn-outline-primary mr-2 mb-2" id="tip_10" (click)="getTipAmount(10)">{{tripdetail.currency}}10</button>
+            <button class="btn btn-outline-primary mr-2 mb-2" id="tip_15" (click)="getTipAmount(15)">{{tripdetail.currency}}15</button>
+            <button class="btn btn-outline-primary mr-2 mb-2" id="tip_20" (click)="getTipAmount(20)">{{tripdetail.currency}}20</button>
+            <button class="btn btn-outline-primary mb-2" id="tip_25" (click)="getTipAmount(25)">{{tripdetail.currency}}25</button>
+            <div class="position-relative w-100">
+              <input type="text" class="form-control mt-1" onDrop="return false" onPaste="return false" (keypress)="helper.number_validation($event)" (keyup)="paypalAdd()" (change)="changeTipAmount($event)" id="tip_amount" [(ngModel)]="tip_amount" [ngModelOptions]="{standalone: true}" placeholder="{{'label-title.enter-amount' | translate}}">
+              <div class="error" *ngIf="tip_amount && tip_amount !=0 && stripe_amount_error != ''">{{stripe_amount_error}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-field mt-4">
+            <label for="rating_comment" class="font-weight-semibold text-one">{{'label-title.comments' | translate | titlecase}}</label>
+            <textarea [(ngModel)]="rating_comment" name="rating_comment" id="rating_comment" cols="30"
+                rows="3" class="form-control"></textarea>
+        </div>
+        <div class="form-field mt-4 text-center">
+          <button type="button" class="btn btn-primary" id="submit_rates" (click)="rateUs()" *ngIf="!tip_amount || tip_amount == 0 || tripdetail.payment_gateway_type != PAYMENT_GATEWAY.paypal">{{'button-title.submit' | translate}}</button>
+          <div class="pb-4" *ngIf="tripdetail.payment_gateway_type == PAYMENT_GATEWAY.paypal && show_paypal && tip_amount && tip_amount > 0">
+            <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+          </div>
+        </div>
+    </form>
+</div>
+</div>
+</ng-template>
+
+<!-- paystack pin modal start -->
+<div class="custom-model-main " *ngIf="paystackPinmodal" [ngClass]="{'model-open':paystackPinmodal}">
+  <div class="custom-model-inner ">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-5">
+        <div class="form-side">
+          <button type="button" class="close pull-right" id="paystack_pin_close" aria-label="Close" (click)="paystackPinmodal = false">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div class="heading-content">
+            <h4 class="mb-4" *ngIf="paystack_status == 'send_pin' ">{{'label-title.enter-pin' | translate}}</h4>
+            <h4 class="mb-4" *ngIf="paystack_status == 'send_otp' ">{{'label-title.enter-otp' | translate}}</h4>
+            <h4 class="mb-4" *ngIf="paystack_status == 'send_phone' ">{{'label-title.enter-number' | translate}}</h4>
+          </div>
+          <div class="content">
+            <form class="" [formGroup]="pinForm" (ngSubmit)="sendpin()" id="wallet paystack-popup-form">
+              <div class="form-field form-field--inputEmail">
+                <input id="wallet-pin-input" *ngIf="paystack_status == 'send_pin' " minlength="4" maxlength="6"
+                  autocomplete="off" placeholder="{{'label-title.enter-pin' | translate}}" formControlName="pin"
+                  type="text" name="pin" class="form-control" (keypress)="helper.number_validation($event)">
+                <input id="wallet-otp-input" *ngIf="paystack_status == 'send_otp' " minlength="4" maxlength="6"
+                  autocomplete="off" placeholder="{{'label-title.enter-otp' | translate}}" formControlName="otp"
+                  type="text" name="otp" class="form-control" (keypress)="helper.number_validation($event)">
+                <input id="wallet-phone-input" *ngIf="paystack_status == 'send_phone' " minlength="10" maxlength="12"
+                  autocomplete="off" placeholder="{{'label-title.enter-number' | translate}}"
+                  formControlName="phone_number" type="text" name="phone_number" class="form-control"
+                  (keypress)="helper.number_validation($event)">
+
+              </div>
+              <div class="form-field form-field--inputSignup text-center mt-4">
+                <button id="wallet-verify-btn" type="submit" class="close-btn" id="addcardclose"
+                  class="btn btn-primary btn-lg btn-shadow">{{'button-title.verify' | translate}}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+<!-- paystack pin modal end -->

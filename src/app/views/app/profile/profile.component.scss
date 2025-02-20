@@ -1,0 +1,78 @@
+@media (max-width: 991px) {
+  .document.custom-col-sm-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 566px) {
+  .document.custom-col-sm-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+.DocumentHeight {
+  max-height: 310px;
+  overflow-y: auto;
+}
+
+.cardListHeight {
+  max-height: 135px;
+  overflow-y: auto;
+}
+
+.imageSize {
+  width: 100%;
+  max-width: 180px;
+}
+
+.iconHover:hover {
+  color: #008ecc;
+}
+
+.list-thumbnail {
+  min-height: 100px !important;
+  max-height: 100px !important;
+}
+
+.w-sm-50 {
+  width: 50%;
+}
+
+.left-25 {
+  left: 25% !important;
+}
+
+@media screen and (max-width:414px) {
+  .w-sm-50 {
+    width: 100%;
+  }
+
+  .left-25 {
+    left: 50% !important;
+  }
+}
+
+.user-image {
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.border-right {
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.border-left {
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}

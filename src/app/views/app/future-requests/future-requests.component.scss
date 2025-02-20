@@ -1,0 +1,14 @@
+@media (max-width:660px) {
+    .detail-content .w-20 {
+        min-width: 34%;
+        white-space: normal;
+    }
+}
+
+tbody>tr>td {
+    cursor: pointer;
+}
+
+thead>tr>th {
+    white-space: nowrap;
+}

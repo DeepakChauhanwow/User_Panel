@@ -1,0 +1,27 @@
+<div class="landing-page" *ngIf="bannerList?.length > 0">
+  <div class="landing-page-nav">
+    <div class="wrapper">
+      <owl-carousel-o [options]="customOptions">
+
+        <ng-container *ngFor="let banner of bannerList">
+          <ng-template class="slide" carouselSlide [id]="banner._id">
+            {{banner.banner_title}}
+
+            <a [href]="banner.redirect_url"
+              [ngClass]="banner.action_link == 'a' ? 'active-text' : 'btn btn-primary btn-xs'" target="_blank">
+              {{banner.action_text}}</a>
+          </ng-template>
+        </ng-container>
+
+      </owl-carousel-o>
+    </div>
+  </div>
+</div>
+<div id="app-container" [className]="sidebar.containerClassnames">
+  <app-loader></app-loader>
+  <main>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

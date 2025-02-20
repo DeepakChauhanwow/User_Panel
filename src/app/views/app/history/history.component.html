@@ -1,0 +1,231 @@
+<app-topnav2></app-topnav2>
+
+<div class="row mb-4">
+  <div class="col-12 d-flex flex-wrap sorting-col align-items-center">
+    <div class="d-flex mb-2 mb-md-0">
+      <div class="position-relative">
+        <div class="float-md-left mr-1 mb-1" dropdown>
+          <button id="trip_search_by" dropdownToggle type="button"
+            class="btn btn-outline-primary btn_display_option btn-xs dropdown-toggle" aria-controls="dropdown-basic">
+            {{'button-title.search-by' | translate}} : {{selectedSearchBy.label | translate}} <span
+              class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+            <li role="menuitem" *ngFor="let item of searchByList"><a
+                [ngClass]="item.value === selectedSearchBy.value ? 'dropdown-item active' : 'dropdown-item'"
+                (click)="changeSearchBy(item)">{{item.label | translate}}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="">
+        <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
+          <input class="form-control" id="trip_search_value" placeholder="{{'label-title.search' | translate}}" [(ngModel)]='values'>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap mb-2 mb-md-0">
+      <ng-container *ngIf="created_date">
+        <div class="position-relative">
+          <div class="date-sm float-md-left mr-1 mb-1">
+            <input [hidden]="direction=='rtl'" class="form-control theme_date_picker"
+              placeholder="{{'label-title.select-dates' | translate}}" id="history_select_data"
+              [bsConfig]="{ selectWeekDateRange: true, containerClass: 'datetrans' }" #drp="bsDaterangepicker"
+              [(ngModel)]="item_bsRangeValue" bsDaterangepicker [container]="'html'" #dateValue [readOnly]="true" [minDate]="created_date" [maxDate]="today_date">
+            <input [hidden]="direction=='ltr'" class="form-control theme_date_picker" id="history_select_data"
+              placeholder="{{'label-title.select-dates' | translate}}"
+              [bsConfig]="{ selectWeekDateRange: true, containerClass: 'rtldatetrans' }" #drp="bsDaterangepicker"
+              [(ngModel)]="item_bsRangeValue" bsDaterangepicker [container]="'html'" #dateValue [readOnly]="true" [minDate]="created_date" [maxDate]="today_date">
+          </div>
+        </div>
+      </ng-container>
+      <div class="position-relative">
+        <div class="float-md-left mr-1 mb-1"><button type="button" id="search_apply" class="btn btn-primary btn-xs"
+            (click)="applyFilter()">{{'button-title.apply' | translate}}</button></div>
+      </div>
+      <div class="position-relative">
+        <div class="float-md-left mr-1 mb-1"><button type="button" class="btn btn-outline-primary btn-xs" id="search_clear"
+            (click)="clear()" [disabled]="values == '' && is_clear_disabled"
+            [ngClass]="{'btn-disabled':(values == '' && is_clear_disabled)}">{{'button-title.clear-filter' | translate}}</button></div>
+      </div>
+      <div class="position-relative">
+        <div class="float-md-left mr-1 mb-1"><button type="button" class="btn btn-outline-primary btn-xs" id="history_export"
+            (click)="excel()">{{'button-title.export' | translate}}</button></div>
+      </div>
+      <div class="position-relative">
+        <div class="float-md-left mr-1 mb-1"><button type="button" class="btn btn-outline-primary btn-xs" id="history_export_modal"
+            (click)="showExportHistoryModal()">{{'button-title.export' | translate}} {{'button-title.history' | translate}}</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container>
+  <div class="row">
+    <div class="col-12">
+      <div class="separator-tabs tab-container">
+        <ul role="tablist" class="nav nav-tabs" >
+          <li class="nav-item" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.NORMAL}">
+            <a href="javascript:void(0);" role="tab" class="nav-link" id="history_normal_tab" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.NORMAL}" (click)="onHistoryTabChange(helper.HISTORY_TYPE.NORMAL)">
+              <span>{{'label-title.normal' | translate}}</span>
+            </a>
+          </li>
+          <li class="nav-item" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.OPEN_RIDE}">
+            <a href="javascript:void(0);" role="tab" class="nav-link" id="history_openride_tab" [ngClass]="{'active' : history_type == helper.HISTORY_TYPE.OPEN_RIDE}" (click)="onHistoryTabChange(helper.HISTORY_TYPE.OPEN_RIDE)">
+              <span>{{'label-title.open-ride' | translate}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table aria-describedby="table" class="table table-hover mb-0 tableScroll" aria-describedby="history-table">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">
+                    <span class="sortIcon c-pointer" (click)="onSort('unique_id')">
+                      <span class="sortIcon1"
+                        [ngClass]="sort_item == 'unique_id' &&  sort_order == -1 ?  'active' : ''"></span>
+                      <span class="sortIcon2"
+                        [ngClass]="sort_item == 'unique_id' &&  sort_order == 1 ?  'delative' : ''"></span>
+                      {{'label-title.trip-id' | translate}}
+                    </span>
+                  </th>
+                  <th scope="col">
+                    <span class="sortIcon c-pointer" (click)="onSort('first_name')">
+                      <span class="sortIcon1"
+                        [ngClass]="sort_item == 'first_name' &&  sort_order == -1 ?  'active' : ''"></span>
+                      <span class="sortIcon2"
+                        [ngClass]="sort_item == 'first_name' &&  sort_order == 1 ?  'delative' : ''"></span>
+                      {{'label-title.driver' | translate }}
+                    </span>
+                  </th>
+                  <th scope="col">
+                      {{'label-title.service' | translate}}
+                  </th>
+                  <th scope="col">
+                      {{'label-title.price' | translate}}
+                    </th>
+                  <th scope="col">
+                      {{'label-title.status' | translate}}
+                  </th>
+                  <th scope="col">
+                      {{'label-title.payment' | translate}}
+                  </th>
+                  <th scope="col">
+                    {{'label-title.create-time' | translate}}
+                  </th>
+                  <th scope="col">
+                    {{'label-title.end-time' | translate}}
+                  </th>
+
+                </tr>
+              </thead>
+              <tbody *ngIf="rows && rows.length>0">
+                <tr
+                  *ngFor="let row of rows"
+                  (click)="showAddNewModal(row)">
+                  <td class="text-nowrap">{{row.unique_id}}</td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.first_name">{{ row.first_name }} {{row.last_name}}</span>
+                    <span *ngIf="!row.first_name">--</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.service_type">{{row.service_type.service_type_name}}</span>
+                    <span *ngIf="!row.service_type.service_type_name">--</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.NORMAL">
+                      <span>{{row.currency}} {{row.total.toFixed(helper.to_fixed_number)}}</span>
+                    </span>
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.OPEN_RIDE">
+                      <span *ngIf="row.user_details">{{row.currency}} {{row.user_details?.total.toFixed(helper.to_fixed_number)}}</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.NORMAL">
+                      <span class="badge badge-pill badge-success c-pointer w-fit-content"
+                      *ngIf="row.is_trip_completed == 1">{{'label-title.completed' | translate}}
+                      </span>
+                      <span class="badge badge-pill badge-danger c-pointer w-fit-content"
+                      *ngIf="row.is_trip_cancelled == 1 ">{{'label-title.cancelled' | translate}}
+                      </span>
+                      <span class="c-pointer" *ngIf="!row.is_trip_cancelled != 1 && !row.is_trip_completed != 1 ">--</span>
+                    </span>
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.OPEN_RIDE">
+                      <span class="badge badge-pill badge-success c-pointer w-fit-content"
+                        *ngIf="row.is_trip_completed == 1 && row.is_trip_cancelled == 0 && row.user_details?.booking_cancelled == 0 && row.user_details?.booking_cancelled_by_user == 0 && row.user_details?.booking_cancelled_by_provider == 0">
+                        {{'label-title.completed' | translate}}
+                      </span>
+                      <span class="badge badge-pill badge-danger c-pointer w-fit-content"
+                      *ngIf="(row.is_trip_cancelled == 1 || row.user_details?.booking_cancelled == 1 || row.user_details?.booking_cancelled_by_user == 1 || row.user_details?.booking_cancelled_by_provider == 1)">{{'label-title.cancelled' | translate}}
+                      </span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.NORMAL">
+                      <span class=" badge badge-pill badge-secondary w-fit-content" *ngIf="row.payment_mode == 0">
+                        {{'label-title.by-card' | translate}}</span>
+                      <span class="badge badge-pill badge-primary w-fit-content" *ngIf="row.payment_mode == 1">
+                        {{'label-title.by-cash' |translate}}</span>
+                      <span class="c-pointer"
+                        *ngIf="row.payment_mode != 0 && row.payment_mode != 1">--</span>
+                    </span>
+                    <span *ngIf="history_type == helper.HISTORY_TYPE.OPEN_RIDE">
+                      <span class=" badge badge-pill badge-secondary w-fit-content" *ngIf="row.user_details?.payment_mode == 0">
+                        {{'label-title.by-card' | translate}}</span>
+                      <span class="badge badge-pill badge-primary w-fit-content" *ngIf="row.user_details?.payment_mode == 1">
+                        {{'label-title.by-cash' |translate}}</span>
+                      <span class="c-pointer"
+                        *ngIf="row.user_details?.payment_mode != 0 && row.user_details?.payment_mode != 1">--</span>
+                    </span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.user_create_time">{{row.user_create_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}}</span>
+                    <span *ngIf="!row.user_create_time">--</span>
+                  </td>
+                  <td class="text-nowrap">
+                    <span *ngIf="row.provider_trip_end_time">{{row.provider_trip_end_time | date:helper.DATE_FORMAT.D_MMM_YY_H_MM_A}}</span>
+                    <span *ngIf="!row.provider_trip_end_time">--</span>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="(rows && rows.length==0) || !rows">
+                <tr>
+                  <th id="no-record" colspan="10" class="text-center">
+                    <span>{{ 'label-title.no-record-found' | translate }}</span>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="rows && rows.length>0">
+    <div class="col-12">
+      <div class="border-top pt-4">
+        <div class="w-100 d-flex justify-content-center">
+          <pagination [totalItems]="total_page * itemsPerPage" [itemsPerPage]="itemsPerPage" [maxSize]="maxSize"
+          (pageChanged)="pageChanged($event)" [customNextTemplate]="nextTemplate"
+            [customPreviousTemplate]="prevTemplate">
+          </pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #nextTemplate let-disabled="disabled" let-currentPage="currentPage">
+  <i class='simple-icon-arrow-right'></i>
+</ng-template>
+<ng-template #prevTemplate let-disabled="disabled" let-currentPage="currentPage">
+  <i class='simple-icon-arrow-left'></i>
+</ng-template>
+
+<app-export-history-modal #ExportHistotyModel></app-export-history-modal>
+<app-history-modal #historyModal></app-history-modal>

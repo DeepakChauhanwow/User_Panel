@@ -1,0 +1,22 @@
+<div class="h-100">
+  <app-color-switcher *ngIf="isMultiColorActive"></app-color-switcher>
+  <div class="share-social" *ngIf="isWhatsAppChat">
+    <ul class="icn-btn">
+      <li style="cursor:pointer;">
+        <a id="whatsappButton" rel="noreferrer" href="https://api.whatsapp.com/send/?phone=971558149001&text=How+can+i+help+you+%3F+&type=phone_number&app_absent=0" target="_blank" class="icon-socl">
+          <img class="icon-socl entered lazyloaded" alt="whatsapp icon"
+            src="https://elluminatimedia.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/wtsp.png" width="40px"
+            height="40px"
+            data-lazy-src="https://elluminatimedia.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/wtsp.png"
+            data-ll-status="loaded"><noscript><img class="icon-socl" alt="whatsapp icon"
+              src="https://elluminatimedia.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/wtsp.png"
+              loading="lazy" width="40px" height="40px"></noscript>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <router-outlet></router-outlet>
+</div>
+
+
+

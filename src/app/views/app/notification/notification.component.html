@@ -1,0 +1,39 @@
+<app-topnav2 ></app-topnav2>
+
+<ng-container>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table aria-describedby="table" class="table table-hover mb-0 tableScroll" aria-describedby="notification-table">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">
+                        {{'label-title.message' | translate}}
+                    </th>
+                    <th scope="col">
+                        {{'label-title.date' | translate}}
+                      </th>
+                  </tr>
+                </thead>
+                <tbody >
+                    <tr *ngFor="let notification of notifications">
+                        <td >{{notification.message}}</td>
+                        <td class="text-nowrap">{{notification.created_at | date: date.HH_MM_A}}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="notifications.length == 0">
+                    <tr>
+                      <th id="no-record" colspan="10" class="text-center">
+                        <span>{{ 'label-title.no-record-found' | translate }}</span>
+                      </th>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</ng-container>

@@ -1,0 +1,40 @@
+.form-floating {
+    position: relative;
+}
+
+.form-control {
+    border-radius: 0.25rem;
+}
+
+.logo-image {
+    width: 110px;
+    height: 35px;
+    margin-bottom: 24px;
+}
+
+.social-menu .google {
+    text-align: left;
+}
+
+.social-menu .fb {
+    text-align: right;
+}
+
+.social-menu .twitter {
+    text-align: left;
+}
+
+.social-menu div .social img,
+.social-menu .google #buttonDiv,
+.social-menu .google #buttonDiv1 {
+    transition: all 0.5s ease;
+    box-shadow: 0 5px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}
+
+.social-menu div .social:hover img,
+.social-menu div .social:active img,
+.social-menu .google #buttonDiv:hover,
+.social-menu .google #buttonDiv1:hover {
+    transform: translate(0, -10px);
+}

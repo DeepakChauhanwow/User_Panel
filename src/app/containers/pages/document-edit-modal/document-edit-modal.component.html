@@ -1,0 +1,92 @@
+<ng-template #template>
+  <modal-container role="dialog" tabindex="-1" class="modal fade show" style="display: block;" aria-modal="true">
+    <div role="document" class="modal-dialog modal-right">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">{{'label-title.edit-document' | translate }}</h4>
+          <button type="button" class="close pull-right" id="document_edit_close" aria-label="Close" (click)="documentModalClose()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="col-12 mb-3" *ngIf="UserDocument && UserDocument.length>0">
+            <p class="text-primary mb-0"> {{'validation-title.please-upload-document-in-formate' | translate}}</p>
+          </div>
+          <div class="card mb-4" *ngFor="let document of UserDocument; let i=index">
+            <div class="card-body p-0 w-100 d-flex">
+              <div class="w-40 d-flex align-items-center">
+                <a href="javascript::" id="document_img" class="w-100 position-relative">
+                  <div class="position-absolute card-bottom-buttons">
+                    <input id="fileInput" type="file" (change)="onSelectImageFile($event, 1)" />
+                    <button *ngIf="!document.is_edit && (document.document_picture !== IMAGE_URL)"
+                      class="btn btn-outline-primary icon-button" id="document_download" (click)="onDownload(document.document_picture,document.name)">
+                      <i class="simple-icon-cloud-download"></i>
+                    </button>
+                    <button *ngIf="document.is_edit" id="edit_image" class="btn btn-outline-primary icon-button"
+                      onclick="document.getElementById('fileInput').click();">
+                      <i class="simple-icon-pencil"></i>
+                    </button>
+                  </div>
+                  <img (error)="$event.target.src = DEFAULT_USER_PROFILE" class="dInfo-card-img-left .documnet_img p-2"
+                    [src]="document.document_picture ? document.document_picture : DEFAULT_USER_PROFILE"
+                    [alt]="document.name" *ngIf="document.document_picture.split('.').pop() != 'pdf'">
+                  <img class="dInfo-card-img-left documnet_img p-2"
+                    src="../../../../assets/default_images/pdf_img.png"
+                    [alt]="document.name" *ngIf="document.document_picture.split('.').pop() == 'pdf'">
+                    <span class="badge badge-pill badge-theme-2 position-absolute badge-top-left"
+                    *ngIf="document.is_document_expired">{{'label-title.expired'
+                    | translate }}</span>
+                </a>
+              </div>
+              <div class="w-60 p-3">
+                <a href="javascript:;" id="edit_document_name">
+                  <h5 class="card-title font-weight-bold mb-3 w-55">{{document.name}}<span class="text-danger"
+                      *ngIf="document.option == 1">*</span></h5>
+                </a>
+                <div class="mb-2">
+                  <div class="form-group" *ngIf="document.is_expired_date == true">
+                    <label for="edate">{{'label-title.expired-date' | translate}}</label>
+                    <p class="mb-2" *ngIf="!document.is_edit">{{document.expired_date |
+                      date:_helper.DATE_FORMAT.DD_MM_YYYY}}</p>
+                    <p class="mb-2" *ngIf="!document.is_expired_date || (!document.expired_date && !document.is_edit)">
+                      ---</p>
+                    <input type="text" *ngIf="document.is_edit" placeholder="{{'label-title.expiry-date' | translate }}"
+                      class="form-control background-unset" id="edit_document_expiry" [showWeeks]="false" calendarWeeks="false" bsDatepicker [container]="'html'"
+                      [(ngModel)]="document.expired_date" name="expired_date{{i}}" #expired_date="ngModel" required
+                      [minDate]="todayDate"
+                      [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' , showWeekNumbers:false}" [readOnly]="true">
+                      <div *ngIf="document.is_edit && document.is_expired_date && !document.expired_date && document.is_update_clicked == true"
+                          class="invalid-tooltip">
+                          {{'validation-title.expired-date-is-required' | translate}}
+                      </div>
+                  </div>
+                  <div class="form-group" *ngIf="document.is_unique_code == true">
+                    <label for="ucode">{{'label-title.unique-code' | translate}}</label>
+                    <p class="mb-2" *ngIf="!document.is_edit">{{document.unique_code}}</p>
+                    <p class="mb-2" *ngIf="!document.is_unique_code || (!document.unique_code && !document.is_edit)">
+                      ---</p>
+                    <input type="text" *ngIf="document.is_edit" id="edit_document_code" name="unique_code{{i}}"
+                      placeholder="{{'label-title.unique-code' | translate}}" class="form-control"
+                      [(ngModel)]="document.unique_code" #unique_code="ngModel" required (keypress)="_helper.nospace_validation($event)">
+                    <div *ngIf="document.is_edit && document.is_unique_code && !document.unique_code && document.is_update_clicked == true"
+                      class="invalid-tooltip">
+                      {{'validation-title.unique-code-is-required' | translate}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="position-absolute card-top-buttons">
+              <button type="submit" *ngIf="document.is_edit" (click)="updateDocument(document)"
+                class="btn btn-outline-primary btn-xs mb-1" id="update_document">
+                {{'button-title.update' | translate}}</button>
+              <button type="button" id="edit_document" *ngIf="!document.is_edit" (click)="onEdit(document, i)" [ngClass]="{'btn-disabled':(is_edit == true)}" [disabled]="is_edit == true"
+                class="btn btn-outline-primary btn-xs mb-1">{{'button-title.edit' |
+                translate}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </modal-container>
+</ng-template>

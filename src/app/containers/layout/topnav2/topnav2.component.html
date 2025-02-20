@@ -1,0 +1,262 @@
+<div class="row">
+  <div class="col-12">
+    <app-heading></app-heading>
+    <div class="top-right-button-container text-zero mb-3 d-flex">
+      <div dropdown class="mr-2" *ngIf="helper.user_details">
+        <a dropdownToggle type="button" id="notificationButton" class="header-icon userName btn btn-outline-primary"
+          (click)="loadNotifications()">
+          <i class="fa-regular fa-bell" [ngClass]="notifications?.length > 0 ? 'bell' : ''"
+            style="font-size: 16px;"></i>
+        </a>
+        <div id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" id="notificationDropdown"
+          #scrollContainerElement>
+          <div class="text-center" *ngIf="notifications?.length == 0">
+            <h6 class="mb-0">{{ 'label-title.no-data-found' | translate }}</h6>
+          </div>
+
+          <div class="d-flex align-items-center flex-row mb-2 py-2 px-4 border-bottom"
+            *ngFor="let notification of notifications?.slice(0,5)">
+            <div>
+              <div>{{notification.message}}</div>
+              <p class="text-muted mb-0 text-small">
+                {{notification.created_at | date: dateFormate.HH_MM_A}}
+              </p>
+            </div>
+          </div>
+          <div class="align-items-center px-4 c-pointer" *ngIf="notifications?.length > 5">
+            <a class="text-primary" id="view_more_notification" routerLink="/app/notification">{{
+              'label-title.view-more-notification' | translate
+              }}</a>
+          </div>
+        </div>
+      </div>
+      <div dropdown class="d-inline-block dropleft">
+        <button *ngIf="true" type="button" dropdownToggle="" id="change_language"
+          class="btn btn-outline-primary userName d-flex align-item-center" aria-haspopup="true">
+          <span class="userName truncate">{{this.langService.languageShorthand | uppercase}} </span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right mt-3" *dropdownMenu role="menu">
+          <a class="dropdown-item c-pointer" id="language-{{i}}" *ngFor="let item of languages; let i = index"
+            (click)="onLanguageChange(item)">{{item.label | titlecase}}</a>
+        </div>
+      </div>
+      <div class="user ml-2" *ngIf="is_address_changed && !helper.user_details">
+        <button (click)="onAddNewItem()" id="button-basic" type="button" class="btn userName btn-outline-primary">
+          {{'button-title.login' | translate }}</button>
+      </div>
+      <div class="d-inline-block ml-2" dropdown>
+        <button *ngIf="helper.user_details" type="button" dropdownToggle="" id="nav_profile"
+          class="btn btn-outline-primary userName d-flex align-item-center" aria-haspopup="true">
+          <img class="lazyload userimg" (error)="$event.target.src = DEFAULT_USER_PROFILE"
+            [src]="helper.user_details.picture ? (IMAGE_URL + helper.user_details.picture) : DEFAULT_USER_PROFILE"
+            [alt]="helper.user_details.first_name">
+          <span class="userName truncate d-none d-xs-block">{{helper.user_details.first_name}}</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right mt-3" *dropdownMenu role="menu">
+          <a class="dropdown-item c-pointer" id="nav_account" routerLink="/app/profile">{{'label-title.account' |
+            translate}}</a>
+          <a class="dropdown-item c-pointer" id="nav_booktrip" routerLink="/app/create-trip">{{'label-title.book-trip' |
+            translate}}</a>
+          <a class="dropdown-item c-pointer" id="nav_history" routerLink="/app/history">{{'label-title.history' |
+            translate}} </a>
+          <a class="dropdown-item c-pointer" id="nav_future_trip"
+            routerLink="/app/future-requests">{{'menu.future-request' |
+            translate}}
+          </a>
+
+          <div class="divider dropdown-divider"></div>
+          <a class="dropdown-item c-pointer " id="nav_sign_out" (click)="signOut()">{{'label-title.sign-out' |
+            translate}}</a>
+        </div>
+      </div>
+    </div>
+    <div class="separator mb-5"
+      *ngIf="!helper._route.url?.split('/')?.pop()?.toString()?.includes('future-requests') && !helper._route.url?.split('/')?.pop()?.toString()?.includes('history')">
+    </div>
+  </div>
+</div>
+
+<app-addcard-modal (cardDataHandler)="getCardList()" #addCardModal></app-addcard-modal>
+
+<div class="custom-model-main " *ngIf="splitPaymentRequest" [ngClass]="{'model-open':splitPaymentRequest}">
+  <div class="custom-model-inner " style="width: 340px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <div class="text-center mb-4">
+          <p class="text-one font-weight-bold">{{'label-title.split_payment_request' | translate}}</p>
+        </div>
+        <div class="text-center">
+          <p class="mb-3">{{'label-title.friend_sent_request' | translate}}</p>
+          <p class="font-weight-bold mb-0">{{split_payment_request.first_name}} {{split_payment_request.last_name}}</p>
+          <p class="font-weight-bold">{{split_payment_request.country_phone_code}} {{split_payment_request.phone}}</p>
+          <div class="d-flex justify-content-center mb-3" *ngIf="confirm == 1">
+            <div class="custom-control custom-radio mr-4">
+              <input type="radio" id="customRadio1" value="cash" name="customRadio" class="custom-control-input"
+                (click)="selectMethod('cash')" [checked]="payment_mode == 1">
+              <label for="customRadio1" class="custom-control-label">{{'label-title.cash' | translate}}</label>
+            </div>
+            <div class="custom-control custom-radio"
+              *ngIf="cardData && (cardData.card.length > 0 || cardData.payment_gateway_type != PAYMENT_GATEWAY.payu)">
+              <input type="radio" id="customRadio2" value="card" name="customRadio"
+                class="custom-control-input select-card-radio" (click)="selectMethod('card')"
+                [checked]="payment_mode == 0">
+              <label for="customRadio2" class="custom-control-label">{{'label-title.card' | translate}}</label>
+            </div>
+          </div>
+          <p class="text-danger"
+            *ngIf="payment_mode == 0 && cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !paypal_supported">
+            {{'validation-title.paypal-not-supported' | translate}}
+          <div class="w-100 mb-2" *ngIf="confirm == 0">
+            <button type="button" class="btn btn-primary w-50 text-one pull-right" aria-label="condition"
+              (click)="splitPaymentRequestStatus(true)">
+              <span aria-hidden="true">{{'button-title.accept' | translate}}</span>
+            </button>
+          </div>
+          <div class="w-100" *ngIf="confirm == 0">
+            <button type="button" class="btn btn-outline-primary w-50 text-one pull-right" aria-label="condition"
+              (click)="splitPaymentRequestStatus(false)">
+              <span aria-hidden="true">{{'button-title.reject' | translate}}</span>
+            </button>
+          </div>
+          <div class="pl-4 mb-4 d-flex flex-column"
+            *ngIf="confirm == 1 && cardData?.card?.length > 0 && this.payment_mode == 0">
+            <div class="d-flex flex-row justify-content-center mb-1 pb-1"
+              *ngFor="let card of cardData.card; let i = index;">
+              <div class="custom-control custom-radio">
+                <input type="radio" id="card-{{i}}" value="card-{{i}}" name="cardList" class="custom-control-input"
+                  [checked]="card.is_default" (click)="selectDefault(card)">
+                <label for="card-{{i}}" class="custom-control-label">XXXX-XXXX-XXXX-{{card.last_four}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="w-100 mb-2" *ngIf="confirm == 1">
+            <button type="button" class="btn btn-primary w-50 text-one pull-right" aria-label="condition"
+              [disabled]="(payment_mode == 0 && cardData.card.length == 0 && cardData.payment_gateway_type != PAYMENT_GATEWAY.razorpay && cardData.payment_gateway_type != PAYMENT_GATEWAY.payu) || (payment_mode == 0 && cardData.payment_gateway_type == PAYMENT_GATEWAY.paypal && !paypal_supported)"
+              (click)="updateSplitPaymentMode()">
+              <span aria-hidden="true">{{'button-title.confirm' | translate}}</span>
+            </button>
+          </div>
+          <div class="w-100"
+            *ngIf="confirm == 1 && payment_mode == 0 && cardData?.payment_gateway_type != PAYMENT_GATEWAY.paypal && cardData?.payment_gateway_type != PAYMENT_GATEWAY.razorpay && cardData?.payment_gateway_type != PAYMENT_GATEWAY.payu">
+            <button type="button" class="btn btn-outline-primary text-one pull-right" aria-label="condition"
+              style="width: 55%;" id="go_to_payment" (click)="go_to_payment=true">
+              <span aria-hidden="true">{{'button-title.go_to_payment' | translate}}</span>
+            </button>
+          </div>
+          <div class="w-100 mt-2"
+            *ngIf="confirm == 1 && payment_mode == 0 && split_payment_request.payment_mode !== null && this.cardData.card.length == 0 && cardData.payment_gateway_type != PAYMENT_GATEWAY.paypal && cardData.payment_gateway_type != PAYMENT_GATEWAY.razorpay && cardData.payment_gateway_type != PAYMENT_GATEWAY.payu">
+            <p class="text-danger">{{'label-title.please_add_card_first' | translate}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+<div class="custom-model-main " *ngIf="split_pay" [ngClass]="{'model-open':split_pay}">
+  <div class="custom-model-inner " style="width: 340px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <div class="text-center mb-4">
+          <p class="text-one font-weight-bold">{{'label-title.split_payment_request' | translate}}</p>
+        </div>
+        <div class="text-center">
+          <p class="mb-3">{{'label-title.total' | translate}}</p>
+          <p class="text-large font-weight-semibold">{{split_pay_json.total.toFixed(helper.to_fixed_number)}}</p>
+          <div class="w-100 mb-2">
+            <button type="button" id="pay_again" (click)="payAgain()" class="btn btn-primary w-50 text-one pull-right"
+              aria-label="condition" *ngIf="cardData?.payment_gateway_type != PAYMENT_GATEWAY.paypal"
+              [ngClass]="{'mb-2':split_payment_request.payment_mode == 0}">
+              <span aria-hidden="true">{{'label-title.pay' | translate}}</span>
+            </button>
+            <div class="" *ngIf="cardData?.payment_gateway_type == PAYMENT_GATEWAY.paypal">
+              <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+            </div>
+            <div class="w-100"
+              *ngIf="split_payment_request.payment_mode == 0 && cardData?.payment_gateway_type != PAYMENT_GATEWAY.paypal && cardData?.payment_gateway_type != PAYMENT_GATEWAY.razorpay && cardData?.payment_gateway_type != PAYMENT_GATEWAY.payu">
+              <button type="button" id="go_to_payment_2" class="btn btn-outline-primary text-one pull-right"
+                aria-label="condition" style="width: 55%;" (click)="go_to_payment=true">
+                <span aria-hidden="true">{{'button-title.go_to_payment' | translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+<div class="custom-model-main " *ngIf="go_to_payment" [ngClass]="{'model-open':go_to_payment}">
+  <div class="custom-model-inner " style="width: 340px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <button type="button" class="close pull-right" id="close_go_to_payment" aria-label="Close"
+          (click)="close_go_to_payment()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="mb-4 text-center">{{ 'label-title.change-payment-mode' | translate }}</h3>
+        <div class="d-flex flex-row justify-content-between mb-1 pb-1">
+          <div class=" custom-control custom-radio">
+            <input type="radio" id="customRadio2" value="card" name="customRadio" class="custom-control-input"
+              [checked]="payment_mode == 0">
+            <label for="customRadio2" class="custom-control-label">{{'label-title.card' | translate}}</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-xs mb-2 float-right" (click)="openaddCardModal()"
+            id="add_card_modal">{{'button-title.add-card' |
+            translate }}</button>
+        </div>
+
+        <div class="pl-4 mb-4 d-flex flex-column" *ngIf="cardData.card.length > 0">
+          <div class="d-flex flex-row justify-content-between mb-1 pb-1"
+            *ngFor="let card of cardData.card; let i = index;">
+            <div class="custom-control custom-radio">
+              <input type="radio" id="card_{{i}}" value="card_{{i}}" name="cardList" class="custom-control-input"
+                [checked]="card.is_default" (click)="selectDefault(card)">
+              <label for="card_{{i}}" class="custom-control-label">XXXX-XXXX-XXXX-{{card.last_four}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center align-item-center">
+          <button type="button" id="submit_payment" class="btn btn-primary  mx-2" (click)="go_to_payment=false">
+            {{'button-title.submit' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+<div class="custom-model-main " *ngIf="corporateRequestModal" [ngClass]="{'model-open':corporateRequestModal}">
+  <div class="custom-model-inner " style="width: 340px;">
+    <div class="custom-model-wrap ">
+      <div class="p-3 p-xs-4">
+        <div class="text-center mb-4">
+          <p class="text-one font-weight-bold">{{'label-title.corporate_request' | translate}}</p>
+        </div>
+        <div class="text-center">
+          <p class="mb-3">{{'label-title.tie_up_with_corporate' | translate}}</p>
+          <p class="font-weight-bold mb-0">{{corporate_details.name}}</p>
+          <p class="font-weight-bold">{{corporate_details.phone}}</p>
+          <div class="w-100 mb-2">
+            <button type="button" id="corporate_request_yes" class="btn btn-primary w-50 text-one pull-right"
+              aria-label="condition" (click)="corporateRquestStatus(true)">
+              <span aria-hidden="true">{{'button-title.yes' | translate}}</span>
+            </button>
+          </div>
+          <div class="w-100">
+            <button type="button" id="corporate_request_no" class="btn btn-outline-primary w-50 text-one pull-right"
+              aria-label="condition" (click)="corporateRquestStatus(false)">
+              <span aria-hidden="true">{{'button-title.no' | translate}}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+<div id="razorpay" [hidden]="true"></div>

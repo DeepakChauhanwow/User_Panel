@@ -1,0 +1,31 @@
+<!-- Add Card model popup start-->
+
+<div class="custom-model-main " *ngIf="addCardmodal" [ngClass]="{'model-open':addCardmodal}" style="z-index: 999999;">
+  <div class="custom-model-inner ">
+    <div class="custom-model-wrap ">
+      <div class="p-4 p-xs-5">
+        <div class="form-side">
+          <button type="button" id="add_card_close" class="close clr-primary pull-right" aria-label="Close" (click)="addCardcloseModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h2>{{'pages.add-card-details' | translate}}</h2>
+          <form action=" " class="pt-4">
+            <div id="card-info" class="clr-primary" style="width:100%" #cardInfo></div>
+            <div class="form-field mt-4 text-right">
+              <button type="submit" *ngIf="!isLoading" id="add_newcard_btn" class="btn btn-primary btn-lg btn-shadow"
+                (click)="addcard()">{{'button-title.add-card' | translate}}
+              </button>
+              <button type="button" *ngIf="isLoading" id="processing_btn"
+                style="background-color: grey;cursor: not-allowed;color: white;border-color: white;"
+                class="btn btn-lg mr-auto">{{'button-title.processing' | translate}}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-overlay "></div>
+</div>
+
+<!-- Add Card model popup end-->

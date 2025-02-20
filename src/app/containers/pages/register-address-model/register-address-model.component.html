@@ -1,0 +1,22 @@
+<ng-template #addressModal>
+  <div class="p-4">
+    <div class="form-side">
+      <button type="button" class="close pull-right" id="close_address_modal" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h3 class="mb-4">{{'heading-title.set-your-location' | translate}}</h3>
+      <div class="content address-search-location">
+        <div class="form-group input-wrp">
+          <input type="text" id="_address" placeholder="{{'label-title.address' | translate }}" [(ngModel)]="address"
+            class="form-control col-12" />
+          <div class="invalid-tooltip" *ngIf="data_submitted && address_validation && !address">{{'validation-title.address-is-required' | translate}}</div>
+        </div>
+        <div id="map1" class="register-address-map"></div>
+        <div class="d-flex mt-3 justify-content-end">
+          <button type="button" class="btn btn-primary" id="save_register_address" (click)="mapAddress()">{{'button-title.save'
+            | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
