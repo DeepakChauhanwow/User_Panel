@@ -6,13 +6,23 @@ import { UserRole } from '../app/shared/auth.roles';
 export const environment = {
 
   // for live
-  API_URL: 'http://13.203.141.238:5000',
-  IMAGE_URL: 'http://13.203.141.238:5000/',
-  LANGUAGE_URL: 'http://13.203.141.238:5000/',
-  BASE_URL: 'http://13.203.141.238:5000/',
-  SOCKET_URL: 'http://13.203.141.238:5000/',
-  PAYMENTS_API_URL: 'http://13.203.141.238:5002',
-  HISTORY_API_URL: 'http://13.203.141.238:5001',
+  // API_URL: 'http://13.203.141.238:5000',
+  // IMAGE_URL: 'http://13.203.141.238:5000/',
+  // LANGUAGE_URL: 'http://13.203.141.238:5000/',
+  // BASE_URL: 'http://13.203.141.238:5000/',
+  // SOCKET_URL: 'http://13.203.141.238:5000/',
+  // PAYMENTS_API_URL: 'http://13.203.141.238:5002',
+  // HISTORY_API_URL: 'http://13.203.141.238:5001',
+
+
+    API_URL: 'http://api.womenonwheel.com/admin',
+  IMAGE_URL: 'http://api.womenonwheel.com/',
+  BASE_URL: 'http://api.womenonwheel.com/',
+  SOCKET_URL: 'http://api.womenonwheel.com/',
+  LANGUAGE_URL: 'http://api.womenonwheel.com/',
+  HISTORY_API_URL: 'http://history.womenonwheel.com',
+  PAYMENTS_API_URL: 'http://payment.womenonwheel.com',
+
 
   TERMS_URL :'',
   PRIVACY_URL:'',
