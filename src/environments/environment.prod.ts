@@ -15,13 +15,13 @@ export const environment = {
   // HISTORY_API_URL: 'http://13.203.141.238:5001',
 
 
-    API_URL: 'http://api.womenonwheel.com/admin',
-  IMAGE_URL: 'http://api.womenonwheel.com/',
-  BASE_URL: 'http://api.womenonwheel.com/',
-  SOCKET_URL: 'http://api.womenonwheel.com/',
-  LANGUAGE_URL: 'http://api.womenonwheel.com/',
-  HISTORY_API_URL: 'http://history.womenonwheel.com',
-  PAYMENTS_API_URL: 'http://payment.womenonwheel.com',
+    API_URL: 'https://api.womenonwheel.com/admin',
+  IMAGE_URL: 'https://api.womenonwheel.com/',
+  BASE_URL: 'https://api.womenonwheel.com/',
+  SOCKET_URL: 'https://api.womenonwheel.com/',
+  LANGUAGE_URL: 'https://api.womenonwheel.com/',
+  HISTORY_API_URL: 'https://history.womenonwheel.com',
+  PAYMENTS_API_URL: 'https://payment.womenonwheel.com',
 
 
   TERMS_URL :'',
