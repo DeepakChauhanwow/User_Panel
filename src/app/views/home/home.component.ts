@@ -48,7 +48,28 @@ export class AdminDetail {
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
+  styles: [`
+    .theme-Color {
+      color: #A880F4;
+    }
+    .userNameBtn{
+      background-color:#A880F4;
+      border-color:#a880f4;
+    }
+      a#normal-link{
+        color:#A880F4;
+      }
+      .homeImg {
+          max-height: 300px !important;
+      }
+      img.feature-image-left.feature-image-charts.homeImg {
+        object-position: inherit;
+    }
+      
+  `]
 })
+
+
 export class HomeComponent implements OnInit, OnDestroy {
   config = {
     backdrop: true,

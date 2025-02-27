@@ -83,7 +83,7 @@
                                 </a>
                                 <div dropdown>
                                     <button *ngIf="helper.user_details" type="button"  id="profile_dropdown" dropdownToggle=""
-                                        class="btn btn-primary userName d-flex align-items-center" aria-haspopup="true">
+                                        class="btn btn-primary userName d-flex align-items-center userNameBtn" aria-haspopup="true">
                                         <img class="lazyload userimg" (error)="$event.target.src = DEFAULT_USER_PROFILE"
                                             [src]="helper.user_details.picture ? (IMAGE_URL + helper.user_details.picture) : DEFAULT_USER_PROFILE"
                                             [alt]="helper.user_details.first_name">
@@ -193,7 +193,7 @@
         <div class="container" id="features">
             <div class="row">
                 <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
-                    <h1>{{'home-page.looking_for_worldclass_taxi' | translate}}</h1>
+                    <h1 class="theme-Color"><b>{{'home-page.looking_for_worldclass_taxi' | translate}}</b></h1>
                     <p>
                         {{'home-page.get_started_with_eber_taxi' | translate}}
                     </p>
@@ -202,29 +202,29 @@
 
             <div>
                 <div class="row feature-row overflow-hidden">
-                    <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+                    <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2>{{'home-page.rentals' | translate}}</h2>
+                            <h2 class="theme-Color"><b>{{'home-page.rentals' | translate}}</b></h2>
                             <p>{{'home-page.about_rentals' | translate}}</p>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6 offset-lg-1 offset-md-0 position-relative">
+                    <div class="col-12 col-md-6 col-lg-4 offset-lg-1 offset-md-0 position-relative p-0">
                         <img alt="{{'home-page.rentals' | translate}}" [src]="IMAGE_URL+'user_panel_images/rentals.png?'+randomQueryParam"
-                            class="feature-image-right feature-image-charts position-relative" />
+                            class="feature-image-right feature-image-charts position-relative homeImg" />
                     </div>
                 </div>
             </div>
             <div>
                 <div class="row feature-row overflow-hidden">
-                    <div class="col-12 col-md-6 col-lg-6 order-2 order-md-1">
+                    <div class="col-12 col-md-6 col-lg-4 order-2 order-md-1">
                         <img alt="{{'home-page.taxi_hailing' | translate}}"
                             [src]="IMAGE_URL+'user_panel_images/taxi_hailing.jpeg?'+randomQueryParam"
-                            class="feature-image-left feature-image-charts" />
+                            class="feature-image-left feature-image-charts homeImg" />
                     </div>
                     <div
-                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center order-1 order-md-2">
+                        class="col-12 col-md-6 offset-md-0 col-lg-7 offset-lg-1 d-flex align-items-center order-1 order-md-2">
                         <div class="feature-text-container">
-                            <h2>{{'home-page.taxi_hailing' | translate}}</h2>
+                            <h2 class="theme-Color"><b>{{'home-page.taxi_hailing' | translate}}</b></h2>
                             <p class="mb-4">{{'home-page.about_taxi_hailing1' | translate}}</p>
                             <p>{{'home-page.about_taxi_hailing2' | translate}}</p>
                         </div>
@@ -233,31 +233,31 @@
             </div>
             <div>
                 <div class="row feature-row overflow-hidden">
-                    <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+                    <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2>{{'home-page.ride_share' | translate}}</h2>
+                            <h2 class="theme-Color"><b>{{'home-page.ride_share' | translate}}</b></h2>
                             <p class="mb-4">{{'home-page.about_ride_share1' | translate}}</p>
                             <p>{{'home-page.about_ride_share2' | translate}}</p>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6 offset-lg-1 offset-md-0 position-relative">
+                    <div class="col-12 col-md-6 col-lg-4 offset-lg-1 offset-md-0 position-relative p-0">
                         <img alt="{{'home-page.ride_share' | translate}}"
                             [src]="IMAGE_URL+'user_panel_images/ride_share.jpg?'+randomQueryParam"
-                            class="feature-image-right feature-image-charts position-relative" />
+                            class="feature-image-right feature-image-charts position-relative homeImg" />
                     </div>
                 </div>
             </div>
             <div>
                 <div class="row feature-row overflow-hidden">
-                    <div class="col-12 col-md-6 col-lg-6 order-2 order-md-1">
+                    <div class="col-12 col-md-6 col-lg-4 order-2 order-md-1">
                         <img alt="{{'home-page.split_payment' | translate}}"
                             [src]="IMAGE_URL+'user_panel_images/split_payment.jpg?'+randomQueryParam"
-                            class="feature-image-left feature-image-charts" />
+                            class="feature-image-left feature-image-charts homeImg" />
                     </div>
                     <div
-                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center order-1 order-md-2">
+                        class="col-12 col-md-6 offset-md-0 col-lg-7 offset-lg-1 d-flex align-items-center order-1 order-md-2">
                         <div class="feature-text-container">
-                            <h2>{{'home-page.split_payment' | translate}}</h2>
+                            <h2 class="theme-Color"><b>{{'home-page.split_payment' | translate}}</b></h2>
                             <p class="mb-4">{{'home-page.about_split_payment1' | translate}}</p>
                             <p>{{'home-page.about_split_payment2' | translate}}</p>
                         </div>
@@ -266,30 +266,30 @@
             </div>
             <div>
                 <div class="row feature-row overflow-hidden">
-                    <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+                    <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2>{{'home-page.driver_going_to_home' | translate}}</h2>
+                            <h2 class="theme-Color">{{'home-page.driver_going_to_home' | translate}}</h2>
                             <p class="mb-4">{{'home-page.about_driver_going_to_home1' | translate}}</p>
                             <p>{{'home-page.about_driver_going_to_home2' | translate}}</p>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6 offset-lg-1 offset-md-0 position-relative">
+                    <div class="col-12 col-md-6 col-lg-4 offset-lg-1 offset-md-0 position-relative p-0">
                         <img alt="{{'home-page.driver_going_to_home' | translate}}"
                             [src]="IMAGE_URL+'user_panel_images/driver_going_home.jpg?'+randomQueryParam"
-                            class="feature-image-right feature-image-charts position-relative" />
+                            class="feature-image-right feature-image-charts position-relative homeImg" />
                     </div>
                 </div>
             </div>
             <div>
                 <div class="row feature-row overflow-hidden">
-                    <div class="col-12 col-md-6 col-lg-6 order-2 order-md-1">
+                    <div class="col-12 col-md-6 col-lg-4 order-2 order-md-1">
                         <img alt="MULTIPLE STOP" [src]="IMAGE_URL+'user_panel_images/multiple_stop.png?'+randomQueryParam"
-                            class="feature-image-left feature-image-charts" />
+                            class="feature-image-left feature-image-charts homeImg" />
                     </div>
                     <div
-                        class="col-12 col-md-6 offset-md-0 col-lg-5 offset-lg-1 d-flex align-items-center order-1 order-md-2">
+                        class="col-12 col-md-6 offset-md-0 col-lg-7 offset-lg-1 d-flex align-items-center order-1 order-md-2">
                         <div class="feature-text-container">
-                            <h2>{{'home-page.multiple_stop' | translate}}</h2>
+                            <h2 class="theme-Color"><b>{{'home-page.multiple_stop' | translate}}</b></h2>
                             <p class="mb-4">{{'home-page.about_multiple_stop1' | translate}}</p>
                             <p>{{'home-page.about_multiple_stop2' | translate}}</p>
                         </div>
@@ -304,7 +304,7 @@
             <div class="row">
                 <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
 
-                    <h1>{{'home-page.ride_comfortably_with_eber' | translate}}</h1>
+                    <h1 class="theme-Color"><b>{{'home-page.ride_comfortably_with_eber' | translate}}</b></h1>
 
                     <p>
                         {{'home-page.do_you_need_taxi_at_your_doorsteps' | translate}}
@@ -355,16 +355,16 @@
         <div class="container" id="scroll_2">
             <div class="row">
                 <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center mb-4">
-                    <h1>{{'home-page.taxi' | translate | titlecase}}</h1>
+                    <h1 class="theme-Color"><b>{{'home-page.taxi' | translate | titlecase}}</b></h1>
                     <p class="section-text">
                         {{'home-page.options_for_where_you_going' | translate}}
                     </p>
                 </div>
             </div>
-            <div class="row screenshots">
-                <div class="col-12 text-center mb-4">
-                    <tabset class="nav nav-tabs justify-content-center" [justified]="true">
-                        <tab heading="{{ 'home-page.normal' | translate}}" class="card-body h-100" id="normal">
+            <div class="row screenshots ">
+                <div class="col-12 text-center mb-4 normalSection">
+                    <tabset class="nav nav-tabs justify-content-center " [justified]="true">
+                        <tab heading="{{ 'home-page.normal' | translate}}" class="card-body h-100 " id="normal">
                             <!-- Now -->
                             <div class="row pt-2">
                                 <div class="col-12 col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-left "

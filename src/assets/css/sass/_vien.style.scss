@@ -88,7 +88,7 @@ $border-radius-rounded: 0.75rem;
 
 $theme-color-purple-monster: #922c88;
 $theme-color-blue-navy: #00365a;
-$theme-color-blue-yale: #145388;
+$theme-color-blue-yale: #A880F4;
 $theme-color-blue-olympic: #008ecc;
 $theme-color-green-moss: #576a3d;
 $theme-color-green-lime: #6fb327;
@@ -101,8 +101,10 @@ $info-color: #3195a5;
 $success-color: #3e884f;
 $warning-color: #b69329;
 $error-color: #c43d4b;
+$theme-color: #A880F4;
 
 /* 01.Base */
+
 html {
   width: 100%;
   height: 100%;
@@ -795,14 +797,14 @@ button {
 
 .btn-primary,
 a.btn-primary:not([href]):not([tabindex]) {
-  background-color: $theme-color-1;
-  border-color: $theme-color-1;
-  color: $button-text-color;
+  background-color: #A880F4;
+  border-color: #A880F4;
+  color: #fff;
 
   &:hover {
-    color: $button-text-color;
-    background-color: darken($theme-color-1, 8%);
-    border-color: darken($theme-color-1, 8%);
+    background-color: #A880F4;
+    border-color: #A880F4;
+    color: #fff;
   }
 }
 
@@ -1013,25 +1015,25 @@ a.btn-secondary:not([href]):not([tabindex]) {
 }
 
 .btn-outline-primary {
-  color: $theme-color-1;
-  border-color: $theme-color-1;
+  color: #A880F4;
+  border-color: #A880F4;
 
   &:hover {
-    color: $foreground-color;
-    background-color: $theme-color-1;
-    border-color: $theme-color-1;
+    color: #fff;
+    background-color: #A880F4;
+    border-color: #A880F4;
   }
 }
 
 .btn-outline-theme-3 {
   background: unset;
-  color: $theme-color-3;
-  border-color: $theme-color-3;
+  color: #A880F4;
+  border-color: #A880F4;
 
   &:hover {
-    background-color: $theme-color-3;
-    border-color: $theme-color-3;
-    color: $foreground-color;
+    color: #fff;
+    background-color: #A880F4;
+    border-color: #A880F4;
   }
 }
 
@@ -1142,16 +1144,16 @@ a.btn-secondary:not([href]):not([tabindex]) {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-  background-color: $theme-color-1;
-  border-color: $theme-color-1;
-  color: $foreground-color;
+  background-color: #A880F4;
+  border-color: #A880F4;
+  color: #fff;
 }
 
 .btn-secondary.disabled,
 .btn-secondary:disabled {
-  background-color: $theme-color-2;
-  border-color: $theme-color-2;
-  color: $foreground-color;
+  background-color: #A880F4;
+  border-color: #A880F4;
+  color: #fff;
 }
 
 .btn-group>.btn:not(:last-child):not(.dropdown-toggle),
@@ -1577,8 +1579,8 @@ a.btn-secondary:not([href]):not([tabindex]) {
 .nav-tabs .nav-link.active::before,
 .nav-tabs .nav-item.show .nav-link::before {
   content: " ";
-  background: $theme-color-1;
-  color: $foreground-color;
+  background: #A880F4;
+  color:#A880F4;
   border-radius: 10px;
   position: absolute;
   width: calc(100% - 1rem);
@@ -1596,7 +1598,7 @@ a.btn-secondary:not([href]):not([tabindex]) {
 .separator-tabs .nav-tabs .nav-link.active::before,
 .separator-tabs .nav-tabs .nav-item.show .nav-link::before {
   content: " ";
-  background: $theme-color-1;
+  background: #A880F4;
   border-radius: 10px;
   position: absolute;
   width: 100%;
@@ -1623,7 +1625,7 @@ a.btn-secondary:not([href]):not([tabindex]) {
 .nav-tabs .nav-item.show .nav-link {
   border: initial;
   position: relative;
-  color: $theme-color-1;
+  color: #A880F4;
   background: initial;
 }
 
