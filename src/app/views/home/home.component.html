@@ -56,12 +56,12 @@
                             <li class="nav-item" *ngIf="DRIVER_WEB" id="driver_with_us"><a href="{{DRIVER_WEB}}" target="_blank">{{'home-page.drive-with-us' |
                                     translate}}</a>
                             </li>
-                            <li class="nav-item"><a (click)="scrollTo('scroll_3')" id="app_eber" href="javascript:;">{{'home-page.app'
+                            <!-- <li class="nav-item"><a (click)="scrollTo('scroll_3')" id="app_eber" href="javascript:;">{{'home-page.app'
                                     |
-                                    translate}}</a></li>
+                                    translate}}</a></li> -->
                         </ul>
                         <ul class="navbar-nav d-flex flex-row">
-                            <li class="nav-item pr-0">
+                            <!-- <li class="nav-item pr-0">
                                 <div dropdown>
                                     <a *ngIf="true" type="button" id="language" dropdownToggle=""
                                         class="btn btn-outline-primary userName d-flex align-items-center fz-1rem"
@@ -75,12 +75,12 @@
                                             (click)="onLanguageChange(item)">{{item.label | titlecase}}</a>
                                     </div>
                                 </div>
-                            </li>
+                            </li> -->
                             <li class="nav-item pr-0">
-                                <a class="btn btn-outline-primary btn-sm pr-4 pl-4 d-flex align-items-center c-pointer"
+                                <!-- <a class="btn btn-outline-primary btn-sm pr-4 pl-4 d-flex align-items-center c-pointer"
                                     (click)="openModal()" *ngIf="!helper.user_details" id="user_login">
                                     {{'button-title.login' | translate }}
-                                </a>
+                                </a> -->
                                 <div dropdown>
                                     <button *ngIf="helper.user_details" type="button"  id="profile_dropdown" dropdownToggle=""
                                         class="btn btn-primary userName d-flex align-items-center userNameBtn" aria-haspopup="true">
@@ -148,10 +148,10 @@
                             <br />
                         </p>
                         <div class="d-flex flex-column w-fit-content home-btn">
-                            <a class="btn btn-light btn-xl mr-2 mb-2 c-pointer" id="home_user_login" *ngIf="!helper.user_details"
+                            <!-- <a class="btn btn-light btn-xl mr-2 mb-2 c-pointer" id="home_user_login" *ngIf="!helper.user_details"
                                 (click)="RegisterModal()">
                                 {{'home-page.login_now' | translate}}<i class="simple-icon-arrow-right"></i>
-                            </a>
+                            </a> -->
                             <a class="btn btn-light btn-xl mr-2 mb-2 c-pointer" id="home_ride_now" routerLink="/app/create-trip"
                                 *ngIf="helper.user_details">
                                 {{'home-page.ride_now' | translate}}<i class="simple-icon-arrow-right"></i>
@@ -527,7 +527,7 @@
     </div>
 
     <div class="section pb-0">
-        <div class="container" id="scroll_3">
+        <!-- <div class="container" id="scroll_3">
             <div class="row">
                 <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
                     <h1>{{'home-page.download_app' | translate}}</h1>
@@ -563,7 +563,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="container copyright pt-5">
             <div class="row">
                 <div class="col-12"></div>

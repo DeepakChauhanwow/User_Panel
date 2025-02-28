@@ -1,4 +1,4 @@
-<app-topnav2 (addNewItem)="openLoginModal()" [is_address_changed]="is_address_changed" (is_paypal_supported)="get_paypal_data($event)" (corporate_request_accept_event)="get_vehicle_list()"></app-topnav2>
+<!-- <app-topnav2 (addNewItem)="openLoginModal()" [is_address_changed]="is_address_changed" (is_paypal_supported)="get_paypal_data($event)" (corporate_request_accept_event)="get_vehicle_list()"></app-topnav2> -->
 
 <div id="Payu" [hidden]="true">
 </div>
@@ -261,10 +261,10 @@
           </tab>
         </tabset>
 
-        <div [hidden]="helper.user_details" class="text-center mb-4">
+        <!-- <div [hidden]="helper.user_details" class="text-center mb-4">
           <button (click)="openLoginModal()" id="trip_login" type="button" class="btn btn-outline-primary">
             {{'button-title.login' | translate | uppercase }}</button>
-        </div>
+        </div> -->
 
       </div>
       <div *ngIf="!is_address_changed && helper.user_details">

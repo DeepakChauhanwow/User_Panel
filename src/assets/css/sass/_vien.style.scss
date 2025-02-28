@@ -10024,9 +10024,9 @@ footer.page-footer {
   }
 
   .section {
-    margin-bottom: 150px;
-    padding-top: 100px;
-    padding-bottom: 100px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 
     @include respond-below(md) {
       margin-bottom: 100px;
@@ -10110,8 +10110,8 @@ footer.page-footer {
   .section.background {
     background: $foreground-color;
     position: relative;
-    padding-top: 100px;
-    padding-bottom: 100px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 
     @include respond-below(md) {
       padding-top: 60px;
