@@ -53,7 +53,19 @@ export class CityDetailData {
 @Component({
   selector: 'app-book-trip',
   templateUrl: './book-trip.component.html',
-  styleUrls: ['./book-trip.component.scss']
+  styleUrls: ['./book-trip.component.scss'],
+  styles: [`
+    .top-right-button-container.text-zero.mb-3.d-flex{
+      display:none;
+    } 
+    .createLogo {
+      text-align:center;
+      margin-top:-70px;
+    }
+    .createLogo img{
+      height:100px;
+    }
+  `]
 })
 export class BookTripComponent implements OnInit, OnDestroy, AfterViewChecked {
   map: any = null;
@@ -69,6 +81,7 @@ export class BookTripComponent implements OnInit, OnDestroy, AfterViewChecked {
   IMAGE_URL = environment.IMAGE_URL;
   added_stops: number = 0;
   tabNum: number = 0;
+  logoClr: boolean = false;
   selected_address_index: number = -1;
   selected_index: number = 0;
   selected_type: number = 1;

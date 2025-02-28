@@ -53,6 +53,7 @@
                             <li class="nav-item" *ngIf="citytypes"><a (click)="scrollTo('scroll_2')"
                                     href="javascript:;" id="ride_with_us">{{'home-page.ride-with-us' |
                                     translate}}</a></li>
+                                    
                             <li class="nav-item" *ngIf="DRIVER_WEB" id="driver_with_us"><a href="{{DRIVER_WEB}}" target="_blank">{{'home-page.drive-with-us' |
                                     translate}}</a>
                             </li>
@@ -168,7 +169,7 @@
     <div class="section mb-0 pb-0" *ngIf="!helper.user_details">
         <div class="container" id="get_fare_estimate">
             <div>
-                <div class="row overflow-hidden">
+                <div class="row overflow-hidden mt-3">
                     <div class="col-12 col-md-6 col-lg-6">
                         <img alt="feature.title" [src]="IMAGE_URL+'user_panel_images/map.jpg?'+randomQueryParam"
                             style="object-position: unset;height: 400px;"
@@ -192,7 +193,7 @@
     <div class="section">
         <div class="container" id="features">
             <div class="row">
-                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center mt-5">
                     <h1 class="theme-Color"><b>{{'home-page.looking_for_worldclass_taxi' | translate}}</b></h1>
                     <p>
                         {{'home-page.get_started_with_eber_taxi' | translate}}
@@ -268,7 +269,7 @@
                 <div class="row feature-row overflow-hidden">
                     <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color">{{'home-page.driver_going_to_home' | translate}}</h2>
+                            <h2 class="theme-Color"><b>{{'home-page.driver_going_to_home' | translate}}</b></h2>
                             <p class="mb-4">{{'home-page.about_driver_going_to_home1' | translate}}</p>
                             <p>{{'home-page.about_driver_going_to_home2' | translate}}</p>
                         </div>
@@ -291,7 +292,7 @@
                         <div class="feature-text-container">
                             <h2 class="theme-Color"><b>{{'home-page.multiple_stop' | translate}}</b></h2>
                             <p class="mb-4">{{'home-page.about_multiple_stop1' | translate}}</p>
-                            <p>{{'home-page.about_multiple_stop2' | translate}}</p>
+                            <p class="mb-5">{{'home-page.about_multiple_stop2' | translate}}</p>
                         </div>
                     </div>
                 </div>
@@ -564,6 +565,8 @@
                 </div>
             </div>
         </div> -->
+
+        
         <div class="container copyright pt-5">
             <div class="row">
                 <div class="col-12"></div>

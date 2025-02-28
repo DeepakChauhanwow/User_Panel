@@ -65,7 +65,6 @@ export class AdminDetail {
       img.feature-image-left.feature-image-charts.homeImg {
         object-position: inherit;
     }
-      
   `]
 })
 

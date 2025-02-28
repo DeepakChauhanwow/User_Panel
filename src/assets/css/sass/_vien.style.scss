@@ -9819,8 +9819,9 @@ footer.page-footer {
     }
 
     .navbar-logo {
-      width: 120px;
+      width: auto;
       height: 40px;
+      object-fit: contain;
 
       .white {
         display: inline-block;
@@ -10162,7 +10163,7 @@ footer.page-footer {
   }
 
   .home-row {
-    padding-top: 140px;
+    padding-top: 50px;
     margin-bottom: 70px;
 
     @include respond-below(xl) {

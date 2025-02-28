@@ -1,4 +1,9 @@
-<!-- <app-topnav2 (addNewItem)="openLoginModal()" [is_address_changed]="is_address_changed" (is_paypal_supported)="get_paypal_data($event)" (corporate_request_accept_event)="get_vehicle_list()"></app-topnav2> -->
+<div class="mobile-menu createLogo" (click)="$event.stopPropagation()">
+ 
+      <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+helper.randomQueryParam" alt="logo" class="logo-image" *ngIf="!logoClr">
+      <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+helper.randomQueryParam" alt="logo" class="logo-image" *ngIf="logoClr">
+</div>
+<app-topnav2 (addNewItem)="openLoginModal()" [is_address_changed]="is_address_changed" (is_paypal_supported)="get_paypal_data($event)" (corporate_request_accept_event)="get_vehicle_list()"></app-topnav2>
 
 <div id="Payu" [hidden]="true">
 </div>

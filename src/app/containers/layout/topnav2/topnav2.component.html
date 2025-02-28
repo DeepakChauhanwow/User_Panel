@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <div dropdown class="d-inline-block dropleft">
+      <!-- <div dropdown class="d-inline-block dropleft">
         <button *ngIf="true" type="button" dropdownToggle="" id="change_language"
           class="btn btn-outline-primary userName d-flex align-item-center" aria-haspopup="true">
           <span class="userName truncate">{{this.langService.languageShorthand | uppercase}} </span>
@@ -39,11 +39,11 @@
           <a class="dropdown-item c-pointer" id="language-{{i}}" *ngFor="let item of languages; let i = index"
             (click)="onLanguageChange(item)">{{item.label | titlecase}}</a>
         </div>
-      </div>
-      <div class="user ml-2" *ngIf="is_address_changed && !helper.user_details">
+      </div> -->
+      <!-- <div class="user ml-2" *ngIf="is_address_changed && !helper.user_details">
         <button (click)="onAddNewItem()" id="button-basic" type="button" class="btn userName btn-outline-primary">
           {{'button-title.login' | translate }}</button>
-      </div>
+      </div> -->
       <div class="d-inline-block ml-2" dropdown>
         <button *ngIf="helper.user_details" type="button" dropdownToggle="" id="nav_profile"
           class="btn btn-outline-primary userName d-flex align-item-center" aria-haspopup="true">
