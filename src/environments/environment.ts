@@ -4,15 +4,13 @@
 import { UserRole } from '../app/shared/auth.roles';
 
 export const environment = {
-
-  API_URL: 'http://13.203.141.238:5000',
-  IMAGE_URL: 'http://13.203.141.238:5000/',
-  LANGUAGE_URL: 'http://13.203.141.238:5000/',
-  BASE_URL: 'http://13.203.141.238:5000/',
-  SOCKET_URL: 'http://13.203.141.238:5000/',
-  PAYMENTS_API_URL: 'http://13.203.141.238:5002',
-  HISTORY_API_URL: 'http://13.203.141.238:5001',
-
+  API_URL: 'https://api.womenonwheel.com',
+  IMAGE_URL: 'https://api.womenonwheel.com/',
+  BASE_URL: 'https://api.womenonwheel.com/',
+  SOCKET_URL: 'https://api.womenonwheel.com/',
+  LANGUAGE_URL: 'https://api.womenonwheel.com/',
+  HISTORY_API_URL: 'https://history.womenonwheel.com',
+  PAYMENTS_API_URL: 'https://payment.womenonwheel.com',
   // API_URL: '',
   // IMAGE_URL: '',
   // LANGUAGE_URL: '',
@@ -45,15 +43,25 @@ export const environment = {
   isAuthGuardActive: true,
   defaultRole: UserRole.Admin,
   STRIPE_KEY: '',
+
   firebase: {
-    apiKey: "",
-    authDomain: "",
-    databaseURL: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: "",
-    measurementId: ""
+    // apiKey: "",
+    // authDomain: "",
+    // databaseURL: "",
+    // projectId: "",
+    // storageBucket: "",
+    // messagingSenderId: "",
+    // appId: "",
+    // measurementId: ""
+
+  apiKey: "AIzaSyCukJ1rqzX6dJLO2d5NuJBX8MEIb2VEgOE",
+  authDomain: "womenonwheels-98795.firebaseapp.com",
+  databaseURL: "https://womenonwheels-98795-default-rtdb.firebaseio.com",
+  projectId: "womenonwheels-98795",
+  storageBucket: "womenonwheels-98795.firebasestorage.app",
+  messagingSenderId: "462615774647",
+  appId: "1:462615774647:web:a24d699a2d6c1458f3d432",
+  measurementId: "G-MXL572M83X"
   }
 };
 
