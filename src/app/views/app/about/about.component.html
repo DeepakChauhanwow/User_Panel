@@ -1,0 +1,54 @@
+<div class="container d-flex align-items-center justify-content-between headerAbout">
+  <a class="navbar-logo">
+      <span class="white">
+          <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+_helper.randomQueryParam" alt="logo"
+              class="navbar-logo">
+      </span>
+      <span class="dark">
+          <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+_helper.randomQueryParam" alt="logo" class="navbar-logo"
+              *ngIf="!logoClr">
+          <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+_helper.randomQueryParam" alt="logo" class="navbar-logo"
+              *ngIf="logoClr">
+      </span>
+  </a>
+  <div class="d-flex align-items-center">
+      <ul class="navbar-nav d-none d-lg-flex flex-row">
+        <li class="nav-item">
+          <a [attr.href]="WEBSITE_URL" id="app_mobile">
+             Home
+          </a>
+      </li>
+          <li class="nav-item">
+              <a [attr.href]="WEBSITE_URL + '/app/about'" id="app_mobile">
+                  About Us
+              </a>
+          </li>
+          
+
+          <li class="nav-item">
+              <a id="app_mobile" href="javascript:;">
+                Contact Us
+              </a>
+          </li>
+
+
+          <!-- <li class="nav-item" *ngIf="citytypes"><a 
+                  href="javascript:;" id="ride_with_us">{{'home-page.ride-with-us' |
+                  translate}}</a></li>   -->
+      </ul>
+</div>
+</div>
+
+<div class="about-us-container container">
+  <!-- <h1 class="theme-Color"><b>About Us</b></h1> -->
+  <h1 class="theme-Color"><b>{{ 'home-page.about' | translate }}</b></h1>
+
+  <p>
+    Welcome to our platform! We are dedicated to providing the best services to our users.
+    Our mission is to offer seamless and convenient experiences through our solutions.
+  </p>
+  <p>
+    Thank you for being a part of our journey. Feel free to explore and reach out for any inquiries.
+  </p>
+</div>
+

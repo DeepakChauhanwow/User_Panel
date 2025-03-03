@@ -11,6 +11,7 @@ export const environment = {
   LANGUAGE_URL: 'https://api.womenonwheel.com/',
   HISTORY_API_URL: 'https://history.womenonwheel.com',
   PAYMENTS_API_URL: 'https://payment.womenonwheel.com',
+  WEBSITE_URL: 'http://localhost:4210',
   // API_URL: '',
   // IMAGE_URL: '',
   // LANGUAGE_URL: '',

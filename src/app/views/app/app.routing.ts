@@ -5,6 +5,9 @@ import { AppComponent } from './app.component';
 import { BookTripComponent } from './book-trip/book-trip.component';
 import { HistoryComponent } from './history/history.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AboutComponent } from './about/about.component';
+
+// import { AboutComponent } from './about/abo';
 
 import { FutureRequestsComponent } from './future-requests/future-requests.component';
 
@@ -17,7 +20,9 @@ const routes: Routes = [
             { path: 'history', component: HistoryComponent },
             { path: 'future-requests', component: FutureRequestsComponent },
             { path: 'create-trip', component: BookTripComponent },
-            { path: 'notification', component: NotificationComponent }
+            { path: 'notification', component: NotificationComponent },
+            { path: 'about', component: AboutComponent },
+
         ]
     }
 ];

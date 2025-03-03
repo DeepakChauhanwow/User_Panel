@@ -62,8 +62,31 @@ export class AdminDetail {
       .homeImg {
           max-height: 300px !important;
       }
-      img.feature-image-left.feature-image-charts.homeImg {
+    img.feature-image-left.feature-image-charts.homeImg {
         object-position: inherit;
+    }
+
+    .footerSection{
+      padding:15px 0;
+      margin-top:50px;
+      background-color:#000;
+    }
+    .footerLinks{
+      gap:20px;
+      list-style: none;
+    }
+    .footerLinks li a{
+    font-size:16px;
+    color:#fff;
+    }
+    ul.breadcrumbIcon {
+    display: flex;
+    justify-content: end;
+    margin: 0;
+    padding: 0;
+    }
+    .align-item-center{
+      align-items:center;
     }
   `]
 })
@@ -104,6 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   IMAGE_URL = environment.IMAGE_URL;
   DEFAULT_USER_PROFILE = DEFAULT_IMAGE.USER_PROFILE;
   TAXI_ICON = DEFAULT_IMAGE.TAXI_ICON;
+  WEBSITE_URL = environment.WEBSITE_URL;
   DEFAULT_IMAGE = DEFAULT_IMAGE;
   TRIP_TYPE = TRIP_TYPE;
   current_year: number;
@@ -235,7 +259,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getCountry();
     this._initForm();
     this.getBannerList();
-    this.renderer.addClass(document.body, "no-footer");
+    // this.renderer.addClass(document.body, "no-footer");
     let date = new Date();
     this.current_year = date.getFullYear();
     if (this.darkTheme.startsWith("dark")) {
@@ -268,7 +292,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.renderer.removeClass(document.body, "no-footer");
+    // this.renderer.removeClass(document.body, "no-footer");
     if (this.guestTripData?._id) {
       let listner = "'" + this.guestTripData?._id + "'";
       this._socket.disconnetRoom(listner);

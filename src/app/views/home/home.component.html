@@ -50,13 +50,26 @@
                     </a>
                     <div class="d-flex align-items-center">
                         <ul class="navbar-nav d-none d-lg-flex flex-row">
-                            <li class="nav-item" *ngIf="citytypes"><a (click)="scrollTo('scroll_2')"
-                                    href="javascript:;" id="ride_with_us">{{'home-page.ride-with-us' |
-                                    translate}}</a></li>
+
+                            <li class="nav-item" *ngIf="citytypes"><a (click)="scrollTo('scroll_8')"
+                                href="javascript:;" id="ride_with_us">Home</a></li>
+                            <li class="nav-item">
+                                <a [attr.href]="WEBSITE_URL + '/app/about'" id="app_mobile">
+                                    About Us
+                                </a>
+                            </li>
+                            
+
+                            <li class="nav-item">
+                                <a (click)="scrollTo('scroll_6')" id="app_mobile" href="javascript:;">
+                                  Contact Us
+                                </a>
+                            </li>
                                     
                             <li class="nav-item" *ngIf="DRIVER_WEB" id="driver_with_us"><a href="{{DRIVER_WEB}}" target="_blank">{{'home-page.drive-with-us' |
                                     translate}}</a>
                             </li>
+
                             <!-- <li class="nav-item"><a (click)="scrollTo('scroll_3')" id="app_eber" href="javascript:;">{{'home-page.app'
                                     |
                                     translate}}</a></li> -->
@@ -121,7 +134,7 @@
 </ngx-headroom>
 
 
-<div class="content-container" id="scroll_1">
+<div class="content-container" id="scroll_8">
 
     <div class="section home"
         [ngStyle]="{background: 'url('+ IMAGE_URL+'user_panel_images/bg_image.jpg?'+ randomQueryParam + ') no-repeat 0 0 / cover'}"
@@ -353,7 +366,7 @@
     </div>
 
     <div class="section" *ngIf="citytypes">
-        <div class="container" id="scroll_2">
+        <!-- <div class="container" id="scroll_2">
             <div class="row">
                 <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center mb-4">
                     <h1 class="theme-Color"><b>{{'home-page.taxi' | translate | titlecase}}</b></h1>
@@ -361,12 +374,11 @@
                         {{'home-page.options_for_where_you_going' | translate}}
                     </p>
                 </div>
-            </div>
-            <div class="row screenshots ">
+            </div> -->
+            <!-- <div class="row screenshots ">
                 <div class="col-12 text-center mb-4 normalSection">
                     <tabset class="nav nav-tabs justify-content-center " [justified]="true">
                         <tab heading="{{ 'home-page.normal' | translate}}" class="card-body h-100 " id="normal">
-                            <!-- Now -->
                             <div class="row pt-2">
                                 <div class="col-12 col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-left "
                                     *ngFor="let item1 of citytypes; let i=index">
@@ -445,7 +457,7 @@
 
                         <tab heading="{{ 'home-page.ride-share' | translate}}" class="card-body h-100"
                             *ngIf="pooltypes && pooltypes.length > 0" id="rideshare">
-                            <!-- Ride Share -->
+                            
                             <div class="row pt-2">
                                 <div class="col-12 col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-left "
                                     *ngFor="let item2 of pooltypes; let i=index">
@@ -523,8 +535,9 @@
                         </tab>
                     </tabset>
                 </div>
-            </div>
+            </div> -->
         </div>
+
     </div>
 
     <div class="section pb-0">
@@ -566,8 +579,30 @@
             </div>
         </div> -->
 
+        <!-- <div class="container" id="scroll_5">
+            <div class="row">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+                    <h1 class="theme-Color"><b>About Us </b></h1>
+                    <p>
+                       Here We can add about us for this website
+                    </p>
+                </div>
+               
+            </div>
+        </div> -->
         
-        <div class="container copyright pt-5">
+        <!-- <div class="container" id="scroll_6">
+            <div class="row">
+                <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center">
+                    <h1 class="theme-Color"><b>Contact Us</b></h1>
+                    <p>
+                        Here We can add contact us for this website
+                    </p>
+                </div>
+            </div>
+        </div> -->
+        
+        <!-- <div class="container copyright pt-5">
             <div class="row">
                 <div class="col-12"></div>
                 <div class="col-12 text-center">
@@ -576,7 +611,7 @@
                     </p>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
 </div>
@@ -1165,6 +1200,38 @@
     <div class="bg-overlay "></div>
   </div>
   <!-- cancel trip modal end -->
-
-
+ 
+ 
 <app-loader></app-loader>
+<footer class="footerSection">
+    <div class="">
+      <div class="container">
+        <div class="row align-item-center">
+          <div class="col-sm-6">
+            <ul class="d-flex align-items-center gap-5 p-0 footerLinks mb-0">
+              <li class="mb-0">
+                <a href="javascript:;">About Us</a>
+              </li>
+              <li class="mb-0">
+                <a href="javascript:;">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-sm-6">
+            <ul class="breadcrumbIcon">
+              <li class="mb-0">
+                <a href="javascript:;" class="btn-link">
+                  <img src="../../../assets/img/home page/google-play.svg" alt="PLAY STORE" class="img-store m-0 w-75">
+                </a>
+              </li>
+              <li class="mb-0">
+                <a href="javascript:;" class="btn-link">
+                  <img src="../../../assets/img/home page/apple-store-logo.png" alt="PLAY STORE" class="img-store m-0">
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>

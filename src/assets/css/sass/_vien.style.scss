@@ -64,7 +64,7 @@ $sub-menu-width-lg: 230px;
 $sub-menu-width-md: 230px;
 $sub-menu-width-xs: 230px;
 
-$navbar-height: 100px;
+$navbar-height: 80px;
 $navbar-height-xs: 70px;
 $navbar-height-md: 80px;
 $navbar-height-lg: 90px;
@@ -108,7 +108,7 @@ $theme-color: #A880F4;
 html {
   width: 100%;
   height: 100%;
-  background: $background-color;
+  background: #fff;
 }
 
 .pac-container {
@@ -166,10 +166,10 @@ body {
   font-size: 0.8rem;
   font-weight: 400;
   color: $primary-color;
-  background: $background-color;
+  background: #fff;
   min-height: calc(100% - 150px);
   position: relative;
-  padding-bottom: 20px;
+  padding-bottom: 0px;
 
   @include respond-below(xl) {
     min-height: calc(100% - 130px);
@@ -221,6 +221,7 @@ body.show {
   app-app>div,
   app-user>div {
     opacity: 1;
+    background-color: #fff;
   }
 }
 
@@ -2757,9 +2758,9 @@ body.default-transition .menu .main-menu {
 
 /* 14.Main*/
 main {
-  margin-left: $main-margin;
+  margin-left: 0;
   margin-top: 80px;
-  margin-right: $main-margin;
+  margin-right: 0;
   margin-bottom: 0;
 
   .container-fluid {
@@ -2793,9 +2794,9 @@ main {
   }
 }
 
-body.default-transition main {
-  transition: margin-left $menu-collapse-time;
-}
+// body.default-transition main {
+//   transition: margin-left $menu-collapse-time;
+// }
 
 //Menu Config Main
 #app-container {
@@ -9535,7 +9536,7 @@ footer.page-footer {
   padding-top: 2.2rem;
   padding-bottom: 2.2rem;
   border-top: 1px solid $separator-color;
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   height: 90px;
@@ -9773,7 +9774,7 @@ footer.page-footer {
   .landing-page-nav {
     z-index: 5 !important;
     top: 0;
-    position: fixed;
+    position: sticky;
     width: 100%;
     background: transparent;
     box-shadow: initial;
@@ -9784,6 +9785,8 @@ footer.page-footer {
 
     .headroom {
       transition: top 0.5s, background 0.5s, box-shadow 0.2s, transform 0.5s !important;
+      background: #fff;
+      transform: translate(0) !important;
     }
 
     .container {
@@ -9885,7 +9888,7 @@ footer.page-footer {
       .nav-item>a,
       .nav-item>.dropdown>a,
       .nav-item>div>a {
-        color: $button-text-color;
+        color: #000;
         font-family: Nunito, sans-serif;
         font-size: 1rem;
         display: inline-block;
@@ -11662,8 +11665,11 @@ input[type="password"]::-ms-clear {
 .scroll-to-top {
   position: fixed;
   bottom: 40px;
-  left: 40px;
+  left: 0px;
   transition: all .2s ease-in-out;
+  display: flex;
+  justify-content: end;
+  right: 20px;
 
   @include respond-below(md) {
     bottom: 30px;
