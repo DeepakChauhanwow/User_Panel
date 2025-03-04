@@ -1,9 +1,7 @@
 name: Deploy to Wow Server
 
 on:
-  push:
-    branches:
-      - main  # Change this to your main branch name
+  workflow_dispatch:  # Only runs when manually triggered
 
 jobs:
   deploy:
@@ -29,16 +27,18 @@ jobs:
             cd /var/www/html/wow
             git stash
             git pull origin main
+
             cd backend-main
             npm install --legacy-peer-deps
-            cd ../Driver_Panel && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../User_Panel && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../admin-panel && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../corporate-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../dispatcher-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../hotel-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../hub_panel_main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../partner-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+
+            for panel in Driver_Panel User_Panel admin-panel corporate-panel-main dispatcher-panel-main hotel-panel-main hub_panel_main partner-panel-main; do
+              cd ../$panel
+              git stash
+              git pull origin main
+              npm install --legacy-peer-deps
+              npm run build-prod
+            done
+
             pm2 restart all
           EOF
         env:
