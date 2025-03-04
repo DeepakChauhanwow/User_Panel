@@ -1,0 +1,44 @@
+name: Deploy to Wow Server
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+
+      - name: Deploy on Server
+        run: |
+          ssh user@$SERVER_IP << 'EOF'
+            cd /var/www/html/wow
+            git pull origin main
+            cd backend-main
+            npm install --legacy-peer-deps
+            cd ../Driver_Panel && npm install --legacy-peer-deps && npm run build-prod
+            cd ../User_Panel && npm install --legacy-peer-deps && npm run build-prod
+            cd ../admin-panel && npm install --legacy-peer-deps && npm run build-prod
+            cd ../corporate-panel-main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../dispatcher-panel-main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../hotel-panel-main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../hub_panel_main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../partner-panel-main && npm install --legacy-peer-deps && npm run build-prod
+            pm2 restart all
+          EOF
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
