@@ -5,7 +5,7 @@ import { UserRole } from '../app/shared/auth.roles';
 
 export const environment = {
 
-  // for live url
+  // for live url ch
   // API_URL: 'http://13.203.141.238:5000',
   // IMAGE_URL: 'http://13.203.141.238:5000/',
   // LANGUAGE_URL: 'http://13.203.141.238:5000/',
