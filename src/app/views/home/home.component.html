@@ -61,8 +61,8 @@
                             
 
                             <li class="nav-item">
-                                <a (click)="scrollTo('scroll_6')" id="app_mobile" href="javascript:;">
-                                  Contact Us
+                                <a [attr.href]="WEBSITE_URL + '/app/contact'" id="app_mobile">
+                                    Contact Us
                                 </a>
                             </li>
                                     
@@ -207,7 +207,7 @@
         <div class="container" id="features">
             <div class="row">
                 <div class="col-12 offset-0 col-lg-8 offset-lg-2 text-center mt-5">
-                    <h1 class="theme-Color"><b>{{'home-page.looking_for_worldclass_taxi' | translate}}</b></h1>
+                    <h1 class="theme-Color rideContent"><b>{{'home-page.looking_for_worldclass_taxi' | translate}}</b></h1>
                     <p>
                         {{'home-page.get_started_with_eber_taxi' | translate}}
                     </p>
@@ -218,7 +218,9 @@
                 <div class="row feature-row overflow-hidden">
                     <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color"><b>{{'home-page.rentals' | translate}}</b></h2>
+                            <h2 class="theme-Color"><b>{{'home-page.rentals' | translate}}</b>
+                                <div class="contentBordder"></div>
+                            </h2>
                             <p>{{'home-page.about_rentals' | translate}}</p>
                         </div>
                     </div>
@@ -238,7 +240,9 @@
                     <div
                         class="col-12 col-md-6 offset-md-0 col-lg-7 offset-lg-1 d-flex align-items-center order-1 order-md-2">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color"><b>{{'home-page.taxi_hailing' | translate}}</b></h2>
+                            <h2 class="theme-Color"><b>{{'home-page.taxi_hailing' | translate}}</b>
+                                <div class="contentBordder"></div>
+                            </h2>
                             <p class="mb-4">{{'home-page.about_taxi_hailing1' | translate}}</p>
                             <p>{{'home-page.about_taxi_hailing2' | translate}}</p>
                         </div>
@@ -249,7 +253,9 @@
                 <div class="row feature-row overflow-hidden">
                     <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color"><b>{{'home-page.ride_share' | translate}}</b></h2>
+                            <h2 class="theme-Color"><b>{{'home-page.ride_share' | translate}}</b>
+                                <div class="contentBordder"></div>
+                            </h2>
                             <p class="mb-4">{{'home-page.about_ride_share1' | translate}}</p>
                             <p>{{'home-page.about_ride_share2' | translate}}</p>
                         </div>
@@ -261,8 +267,8 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="row feature-row overflow-hidden">
+            <div class="mt-4">
+                <!-- <div class="row feature-row overflow-hidden">
                     <div class="col-12 col-md-6 col-lg-4 order-2 order-md-1">
                         <img alt="{{'home-page.split_payment' | translate}}"
                             [src]="IMAGE_URL+'user_panel_images/split_payment.jpg?'+randomQueryParam"
@@ -271,18 +277,24 @@
                     <div
                         class="col-12 col-md-6 offset-md-0 col-lg-7 offset-lg-1 d-flex align-items-center order-1 order-md-2">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color"><b>{{'home-page.split_payment' | translate}}</b></h2>
+                            <h2 class="theme-Color"><b>{{'home-page.split_payment' | translate}}</b>
+                                <div class="contentBordder"></div>
+                            </h2>
                             <p class="mb-4">{{'home-page.about_split_payment1' | translate}}</p>
                             <p>{{'home-page.about_split_payment2' | translate}}</p>
                         </div>
                     </div>
-                </div>
+                </div> -->
+                <img class="img-fluid" src="../../../assets/img/home page/whyChoseUs.png" alt="">
             </div>
+
             <div>
                 <div class="row feature-row overflow-hidden">
                     <div class="col-12 col-md-6 col-lg-7 d-flex align-items-center">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color"><b>{{'home-page.driver_going_to_home' | translate}}</b></h2>
+                            <h2 class="theme-Color"><b>{{'home-page.driver_going_to_home' | translate}}</b>
+                                <div class="contentBordder"></div>
+                            </h2>
                             <p class="mb-4">{{'home-page.about_driver_going_to_home1' | translate}}</p>
                             <p>{{'home-page.about_driver_going_to_home2' | translate}}</p>
                         </div>
@@ -303,7 +315,9 @@
                     <div
                         class="col-12 col-md-6 offset-md-0 col-lg-7 offset-lg-1 d-flex align-items-center order-1 order-md-2">
                         <div class="feature-text-container">
-                            <h2 class="theme-Color"><b>{{'home-page.multiple_stop' | translate}}</b></h2>
+                            <h2 class="theme-Color"><b>{{'home-page.multiple_stop' | translate}}</b>
+                                <div class="contentBordder"></div>
+                            </h2>
                             <p class="mb-4">{{'home-page.about_multiple_stop1' | translate}}</p>
                             <p class="mb-5">{{'home-page.about_multiple_stop2' | translate}}</p>
                         </div>
@@ -1206,31 +1220,39 @@
 <footer class="footerSection">
     <div class="">
       <div class="container">
-        <div class="row align-item-center">
-          <div class="col-sm-6">
-            <ul class="d-flex align-items-center gap-5 p-0 footerLinks mb-0">
-              <li class="mb-0">
-                <a href="javascript:;">About Us</a>
-              </li>
-              <li class="mb-0">
-                <a href="javascript:;">Contact Us</a>
-              </li>
-            </ul>
-          </div>
-          <div class="col-sm-6">
-            <ul class="breadcrumbIcon">
-              <li class="mb-0">
-                <a href="javascript:;" class="btn-link">
-                  <img src="../../../assets/img/home page/google-play.svg" alt="PLAY STORE" class="img-store m-0 w-75">
-                </a>
-              </li>
-              <li class="mb-0">
-                <a href="javascript:;" class="btn-link">
-                  <img src="../../../assets/img/home page/apple-store-logo.png" alt="PLAY STORE" class="img-store m-0">
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div class="text-center">
+            <h1 class="text-white mb-2">Download Now</h1>
+            <div>
+                <img src="../../../assets/img/home page/footerLogo.png" alt="PLAY STORE" class="img-store m-0">
+            </div>
+
+            <p class="mb-0 downloadSubText text-white">WOMEN ON WHEELS</p>
+            <p class="mb-0 downloadSubText text-white">REGISTERED NOW </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <footer class="bg-white">
+    <div class="">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <img src="../../../assets/img/home page/lastLogo.png" alt="PLAY STORE" class="img-store m-0">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <h4>Follow Us</h4>
+                    <ul>
+                        <li>
+                            <a href="javascript:void(0)"><img src="../../../assets/img/home page/lastLogo.png" alt="PLAY STORE" class="img-store m-0"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
         </div>
       </div>
     </div>

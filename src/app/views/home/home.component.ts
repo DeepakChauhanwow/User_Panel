@@ -50,7 +50,7 @@ export class AdminDetail {
   styleUrls: ["./home.component.scss"],
   styles: [`
     .theme-Color {
-      color: #A880F4;
+      color: #3C3B3E;
     }
     .userNameBtn{
       background-color:#A880F4;
@@ -61,6 +61,7 @@ export class AdminDetail {
       }
       .homeImg {
           max-height: 300px !important;
+          border-radius:20px;
       }
     img.feature-image-left.feature-image-charts.homeImg {
         object-position: inherit;
@@ -87,6 +88,17 @@ export class AdminDetail {
     }
     .align-item-center{
       align-items:center;
+    }
+    .rideContent{
+      color:#A880F4;
+    }
+    .contentBordder{
+        width:30%;
+        background-color:#A880F4;
+        height:3px;
+    }
+    .downloadSubText{
+    font-size:12px;
     }
   `]
 })

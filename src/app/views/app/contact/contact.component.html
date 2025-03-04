@@ -1,0 +1,72 @@
+<div class="container d-flex align-items-center justify-content-between headerAbout">
+  <a class="navbar-logo">
+      <span class="white">
+          <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+_helper.randomQueryParam" alt="logo"
+              class="navbar-logo">
+      </span>
+      <span class="dark">
+          <img [src]="IMAGE_URL + 'web_images/user_logo.png?'+_helper.randomQueryParam" alt="logo" class="navbar-logo"
+              *ngIf="!logoClr">
+          <img [src]="IMAGE_URL + 'web_images/dark_website_logo.png?'+_helper.randomQueryParam" alt="logo" class="navbar-logo"
+              *ngIf="logoClr">
+      </span>
+  </a>
+  <div class="d-flex align-items-center">
+      <ul class="navbar-nav d-none d-lg-flex flex-row">
+        <li class="nav-item">
+          <a [attr.href]="WEBSITE_URL" id="app_mobile">
+             Home
+          </a>
+      </li>
+          <li class="nav-item">
+              <a [attr.href]="WEBSITE_URL + 'app/about'" id="app_mobile">
+                  About Us
+              </a>
+          </li>
+          
+
+          <li class="nav-item">
+            <a [attr.href]="WEBSITE_URL + 'app/contact'" id="app_mobile">
+              Contact Us
+          </a>
+          </li>
+      </ul>
+</div>
+</div>
+
+<div class="about-us-container container">
+  <h1 class="theme-Color"><b>{{ 'chat.contacts' | translate }}</b></h1>
+
+  <h2 class="mb-3 text-center contactFullAddress"><span class="borderContact">Contact Infortantion</span></h2>
+
+  <div>
+    <div class="address mb-3">
+       <div class="contactAlign">
+          <img class="addressIcon" src="../../../assets/img/home page/address.png" alt="">
+          <p>Address:-</p>
+       </div>
+       <p class="addressTYitle">H 65 , Sector 63, Noida, Uttar Pradesh India - 201301</p>
+    </div>
+
+    <div class="address email mb-3">
+      <div class="contactAlign">
+         <img class="addressIcon emailIcon" src="../../../assets/img/home page/email.png" alt="">
+         <p>Email:-</p>
+      </div>
+      <p class="addressTYitle">sales@appsquadz.com</p>
+   </div> 
+
+   <div class="address call mb-3">
+      <div class="contactAlign">
+        <img class="addressIcon phoneIcon" src="../../../assets/img/home page/call.png" alt="">
+        <p>Phone:-</p>
+      </div>
+      <p class="addressTYitle">+91-9711440630</p>
+    </div>
+
+    <p class="addeessSunbTitle">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam harum iure totam quos quae eligendi? Modi omnis quaerat commodi ad, recusandae neque suscipit nam laudantium in enim iure aperiam minus!
+    Tenetur eius omnis cupiditate quibusdam eligendi hic reprehenderit reiciendis maiores corrupti! Necessitatibus error placeat quibusdam fuga iusto laboriosam inventore sequi soluta praesentium ad, nostrum, earum natus dolore similique neque ipsam!
+    Veritatis</p>
+  </div>
+</div>
+

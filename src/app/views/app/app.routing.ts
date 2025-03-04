@@ -6,6 +6,8 @@ import { BookTripComponent } from './book-trip/book-trip.component';
 import { HistoryComponent } from './history/history.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AboutComponent } from './about/about.component';
+import { ContactComponent } from './contact/contact.component';
+
 
 // import { AboutComponent } from './about/abo';
 
@@ -22,6 +24,7 @@ const routes: Routes = [
             { path: 'create-trip', component: BookTripComponent },
             { path: 'notification', component: NotificationComponent },
             { path: 'about', component: AboutComponent },
+            { path: 'contact', component: ContactComponent },
 
         ]
     }
