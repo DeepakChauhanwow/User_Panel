@@ -3,7 +3,7 @@ name: Deploy to Wow Server
 on:
   push:
     branches:
-      - main  
+      - main  # Change this to your main branch name
 
 jobs:
   deploy:
@@ -25,19 +25,20 @@ jobs:
 
       - name: Deploy on Server
         run: |
-          ssh ubuntu@$SERVER_IP << 'EOF'
+          ssh user@$SERVER_IP << 'EOF'
             cd /var/www/html/wow
+            git stash
             git pull origin main
             cd backend-main
             npm install --legacy-peer-deps
-            cd ../Driver_Panel && npm install --legacy-peer-deps && npm run build-prod
-            cd ../User_Panel && npm install --legacy-peer-deps && npm run build-prod
-            cd ../admin-panel && npm install --legacy-peer-deps && npm run build-prod
-            cd ../corporate-panel-main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../dispatcher-panel-main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../hotel-panel-main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../hub_panel_main && npm install --legacy-peer-deps && npm run build-prod
-            cd ../partner-panel-main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../Driver_Panel && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../User_Panel && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../admin-panel && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../corporate-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../dispatcher-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../hotel-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../hub_panel_main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
+            cd ../partner-panel-main && git stash && git pull origin main && npm install --legacy-peer-deps && npm run build-prod
             pm2 restart all
           EOF
         env:
